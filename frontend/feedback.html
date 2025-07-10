@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback - PRED.AI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            --text-primary: #2c3e50;
+            --text-secondary: #64748b;
+            --white-transparent: rgba(255, 255, 255, 0.95);
+            --border-radius: 25px;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, 
+                #fef3c7 0%, #fed7aa 15%, #fbb6ce 30%,
+                #c7d2fe 45%, #a5f3fc 60%, #bbf7d0 75%,
+                #fde68a 90%, #fef3c7 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+            padding-top: 80px;
+            position: relative;
+        }
+
+        /* Include all the navbar styles from previous files */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        /* ... Include all the navbar related styles from previous files ... */
+
+        /* Feedback Form Specific Styles */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .feedback-card {
+            background: var(--white-transparent);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .feedback-header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .feedback-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .feedback-description {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .feedback-form {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            font-size: 1rem;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea.form-input {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .rating-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .rating-option {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .rating-option:hover {
+            background: rgba(102, 126, 234, 0.08);
+            border-color: #667eea;
+        }
+
+        .rating-option.selected {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .feature-option {
+            padding: 12px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .feature-option:hover {
+            background: rgba(102, 126, 234, 0.08);
+            border-color: #667eea;
+        }
+
+        .feature-option.selected {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        .submit-button {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--white-transparent);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .back-button {
+            position: fixed;
+            top: 100px;
+            right: 30px;
+            padding: 12px 24px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+            z-index: 100;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .feedback-card {
+                padding: 20px;
+            }
+
+            .feedback-title {
+                font-size: 1.5rem;
+            }
+
+            .rating-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .back-button {
+                top: auto;
+                bottom: 20px;
+                right: 20px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/dashboard" class="back-button">
+        <span>←</span>
+        <span>Back to Dashboard</span>
+    </a>
+    </nav>
+    <div class="container">
+        <div class="feedback-card">
+            <div class="feedback-header">
+                <h1 class="feedback-title">We Value Your Feedback</h1>
+                <p class="feedback-description">Help us improve PRED.AI by sharing your experience</p>
+                <p class="feedback-description" style="font-size: 0.9rem; margin-top: 5px;">
+                    Submitted as: yeswanth120-gif | Time: 2025-07-09 09:10:13 UTC
+                </p>
+            </div>
+
+            <form class="feedback-form" id="feedbackForm" onsubmit="submitFeedback(event)">
+                <div class="form-group">
+                    <label class="form-label">Overall Experience</label>
+                    <div class="rating-container">
+                        <div class="rating-option" data-rating="1" onclick="selectRating(this)">
+                            😞<br>Poor
+                        </div>
+                        <div class="rating-option" data-rating="2" onclick="selectRating(this)">
+                            😐<br>Fair
+                        </div>
+                        <div class="rating-option" data-rating="3" onclick="selectRating(this)">
+                            🙂<br>Good
+                        </div>
+                        <div class="rating-option" data-rating="4" onclick="selectRating(this)">
+                            😊<br>Very Good
+                        </div>
+                        <div class="rating-option" data-rating="5" onclick="selectRating(this)">
+                            🤩<br>Excellent
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Which features did you find most useful?</label>
+                    <div class="feature-grid">
+                        <div class="feature-option" onclick="toggleFeature(this)">Heart Disease Prediction</div>
+                        <div class="feature-option" onclick="toggleFeature(this)">Diabetes Prediction</div>
+                        <div class="feature-option" onclick="toggleFeature(this)">Lung Cancer Prediction</div>
+                        <div class="feature-option" onclick="toggleFeature(this)">Kidney Disease Prediction</div>
+                        <div class="feature-option" onclick="toggleFeature(this)">Analytics Dashboard</div>
+                        <div class="feature-option" onclick="toggleFeature(this)">Health Reports</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">What aspects need improvement?</label>
+                    <div class="feature-grid">
+                        <div class="feature-option" onclick="toggleFeature(this)">User Interface</div>
+                        <div class="feature-option" onclick="toggleFeature(this)">Prediction Accuracy</div>
+                        <div class="feature-option" onclick="toggleFeature(this)">Loading Speed</div>
+                        <div class="feature-option" onclick="toggleFeature(this)">Mobile Experience</div>
+                        <div class="feature-option" onclick="toggleFeature(this)">Documentation</div>
+                        <div class="feature-option" onclick="toggleFeature(this)">Support</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Detailed Feedback</label>
+                    <textarea 
+                        class="form-input" 
+                        placeholder="Please share your thoughts, suggestions, or concerns..."
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Would you recommend PRED.AI to others?</label>
+                    <select class="form-input" required>
+                        <option value="">Please select...</option>
+                        <option value="definitely">Yes, definitely</option>
+                        <option value="probably">Yes, probably</option>
+                        <option value="maybe">Maybe</option>
+                        <option value="probably_not">Probably not</option>
+                        <option value="definitely_not">Definitely not</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-button">Submit Feedback</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2K6-ynId7_cKsMfLWUdT83WJDLQTdsSc",
+            authDomain: "precision-medicine-df7ed.firebaseapp.com",
+            projectId: "precision-medicine-df7ed",
+            storageBucket: "precision-medicine-df7ed.firebasestorage.app",
+            messagingSenderId: "147856529086",
+            appId: "1:147856529086:web:839879f4d26764d50630ef",
+            measurementId: "G-WWMV7MHKJ5"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Initialize with current user
+        const currentUser = {
+            username: 'yeswanth120-gif',
+            lastLogin: '2025-07-09 09:10:13'
+        };
+
+        // Update profile elements
+        document.getElementById('profileName').textContent = currentUser.username;
+        document.getElementById('profileAvatar').textContent = currentUser.username[0].toUpperCase();
+
+        // Make functions available globally
+        window.selectRating = function(element) {
+            // Remove selected class from all rating options
+            document.querySelectorAll('.rating-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            // Add selected class to clicked option
+            element.classList.add('selected');
+        };
+
+        window.toggleFeature = function(element) {
+            element.classList.toggle('selected');
+        };
+
+        window.submitFeedback = async function(event) {
+            event.preventDefault();
+            
+            try {
+                const user = auth.currentUser;
+                if (!user) {
+                    showNotification('Please sign in to submit feedback', 'error');
+                    return;
+                }
+
+                const rating = document.querySelector('.rating-option.selected')?.dataset.rating;
+                if (!rating) {
+                    showNotification('Please select a rating', 'error');
+                    return;
+                }
+
+                const usefulFeatures = Array.from(document.querySelectorAll('.feature-grid:first-of-type .feature-option.selected'))
+                    .map(el => el.textContent);
+
+                const improvementAreas = Array.from(document.querySelectorAll('.feature-grid:last-of-type .feature-option.selected'))
+                    .map(el => el.textContent);
+
+                const feedback = {
+                    userId: user.uid,
+                    username: currentUser.username,
+                    rating: parseInt(rating),
+                    usefulFeatures,
+                    improvementAreas,
+                    detailedFeedback: event.target.querySelector('textarea').value,
+                    recommendation: event.target.querySelector('select').value,
+                    submittedAt: new Date().toISOString()
+                };
+
+                // Save to Firestore
+                await setDoc(doc(db, 'feedback', `${user.uid}_${Date.now()}`), feedback);
+                
+                showNotification('Thank you for your feedback!', 'success');
+                event.target.reset();
+                
+                // Remove selected classes
+                document.querySelectorAll('.rating-option, .feature-option').forEach(el => {
+                    el.classList.remove('selected');
+                });
+
+            } catch (error) {
+                console.error('Error submitting feedback:', error);
+                showNotification('Error submitting feedback', 'error');
+            }
+        };
+
+        window.navigateTo = function(page) {
+            switch(page.toLowerCase()) {
+                case 'home':
+                    window.location.href = '/dashboard';
+                    break;
+                case 'analytics':
+                    window.location.href = '/analytics';
+                    break;
+                case 'profile':
+                    window.location.href = '/profile';
+                    break;
+                case 'settings':
+                    window.location.href = '/settings';
+                    break;
+            }
+        };
+
+        window.toggleProfileDropdown = function() {
+            document.getElementById('profileDropdown').classList.toggle('active');
+        };
+
+        window.toggleMobileNav = function(event) {
+            event.stopPropagation();
+            document.getElementById('navLinks').classList.toggle('mobile-active');
+        };
+
+        window.logout = function() {
+            auth.signOut().then(() => {
+                localStorage.removeItem('userAuth');
+                window.location.href = '/';
+            });
+        };
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.background = type === 'success' ? '#4ade80' : '#ef4444';
+            notification.style.color = 'white';
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            const navProfile = document.querySelector('.nav-profile');
+            const dropdown = document.getElementById('profileDropdown');
+            const navLinks = document.getElementById('navLinks');
+            
+            if (!navProfile.contains(event.target)) {
+                dropdown.classList.remove('active');
+            }
+            
+            if (!event.target.closest('.nav-left') && !event.target.closest('.mobile-nav-toggle')) {
+                navLinks.classList.remove('mobile-active');
+            }
+        });
+    </script>
+</body>
+</html>

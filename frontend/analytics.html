@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard - Precision Medicine</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist@2.26.0/plotly.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --card-shadow: 0 25px 50px rgba(0, 0, 0, 0.08);
+            --card-shadow-hover: 0 35px 70px rgba(0, 0, 0, 0.15);
+            --text-primary: #2c3e50;
+            --text-secondary: #64748b;
+            --white-transparent: rgba(255, 255, 255, 0.95);
+            --border-radius: 25px;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            
+            /* Enhanced color palette */
+            --primary-blue: #3b82f6;
+            --secondary-blue: #1e40af;
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --danger-red: #ef4444;
+            --purple-gradient: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            --blue-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --green-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --red-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --orange-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            
+            /* Neutral Colors */
+            --white: #ffffff;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            
+            /* Spacing */
+            --space-xs: 0.5rem;
+            --space-sm: 0.75rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Enhanced Background with animated gradient */
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, 
+                #fef3c7 0%,     /* Light amber */
+                #fed7aa 15%,    /* Light orange */
+                #fbb6ce 30%,    /* Light pink */
+                #c7d2fe 45%,    /* Light indigo */
+                #a5f3fc 60%,    /* Light cyan */
+                #bbf7d0 75%,    /* Light emerald */
+                #fde68a 90%,    /* Light yellow */
+                #fef3c7 100%);  /* Back to light amber */
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+            position: relative;
+            overflow-x: hidden;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 100% 25%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 75%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Add subtle floating particles */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.4) 1px, transparent 1px),
+                radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+                radial-gradient(circle at 60% 90%, rgba(255, 255, 255, 0.3) 1px, transparent 1px);
+            background-size: 100px 100px, 120px 120px, 80px 80px, 150px 150px;
+            animation: floatParticles 25s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes floatParticles {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+        
+        /* Navigation Bar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .nav-brand {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            letter-spacing: 0.2px;
+        }
+
+        .nav-link:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .nav-link.active {
+            color: white;
+            background: var(--primary-gradient);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: var(--space-sm) var(--space-lg);
+            background: var(--primary-gradient);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Main Content Section */
+        .main-section {
+            position: relative;
+            z-index: 10;
+            margin: 120px 50px 50px;
+            padding: 60px 40px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Page Header - EXACTLY matching heart_disease.html */
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-top: 10px;
+        }
+
+        .page-header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e293b 0%, #475569 50%, #64748b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+        
+        /* Container with single column layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2xl);
+        }
+
+        /* Prediction Cards Grid */
+        .prediction-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .prediction-card {
+            background: linear-gradient(145deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(255, 255, 255, 0.85) 50%, 
+                rgba(255, 255, 255, 0.9) 100%);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 25px;
+            padding: 45px 35px;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.08),
+                0 10px 20px rgba(0, 0, 0, 0.04),
+                inset 0 2px 0 rgba(255, 255, 255, 0.7);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .prediction-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--primary-gradient);
+            border-radius: 25px 25px 0 0;
+        }
+        
+        .prediction-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 
+                0 35px 70px rgba(0, 0, 0, 0.15),
+                0 20px 40px rgba(0, 0, 0, 0.08),
+                inset 0 2px 0 rgba(255, 255, 255, 0.9);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .prediction-card h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            line-height: 1.3;
+        }
+
+        .prediction-card .count {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .prediction-card .label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .view-btn, .analyze-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .view-btn {
+            background: var(--blue-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .view-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .analyze-btn {
+            background: var(--purple-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* No Data Message */
+        .no-data-message {
+            text-align: center;
+            padding: 60px 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            border: 2px dashed rgba(102, 126, 234, 0.3);
+            margin: 20px 0;
+        }
+
+        .no-data-icon {
+            font-size: 4rem;
+            color: rgba(102, 126, 234, 0.4);
+            margin-bottom: 20px;
+        }
+
+        .no-data-text {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .no-data-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+        }
+
+        .prediction-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .prediction-link {
+            padding: 12px 24px;
+            background: var(--primary-gradient);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .prediction-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 95%;
+            max-height: 90%;
+            margin: 2% auto;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .modal-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: white;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            padding: 30px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px 8px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: 0.85rem;
+        }
+
+        .data-table th {
+            background: var(--primary-gradient);
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .data-table tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .data-table tr:nth-child(even) {
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        /* Analysis Modal */
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .analysis-chart {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .analysis-chart h4 {
+            margin-bottom: 15px;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* Success message */
+        .success-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--success-green);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-weight: 500;
+            z-index: 3000;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .success-message.show {
+            opacity: 1;
+        }
+
+        /* Connection Status */
+        .connection-status {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .connection-status.connected {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .connection-status.disconnected {
+            background: var(--danger-red);
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-section {
+                margin: 120px 25px 25px;
+                padding: 50px 25px;
+            }
+
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-left {
+                gap: 1.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .main-section {
+                margin: 100px 15px 20px;
+                padding: 40px 20px;
+            }
+            
+            .prediction-cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .prediction-links {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .main-section {
+                margin: 90px 10px 15px;
+                padding: 30px 15px;
+            }
+            
+            .prediction-card {
+                padding: 35px 25px;
+            }
+
+            .modal-content {
+                max-width: 98%;
+                margin: 5% auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Connection Status -->
+    <div class="connection-status" id="connectionStatus" style="display: none;">
+        🔗 Connecting...
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="/dashboard" class="nav-brand"> 🔬 PRED.AI </a>
+            <div class="nav-links">
+                <a href="/analytics" class="nav-link active">Analytics</a>
+            </div>
+        </div>
+        <div class="nav-profile">
+            <div class="user-info" id="userInfo">
+                <div class="user-avatar" id="userAvatar">S</div>
+                <span id="userName">Loading...</span>
+                <span>•</span>
+            </div>
+            <a href="/dashboard" class="back-btn">
+                <span>←</span>
+                <span>Back to Dashboard</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-section">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>📊 Analytics Dashboard</h1>
+                <p>Your personal health analytics based on actual prediction data</p>
+            </div>
+
+            <!-- User-Specific Data Display -->
+            <div id="userDataSection">
+                <!-- Prediction Cards Grid -->
+                <div class="prediction-cards-grid" id="predictionCardsGrid">
+                    <div class="prediction-card" data-disease="heart_disease">
+                        <h3>❤️ Heart Disease</h3>
+                        <div class="count" id="heart-count">0</div>
+                        <div class="label">Predictions</div>
+                        <div class="action-buttons">
+                            <button class="view-btn" onclick="viewData('heart_disease')">
+                                <i class="fas fa-eye"></i> View Data
+                            </button>
+                            <button class="analyze-btn" onclick="analyzeData('heart_disease')">
+                                <i class="fas fa-chart-line"></i> Get Analysis
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="prediction-card" data-disease="diabetes">
+                        <h3>🩺 Diabetes</h3>
+                        <div class="count" id="diabetes-count">0</div>
+                        <div class="label">Predictions</div>
+                        <div class="action-buttons">
+                            <button class="view-btn" onclick="viewData('diabetes')">
+                                <i class="fas fa-eye"></i> View Data
+                            </button>
+                            <button class="analyze-btn" onclick="analyzeData('diabetes')">
+                                <i class="fas fa-chart-line"></i> Get Analysis
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="prediction-card" data-disease="lung_cancer">
+                        <h3>🫁 Lung Cancer</h3>
+                        <div class="count" id="lung-count">0</div>
+                        <div class="label">Predictions</div>
+                        <div class="action-buttons">
+                            <button class="view-btn" onclick="viewData('lung_cancer')">
+                                <i class="fas fa-eye"></i> View Data
+                            </button>
+                            <button class="analyze-btn" onclick="analyzeData('lung_cancer')">
+                                <i class="fas fa-chart-line"></i> Get Analysis
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="prediction-card" data-disease="kidney_disease">
+                        <h3>🫘 Kidney Disease</h3>
+                        <div class="count" id="kidney-count">0</div>
+                        <div class="label">Predictions</div>
+                        <div class="action-buttons">
+                            <button class="view-btn" onclick="viewData('kidney_disease')">
+                                <i class="fas fa-eye"></i> View Data
+                            </button>
+                            <button class="analyze-btn" onclick="analyzeData('kidney_disease')">
+                                <i class="fas fa-chart-line"></i> Get Analysis
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="prediction-card">
+                        <h3>📈 Total Predictions</h3>
+                        <div class="count" id="total-count">0</div>
+                        <div class="label">All Time</div>
+                    </div>
+                    
+                    <div class="prediction-card">
+                        <h3>📅 Recent Activity</h3>
+                        <div class="count" id="recent-count">0</div>
+                        <div class="label">Last 7 Days</div>
+                    </div>
+                </div>
+
+                <!-- No Data Message (Hidden initially) -->
+                <div class="no-data-message" id="noDataMessage" style="display: none;">
+                    <div class="no-data-icon">📊</div>
+                    <div class="no-data-text">No Prediction Data Found</div>
+                    <div class="no-data-subtitle">Start making predictions to see your personalized analytics dashboard</div>
+                    <div class="prediction-links">
+                        <a href="/heart_disease" class="prediction-link">
+                            <span>❤️</span>
+                            <span>Heart Disease Prediction</span>
+                        </a>
+                        <a href="/diabeties" class="prediction-link">
+                            <span>🩺</span>
+                            <span>Diabetes Prediction</span>
+                        </a>
+                        <a href="/lung_cancer" class="prediction-link">
+                            <span>🫁</span>
+                            <span>Lung Cancer Prediction</span>
+                        </a>
+                        <a href="/kidney_disease" class="prediction-link">
+                            <span>🫘</span>
+                            <span>Kidney Disease Prediction</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Data Modal -->
+    <div id="viewDataModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="viewModalTitle">📊 Prediction Data</h3>
+                <span class="close-btn" onclick="closeModal('viewDataModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="viewDataContent">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analysis Modal -->
+    <div id="analysisModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="analysisModalTitle">📈 Data Analysis</h3>
+                <span class="close-btn" onclick="closeModal('analysisModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="analysisContent">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div class="success-message" id="successMessage">
+        ✅ Success!
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE_URL = 'http://localhost:5000';
+
+        // Global variables for user management
+        let currentUser = null;
+        let currentUserEmail = null;
+        let currentUserId = null;
+        let userPredictions = [];
+        let currentAnalysisData = null;
+        let backendConnected = false;
+
+        // Disease type mapping
+        const diseaseMapping = {
+            'heart_disease': {
+                name: 'Heart Disease',
+                icon: '❤️',
+                color: '#ef4444'
+            },
+            'diabetes': {
+                name: 'Diabetes',
+                icon: '🩺',
+                color: '#3b82f6'
+            },
+            'lung_cancer': {
+                name: 'Lung Cancer',
+                icon: '🫁',
+                color: '#8b5cf6'
+            },
+            'kidney_disease': {
+                name: 'Kidney Disease',
+                icon: '🫘',
+                color: '#10b981'
+            }
+        };
+
+        // Generate a numeric user ID from email
+        function generateUserId(email) {
+            let hash = 0;
+            for (let i = 0; i < email.length; i++) {
+                const char = email.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return Math.abs(hash % 9999) + 1001;
+        }
+
+        // Get current user information ONLY from dashboard localStorage (userAuth)
+        function getCurrentUser() {
+            console.log('🔍 Retrieving current user information from dashboard...');
+            
+            try {
+                // Get user authentication data from localStorage (from dashboard system)
+                const userAuth = localStorage.getItem('userAuth');
+                
+                if (!userAuth) {
+                    console.log('⚠️ No userAuth found in localStorage');
+                    return null;
+                }
+
+                const userData = JSON.parse(userAuth);
+                console.log('✅ Found user authentication data from dashboard:', userData);
+                
+                // Extract REAL username and email from dashboard authentication
+                const realUsername = userData.username || userData.displayName;
+                const realEmail = userData.email;
+                
+                if (!realUsername || !realEmail) {
+                    console.log('⚠️ Incomplete user data - missing username or email');
+                    return null;
+                }
+
+                const userId = generateUserId(realEmail);
+                
+                console.log('📋 Extracted DASHBOARD user data:');
+                console.log('  Username:', realUsername);
+                console.log('  Email:', realEmail);
+                console.log('  Generated User ID:', userId);
+                
+                return {
+                    username: realUsername,
+                    email: realEmail,
+                    userId: userId,
+                    uid: userData.uid || null
+                };
+                
+            } catch (error) {
+                console.error('❌ Error parsing userAuth data:', error);
+                return null;
+            }
+        }
+
+        // Update user interface with current user data from dashboard
+        function updateUserInterface() {
+            // Get current user information ONLY from dashboard
+            const userInfo = getCurrentUser();
+            
+            if (!userInfo) {
+                console.error('❌ No valid user data found from dashboard');
+                currentUser = 'Unknown User';
+                currentUserEmail = 'unknown@example.com';
+                currentUserId = 1001;
+            } else {
+                currentUser = userInfo.username;
+                currentUserEmail = userInfo.email;
+                currentUserId = userInfo.userId;
+            }
+            
+            console.log('👤 Current user from DASHBOARD:', currentUser);
+            console.log('📧 Current email from DASHBOARD:', currentUserEmail);
+            console.log('🆔 Generated user ID:', currentUserId);
+            
+            // Update page title and navbar with dashboard user data
+            document.title = `Analytics Dashboard - ${currentUser || 'User'} | Precision Medicine`;
+            
+            // Update navbar user info
+            const userAvatar = document.getElementById('userAvatar');
+            const userName = document.getElementById('userName');
+            const currentDate = document.getElementById('currentDate');
+            
+            if (userAvatar) {
+                userAvatar.textContent = currentUser.charAt(0).toUpperCase();
+            }
+            if (userName) {
+                userName.textContent = currentUser;
+            }
+            if (currentDate) {
+                currentDate.textContent = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            }
+            
+            console.log('✅ User interface updated with DASHBOARD data');
+        }
+
+        // Test backend connection
+        async function testBackendConnection() {
+            const connectionStatus = document.getElementById('connectionStatus');
+            connectionStatus.style.display = 'block';
+            connectionStatus.textContent = '🔗 Testing connection...';
+            connectionStatus.className = 'connection-status';
+            
+            try {
+                console.log('Testing backend connection...');
+                const response = await fetch(`${API_BASE_URL}/health`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ Backend connected successfully:', data);
+                    backendConnected = true;
+                    connectionStatus.textContent = '✅ Backend Connected';
+                    connectionStatus.className = 'connection-status connected';
+                    
+                    setTimeout(() => {
+                        connectionStatus.style.display = 'none';
+                    }, 3000);
+                    
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('❌ Backend connection failed:', error);
+                backendConnected = false;
+                connectionStatus.textContent = '❌ Backend Disconnected';
+                connectionStatus.className = 'connection-status disconnected';
+                
+                showErrorMessage('⚠️ Cannot connect to backend server. Please check if the server is running on localhost:5000');
+            }
+        }
+
+        // NEW: API endpoint to get user predictions based on username and email
+        async function fetchUserPredictions() {
+            try {
+                console.log(`📊 Fetching user predictions for ${currentUser} (${currentUserEmail}) from database...`);
+                
+                const response = await fetch(`${API_BASE_URL}/api/analytics/user-predictions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: currentUser,
+                        email: currentUserEmail
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error(`❌ API Error: ${response.status} - ${errorText}`);
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log(`✅ Database response:`, data);
+                
+                if (data.success && data.predictions) {
+                    userPredictions = data.predictions;
+                    console.log(`📊 Found ${userPredictions.length} predictions in database for ${currentUser}`);
+                    return userPredictions;
+                } else {
+                    console.log(`📊 No predictions found for user ${currentUser}`);
+                    return [];
+                }
+                
+            } catch (error) {
+                console.error('❌ Error fetching user predictions:', error);
+                throw error;
+            }
+        }
+
+        // Load user-specific analytics data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get current user information ONLY from dashboard/login system
+            updateUserInterface();
+            
+            // Test backend connection
+            testBackendConnection();
+            
+            console.log(`🚀 Loading analytics for user: ${currentUser} (${currentUserEmail})`);
+            loadUserAnalyticsData();
+        });
+
+        async function loadUserAnalyticsData() {
+            try {
+                console.log(`📊 Loading analytics data for ${currentUser} (${currentUserEmail})...`);
+                
+                // Check backend connection first
+                if (!backendConnected) {
+                    await testBackendConnection();
+                    if (!backendConnected) {
+                        throw new Error('Backend server is not available');
+                    }
+                }
+                
+                // Fetch REAL user predictions from database
+                const predictions = await fetchUserPredictions();
+                userPredictions = predictions;
+                
+                if (userPredictions.length === 0) {
+                    console.log(`📊 No predictions found for ${currentUser} in database`);
+                    showNoDataMessage();
+                } else {
+                    console.log(`📊 Loaded ${userPredictions.length} REAL predictions for ${currentUser}`);
+                    updateAnalyticsCounts();
+                    showUserDataSection();
+                    showSuccessMessage(`📊 Loaded ${userPredictions.length} predictions from database!`);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error loading user analytics:', error);
+                
+                // Show error message
+                showErrorMessage(`❌ Error loading analytics: ${error.message}`);
+                showNoDataMessage();
+            }
+        }
+
+        function updateAnalyticsCounts() {
+            // Count predictions by disease type from REAL database data
+            const counts = {
+                heart_disease: 0,
+                diabetes: 0,
+                lung_cancer: 0,
+                kidney_disease: 0,
+                total: userPredictions.length,
+                recent: 0
+            };
+
+            // Calculate recent predictions (last 7 days)
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+            userPredictions.forEach(prediction => {
+                const predictionType = prediction.PredictionType;
+                if (counts.hasOwnProperty(predictionType)) {
+                    counts[predictionType]++;
+                }
+
+                // Count recent predictions
+                const predictionDate = new Date(prediction.CreatedAt);
+                if (predictionDate >= sevenDaysAgo) {
+                    counts.recent++;
+                }
+            });
+
+            console.log(`📊 Analytics counts for ${currentUser}:`, counts);
+
+            // Update UI counts with REAL data
+            document.getElementById('heart-count').textContent = counts.heart_disease;
+            document.getElementById('diabetes-count').textContent = counts.diabetes;
+            document.getElementById('lung-count').textContent = counts.lung_cancer;
+            document.getElementById('kidney-count').textContent = counts.kidney_disease;
+            document.getElementById('total-count').textContent = counts.total;
+            document.getElementById('recent-count').textContent = counts.recent;
+
+            // Enable/disable buttons based on REAL data availability
+            Object.keys(diseaseMapping).forEach(diseaseType => {
+                const hasData = counts[diseaseType] > 0;
+                const card = document.querySelector(`[data-disease="${diseaseType}"]`);
+                if (card) {
+                    const buttons = card.querySelectorAll('.view-btn, .analyze-btn');
+                    buttons.forEach(btn => {
+                        btn.disabled = !hasData;
+                        btn.style.opacity = hasData ? '1' : '0.5';
+                        btn.style.cursor = hasData ? 'pointer' : 'not-allowed';
+                    });
+                }
+            });
+        }
+
+        function showNoDataMessage() {
+            document.getElementById('predictionCardsGrid').style.display = 'none';
+            document.getElementById('noDataMessage').style.display = 'block';
+        }
+
+        function showUserDataSection() {
+            document.getElementById('predictionCardsGrid').style.display = 'grid';
+            document.getElementById('noDataMessage').style.display = 'none';
+        }
+
+        async function viewData(diseaseType) {
+            const diseaseInfo = diseaseMapping[diseaseType];
+            if (!diseaseInfo) return;
+
+            // Filter REAL predictions for this disease type from database
+            const diseaseData = userPredictions.filter(p => p.PredictionType === diseaseType);
+            
+            if (diseaseData.length === 0) {
+                alert(`No ${diseaseInfo.name} prediction data found in database for ${currentUser}`);
+                return;
+            }
+
+            // Set modal title
+            document.getElementById('viewModalTitle').textContent = `${diseaseInfo.icon} ${diseaseInfo.name} Data for ${currentUser}`;
+            
+            // Show modal
+            document.getElementById('viewDataModal').style.display = 'block';
+            
+            // Generate table HTML with REAL database data
+            let tableHTML = `
+                <div style="margin-bottom: 20px; padding: 15px; background: rgba(102, 126, 234, 0.1); border-radius: 10px;">
+                    <h4 style="margin-bottom: 10px; color: var(--text-primary);">📊 ${diseaseInfo.name} Predictions from Database</h4>
+                    <p style="color: var(--text-secondary); margin-bottom: 10px;">Showing REAL prediction data for <strong>${currentUser}</strong> (${currentUserEmail})</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div><strong>Total Records:</strong> ${diseaseData.length}</div>
+                        <div><strong>High Risk:</strong> ${diseaseData.filter(p => p.RiskLevel === 'High Risk').length}</div>
+                        <div><strong>Low Risk:</strong> ${diseaseData.filter(p => p.RiskLevel === 'Low Risk').length}</div>
+                        <div><strong>Avg Health Score:</strong> ${Math.round(diseaseData.reduce((sum, p) => sum + (p.HealthScore || 0), 0) / diseaseData.length)}</div>
+                    </div>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Record ID</th>
+                                <th>Date</th>
+                                <th>Risk Level</th>
+                                <th>Health Score</th>
+                                <th>Confidence</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            diseaseData.forEach(prediction => {
+                const date = new Date(prediction.CreatedAt).toLocaleDateString();
+                const riskClass = prediction.RiskLevel === 'High Risk' ? 'risk-high' : 'risk-low';
+                
+                tableHTML += `
+                    <tr>
+                        <td><strong>#${prediction.PredictionID}</strong></td>
+                        <td>${date}</td>
+                        <td>
+                            <span class="risk-badge ${riskClass}" style="padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; ${
+                                riskClass === 'risk-high' ? 
+                                'background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2);' :
+                                'background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2);'
+                            }">
+                                ${prediction.RiskLevel || 'N/A'}
+                            </span>
+                        </td>
+                        <td>${prediction.HealthScore || 'N/A'}</td>
+                        <td>${prediction.Confidence ? Math.round(prediction.Confidence) + '%' : 'N/A'}</td>
+                        <td><strong>${prediction.Username || currentUser}</strong></td>
+                        <td><em>${prediction.Email || currentUserEmail}</em></td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            document.getElementById('viewDataContent').innerHTML = tableHTML;
+        }
+
+        async function analyzeData(diseaseType) {
+            const diseaseInfo = diseaseMapping[diseaseType];
+            if (!diseaseInfo) return;
+
+            // Filter REAL predictions for this disease type from database
+            const diseaseData = userPredictions.filter(p => p.PredictionType === diseaseType);
+            
+            if (diseaseData.length === 0) {
+                alert(`No ${diseaseInfo.name} prediction data found in database for analysis`);
+                return;
+            }
+
+            // Set modal title
+            document.getElementById('analysisModalTitle').textContent = `${diseaseInfo.icon} ${diseaseInfo.name} Analysis for ${currentUser}`;
+            
+            // Show modal with loading
+            document.getElementById('analysisModal').style.display = 'block';
+            document.getElementById('analysisContent').innerHTML = '<div class="loading-spinner"></div>';
+
+            try {
+                // Generate comprehensive analysis from REAL database data
+                await generateComprehensiveAnalysis(diseaseType, diseaseData);
+            } catch (error) {
+                console.error('Error generating analysis:', error);
+                document.getElementById('analysisContent').innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--danger-red);">
+                        <h3>❌ Analysis Error</h3>
+                        <p>Unable to generate analysis from database data. Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function generateComprehensiveAnalysis(diseaseType, data) {
+            const diseaseInfo = diseaseMapping[diseaseType];
+            
+            // Prepare analysis data from REAL database records
+            const analysisData = {
+                totalPredictions: data.length,
+                highRiskCount: data.filter(p => p.RiskLevel === 'High Risk').length,
+                lowRiskCount: data.filter(p => p.RiskLevel === 'Low Risk').length,
+                avgHealthScore: Math.round(data.reduce((sum, p) => sum + (p.HealthScore || 0), 0) / data.length),
+                avgConfidence: Math.round(data.reduce((sum, p) => sum + (p.Confidence || 0), 0) / data.length),
+                dateRange: {
+                    earliest: new Date(Math.min(...data.map(p => new Date(p.CreatedAt)))).toLocaleDateString(),
+                    latest: new Date(Math.max(...data.map(p => new Date(p.CreatedAt)))).toLocaleDateString()
+                }
+            };
+
+            console.log(`📊 Analysis data for ${currentUser}:`, analysisData);
+
+            // Generate HTML for comprehensive analysis using REAL data
+            const analysisHTML = `
+                <div class="analysis-summary" style="margin-bottom: 30px;">
+                    <h3 style="color: var(--text-primary); margin-bottom: 20px;">📊 ${diseaseInfo.name} Analysis for ${currentUser}</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;"><strong>Data Source:</strong> Real predictions from database for ${currentUserEmail}</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 25px;">
+                        <div style="background: rgba(59, 130, 246, 0.1); padding: 20px; border-radius: 15px; border-left: 4px solid #3b82f6;">
+                            <h4 style="margin-bottom: 10px; color: #3b82f6;">Total Predictions</h4>
+                            <div style="font-size: 1.8rem; font-weight: 700; color: #3b82f6;">${analysisData.totalPredictions}</div>
+                        </div>
+                        <div style="background: rgba(239, 68, 68, 0.1); padding: 20px; border-radius: 15px; border-left: 4px solid #ef4444;">
+                            <h4 style="margin-bottom: 10px; color: #ef4444;">High Risk</h4>
+                            <div style="font-size: 1.8rem; font-weight: 700; color: #ef4444;">${analysisData.highRiskCount}</div>
+                        </div>
+                        <div style="background: rgba(16, 185, 129, 0.1); padding: 20px; border-radius: 15px; border-left: 4px solid #10b981;">
+                            <h4 style="margin-bottom: 10px; color: #10b981;">Low Risk</h4>
+                            <div style="font-size: 1.8rem; font-weight: 700; color: #10b981;">${analysisData.lowRiskCount}</div>
+                        </div>
+                        <div style="background: rgba(139, 92, 246, 0.1); padding: 20px; border-radius: 15px; border-left: 4px solid #8b5cf6;">
+                            <h4 style="margin-bottom: 10px; color: #8b5cf6;">Avg Health Score</h4>
+                            <div style="font-size: 1.8rem; font-weight: 700; color: #8b5cf6;">${analysisData.avgHealthScore}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="analysis-grid">
+                    <div class="analysis-chart">
+                        <h4>📈 Risk Level Distribution</h4>
+                        <div id="riskDistributionChart"></div>
+                    </div>
+                    <div class="analysis-chart">
+                        <h4>📊 Health Score Trend</h4>
+                        <div id="healthScoreTrendChart"></div>
+                    </div>
+                    <div class="analysis-chart">
+                        <h4>⏰ Prediction Timeline</h4>
+                        <div id="predictionTimelineChart"></div>
+                    </div>
+                    <div class="analysis-chart">
+                        <h4>🎯 Confidence Analysis</h4>
+                        <div id="confidenceAnalysisChart"></div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; padding: 25px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; border: 1px solid rgba(102, 126, 234, 0.2);">
+                    <h4 style="margin-bottom: 15px; color: var(--text-primary);">🔍 Key Insights for ${currentUser}</h4>
+                    <div style="display: grid; gap: 15px;">
+                        ${generateInsights(analysisData, diseaseType)}
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; padding: 20px; background: rgba(139, 92, 246, 0.1); border-radius: 15px;">
+                    <h4 style="margin-bottom: 15px; color: var(--text-primary);">📅 Database Analysis Period</h4>
+                    <p style="color: var(--text-secondary);">
+                        <strong>User:</strong> ${currentUser} (${currentUserEmail})<br>
+                        <strong>Data Source:</strong> Database Records<br>
+                        <strong>From:</strong> ${analysisData.dateRange.earliest} 
+                        <strong>To:</strong> ${analysisData.dateRange.latest}
+                    </p>
+                </div>
+            `;
+
+            document.getElementById('analysisContent').innerHTML = analysisHTML;
+
+            // Generate charts from REAL database data
+            setTimeout(() => {
+                createRiskDistributionChart(data, diseaseInfo.color);
+                createHealthScoreTrendChart(data, diseaseInfo.color);
+                createPredictionTimelineChart(data, diseaseInfo.color);
+                createConfidenceAnalysisChart(data, diseaseInfo.color);
+            }, 100);
+        }
+
+        function generateInsights(analysisData, diseaseType) {
+            const insights = [];
+            
+            const riskPercentage = analysisData.totalPredictions > 0 ? 
+                Math.round((analysisData.highRiskCount / analysisData.totalPredictions) * 100) : 0;
+            
+            if (riskPercentage > 50) {
+                insights.push(`
+                    <div style="padding: 12px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; border-left: 3px solid #ef4444;">
+                        <strong>⚠️ High Risk Alert:</strong> ${riskPercentage}% of ${currentUser}'s database predictions show high risk. Consider consulting with a healthcare professional.
+                    </div>
+                `);
+            } else {
+                insights.push(`
+                    <div style="padding: 12px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border-left: 3px solid #10b981;">
+                        <strong>✅ Positive Trend:</strong> ${100 - riskPercentage}% of ${currentUser}'s database predictions show low risk. Keep maintaining healthy habits!
+                    </div>
+                `);
+            }
+
+            if (analysisData.avgHealthScore >= 70) {
+                insights.push(`
+                    <div style="padding: 12px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border-left: 3px solid #10b981;">
+                        <strong>💪 Good Health Score:</strong> ${currentUser}'s average health score of ${analysisData.avgHealthScore} from database records indicates good overall health.
+                    </div>
+                `);
+            } else {
+                insights.push(`
+                    <div style="padding: 12px; background: rgba(245, 158, 11, 0.1); border-radius: 8px; border-left: 3px solid #f59e0b;">
+                        <strong>🎯 Improvement Opportunity:</strong> ${currentUser}'s average health score of ${analysisData.avgHealthScore} from database suggests room for improvement through lifestyle changes.
+                    </div>
+                `);
+            }
+
+            if (analysisData.avgConfidence >= 85) {
+                insights.push(`
+                    <div style="padding: 12px; background: rgba(59, 130, 246, 0.1); border-radius: 8px; border-left: 3px solid #3b82f6;">
+                        <strong>🎯 High Confidence:</strong> Average prediction confidence of ${analysisData.avgConfidence}% indicates reliable assessments for ${currentUser} in database records.
+                    </div>
+                `);
+            }
+
+            return insights.join('');
+        }
+
+        function createRiskDistributionChart(data, color) {
+            const highRisk = data.filter(p => p.RiskLevel === 'High Risk').length;
+            const lowRisk = data.filter(p => p.RiskLevel === 'Low Risk').length;
+
+            const chartData = [{
+                values: [highRisk, lowRisk],
+                labels: ['High Risk', 'Low Risk'],
+                type: 'pie',
+                marker: {
+                    colors: ['#ef4444', '#10b981']
+                },
+                textinfo: 'label+percent',
+                textposition: 'outside'
+            }];
+
+            const layout = {
+                title: `Risk Distribution for ${currentUser} (Database)`,
+                font: { family: 'Inter', size: 12 },
+                showlegend: true,
+                                legend: { orientation: 'h', y: -0.2 },
+                margin: { t: 50, b: 40, l: 20, r: 20 },
+                height: 300
+            };
+
+            Plotly.newPlot('riskDistributionChart', chartData, layout, {responsive: true});
+        }
+
+        function createHealthScoreTrendChart(data, color) {
+            // Sort data by date to show chronological trend
+            const sortedData = data.sort((a, b) => new Date(a.CreatedAt) - new Date(b.CreatedAt));
+            
+            const trace = {
+                x: sortedData.map((_, index) => `Prediction ${index + 1}`),
+                y: sortedData.map(p => p.HealthScore || 0),
+                type: 'scatter',
+                mode: 'lines+markers',
+                line: { color: color, width: 3 },
+                marker: { color: color, size: 8 },
+                name: 'Health Score'
+            };
+
+            const layout = {
+                title: `Health Score Trend for ${currentUser} (Database)`,
+                font: { family: 'Inter', size: 11 },
+                xaxis: { title: 'Prediction Sequence' },
+                yaxis: { title: 'Health Score', range: [0, 100] },
+                margin: { t: 50, b: 60, l: 60, r: 20 },
+                height: 300
+            };
+
+            Plotly.newPlot('healthScoreTrendChart', [trace], layout, {responsive: true});
+        }
+
+        function createPredictionTimelineChart(data, color) {
+            // Group predictions by date from database records
+            const dateGroups = {};
+            data.forEach(p => {
+                const date = new Date(p.CreatedAt).toLocaleDateString();
+                dateGroups[date] = (dateGroups[date] || 0) + 1;
+            });
+
+            const dates = Object.keys(dateGroups).sort((a, b) => new Date(a) - new Date(b));
+            const counts = dates.map(date => dateGroups[date]);
+
+            const trace = {
+                x: dates,
+                y: counts,
+                type: 'bar',
+                marker: { color: color },
+                name: 'Predictions per Day'
+            };
+
+            const layout = {
+                title: `Prediction Timeline for ${currentUser} (Database)`,
+                font: { family: 'Inter', size: 11 },
+                xaxis: { title: 'Date' },
+                yaxis: { title: 'Number of Predictions' },
+                margin: { t: 50, b: 60, l: 60, r: 20 },
+                height: 300
+            };
+
+            Plotly.newPlot('predictionTimelineChart', [trace], layout, {responsive: true});
+        }
+
+        function createConfidenceAnalysisChart(data, color) {
+            const confidenceRanges = {
+                '90-100%': 0,
+                '80-89%': 0,
+                '70-79%': 0,
+                '60-69%': 0,
+                'Below 60%': 0
+            };
+
+            data.forEach(p => {
+                const confidence = p.Confidence || 0;
+                if (confidence >= 90) confidenceRanges['90-100%']++;
+                else if (confidence >= 80) confidenceRanges['80-89%']++;
+                else if (confidence >= 70) confidenceRanges['70-79%']++;
+                else if (confidence >= 60) confidenceRanges['60-69%']++;
+                else confidenceRanges['Below 60%']++;
+            });
+
+            const trace = {
+                x: Object.keys(confidenceRanges),
+                y: Object.values(confidenceRanges),
+                type: 'bar',
+                marker: { color: color },
+                name: 'Confidence Distribution'
+            };
+
+            const layout = {
+                title: `Confidence Analysis for ${currentUser} (Database)`,
+                font: { family: 'Inter', size: 11 },
+                xaxis: { title: 'Confidence Range' },
+                yaxis: { title: 'Number of Predictions' },
+                margin: { t: 50, b: 60, l: 60, r: 20 },
+                height: 300
+            };
+
+            Plotly.newPlot('confidenceAnalysisChart', [trace], layout, {responsive: true});
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modals = document.getElementsByClassName('modal');
+            for (let i = 0; i < modals.length; i++) {
+                if (event.target === modals[i]) {
+                    modals[i].style.display = 'none';
+                }
+            }
+        }
+
+        // ESC key to close modal
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modals = document.getElementsByClassName('modal');
+                for (let i = 0; i < modals.length; i++) {
+                    if (modals[i].style.display === 'block') {
+                        modals[i].style.display = 'none';
+                    }
+                }
+            }
+        });
+
+        // Export functionality for database data
+        function exportData(diseaseType) {
+            const diseaseData = userPredictions.filter(p => p.PredictionType === diseaseType);
+            const csv = generateCSV(diseaseData);
+            downloadCSV(csv, `${diseaseType}_data_${currentUser}_${new Date().toISOString().slice(0, 10)}.csv`);
+        }
+
+        function generateCSV(data) {
+            const headers = ['PredictionID', 'Date', 'Risk Level', 'Health Score', 'Confidence', 'Username', 'Email', 'UserID'];
+            const rows = data.map(p => [
+                p.PredictionID,
+                new Date(p.CreatedAt).toLocaleDateString(),
+                p.RiskLevel || 'N/A',
+                p.HealthScore || 'N/A',
+                p.Confidence || 'N/A',
+                p.Username || currentUser,
+                p.Email || currentUserEmail,
+                p.UserID || currentUserId
+            ]);
+            
+            return [headers, ...rows].map(row => row.join(',')).join('\n');
+        }
+
+        function downloadCSV(csv, filename) {
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', filename);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // Show success message
+        function showSuccessMessage(message = '✅ Success!') {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = message;
+            successMessage.style.background = 'var(--success-green)';
+            successMessage.classList.add('show');
+            
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 3000);
+        }
+
+        // Show error message
+        function showErrorMessage(message) {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = message;
+            successMessage.style.background = 'var(--danger-red)';
+            successMessage.classList.add('show');
+            
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+                successMessage.style.background = 'var(--success-green)';
+            }, 5000);
+        }
+
+        // Refresh analytics data from database
+        async function refreshAnalyticsData() {
+            console.log(`🔄 Refreshing analytics data for ${currentUser} from database...`);
+            
+            // Show loading state
+            const cards = document.querySelectorAll('.prediction-card .count');
+            cards.forEach(card => {
+                card.textContent = '...';
+            });
+            
+            // Reload data from database
+            await loadUserAnalyticsData();
+            
+            showSuccessMessage(`✅ Analytics data refreshed from database for ${currentUser}!`);
+        }
+
+        // Auto-refresh data every 30 seconds to check for new predictions
+        setInterval(async () => {
+            console.log('🔄 Auto-refreshing analytics data from database...');
+            try {
+                const predictions = await fetchUserPredictions();
+                const newCount = predictions.length;
+                const currentCount = userPredictions.length;
+                
+                if (newCount > currentCount) {
+                    console.log(`📊 Found ${newCount - currentCount} new predictions in database!`);
+                    userPredictions = predictions;
+                    updateAnalyticsCounts();
+                    showUserDataSection();
+                    showSuccessMessage(`📊 ${newCount - currentCount} new predictions found!`);
+                }
+            } catch (error) {
+                console.log('⚠️ Auto-refresh failed:', error.message);
+            }
+        }, 30000); // 30 seconds
+
+        // Add refresh button functionality
+        function addRefreshButton() {
+            const pageHeader = document.querySelector('.page-header');
+            if (pageHeader) {
+                const refreshBtn = document.createElement('button');
+                refreshBtn.innerHTML = '🔄 Refresh Database Data';
+                refreshBtn.className = 'refresh-btn';
+                refreshBtn.style.cssText = `
+                    margin-top: 20px;
+                    padding: 10px 20px;
+                    background: var(--primary-gradient);
+                    color: white;
+                    border: none;
+                    border-radius: 12px;
+                    font-size: 0.9rem;
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+                `;
+                refreshBtn.onclick = refreshAnalyticsData;
+                
+                refreshBtn.addEventListener('mouseenter', () => {
+                    refreshBtn.style.transform = 'translateY(-2px)';
+                    refreshBtn.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.4)';
+                });
+                
+                refreshBtn.addEventListener('mouseleave', () => {
+                    refreshBtn.style.transform = 'translateY(0)';
+                    refreshBtn.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.3)';
+                });
+                
+                pageHeader.appendChild(refreshBtn);
+            }
+        }
+
+        // Enhanced data filtering and search functionality for database records
+        function addDataFiltering() {
+            window.filterDataByDateRange = function(startDate, endDate) {
+                const filteredData = userPredictions.filter(p => {
+                    const predDate = new Date(p.CreatedAt);
+                    return predDate >= new Date(startDate) && predDate <= new Date(endDate);
+                });
+                
+                console.log(`📊 Filtered ${filteredData.length} database predictions between ${startDate} and ${endDate}`);
+                return filteredData;
+            };
+            
+            window.filterDataByRiskLevel = function(riskLevel) {
+                const filteredData = userPredictions.filter(p => p.RiskLevel === riskLevel);
+                console.log(`📊 Filtered ${filteredData.length} database predictions with ${riskLevel}`);
+                return filteredData;
+            };
+            
+            window.filterDataByDiseaseType = function(diseaseType) {
+                const filteredData = userPredictions.filter(p => p.PredictionType === diseaseType);
+                console.log(`📊 Filtered ${filteredData.length} database predictions for ${diseaseType}`);
+                return filteredData;
+            };
+        }
+
+        // Performance monitoring
+        function addPerformanceMonitoring() {
+            const pageLoadTime = performance.now();
+            console.log(`⚡ Analytics page loaded in ${pageLoadTime.toFixed(2)}ms`);
+            
+            // Monitor chart rendering performance
+            window.chartRenderTimes = {};
+            
+            const originalNewPlot = Plotly.newPlot;
+            Plotly.newPlot = function(div, data, layout, config) {
+                const startTime = performance.now();
+                const result = originalNewPlot.call(this, div, data, layout, config);
+                const endTime = performance.now();
+                
+                window.chartRenderTimes[div] = endTime - startTime;
+                console.log(`📊 Chart '${div}' rendered in ${(endTime - startTime).toFixed(2)}ms`);
+                
+                return result;
+            };
+        }
+
+        // Initialize analytics dashboard
+        function initializeAnalyticsDashboard() {
+            console.log('🚀 Initializing Analytics Dashboard with Database Integration...');
+            
+            // Add refresh button
+            addRefreshButton();
+            
+            // Add data filtering capabilities
+            addDataFiltering();
+            
+            // Add performance monitoring
+            addPerformanceMonitoring();
+            
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', (event) => {
+                if (event.ctrlKey || event.metaKey) {
+                    switch(event.key) {
+                        case 'r':
+                            event.preventDefault();
+                            refreshAnalyticsData();
+                            break;
+                        case 'e':
+                            event.preventDefault();
+                            // Export all database data
+                            const allCsv = generateCSV(userPredictions);
+                            downloadCSV(allCsv, `all_predictions_${currentUser}_${new Date().toISOString().slice(0, 10)}.csv`);
+                            showSuccessMessage('📊 All database data exported successfully!');
+                            break;
+                    }
+                }
+            });
+            
+            console.log('✅ Analytics Dashboard initialized successfully with database integration');
+            console.log('🎯 Available shortcuts:');
+            console.log('  - Ctrl+R: Refresh database data');
+            console.log('  - Ctrl+E: Export all database data');
+        }
+
+        // Enhanced logging for debugging database operations
+        function setupAdvancedLogging() {
+            // Store original console methods
+            const originalLog = console.log;
+            const originalError = console.error;
+            
+            // Enhanced logging with timestamps and user context
+            console.log = function(...args) {
+                const timestamp = new Date().toISOString();
+                originalLog.call(this, `[${timestamp}] [${currentUser}] [DB]`, ...args);
+            };
+            
+            console.error = function(...args) {
+                const timestamp = new Date().toISOString();
+                originalError.call(this, `[${timestamp}] [${currentUser}] [DB] ERROR:`, ...args);
+            };
+        }
+
+        // Add backend endpoint for user-specific analytics
+        async function createUserAnalyticsEndpoint() {
+            // This will be handled by the backend - we need to create the endpoint
+            // POST /api/analytics/user-predictions
+            // Body: { username: currentUser, email: currentUserEmail }
+            
+            console.log('📊 Analytics endpoint configuration:');
+            console.log(`  - URL: ${API_BASE_URL}/api/analytics/user-predictions`);
+            console.log(`  - Method: POST`);
+            console.log(`  - Body: { username: "${currentUser}", email: "${currentUserEmail}" }`);
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup enhanced logging
+            setupAdvancedLogging();
+            
+            // Initialize dashboard
+            initializeAnalyticsDashboard();
+            
+            // Create analytics endpoint configuration
+            createUserAnalyticsEndpoint();
+            
+            console.log('🚀 Analytics page fully loaded and initialized with DATABASE INTEGRATION');
+            console.log('👤 Current user from DASHBOARD:', currentUser);
+            console.log('📧 Current email from DASHBOARD:', currentUserEmail);
+            console.log('🆔 Generated user ID:', currentUserId);
+            console.log('🔗 Backend URL:', API_BASE_URL);
+            console.log('📊 Analytics system ready for DATABASE-SPECIFIC data for', currentUser);
+            console.log('📅 Current Date:', new Date().toISOString().slice(0, 19).replace('T', ' '));
+        });
+
+        // Global functions for external access
+        window.analyticsAPI = {
+            getCurrentUser: () => ({ 
+                username: currentUser, 
+                email: currentUserEmail, 
+                userId: currentUserId 
+            }),
+            getUserPredictions: () => userPredictions,
+            refreshData: refreshAnalyticsData,
+            exportData: exportData,
+            filterByDateRange: window.filterDataByDateRange,
+            filterByRiskLevel: window.filterDataByRiskLevel,
+            filterByDiseaseType: window.filterDataByDiseaseType,
+            // New database-specific functions
+            fetchFromDatabase: fetchUserPredictions,
+            getDatabaseStats: () => ({
+                totalRecords: userPredictions.length,
+                heartDisease: userPredictions.filter(p => p.PredictionType === 'heart_disease').length,
+                diabetes: userPredictions.filter(p => p.PredictionType === 'diabetes').length,
+                lungCancer: userPredictions.filter(p => p.PredictionType === 'lung_cancer').length,
+                kidneyDisease: userPredictions.filter(p => p.PredictionType === 'kidney_disease').length,
+                highRisk: userPredictions.filter(p => p.RiskLevel === 'High Risk').length,
+                lowRisk: userPredictions.filter(p => p.RiskLevel === 'Low Risk').length
+            })
+        };
+
+        console.log('🔧 Enhanced Analytics API exposed to window.analyticsAPI with database functions');
+        console.log('📊 Ready to fetch REAL prediction data for user:', currentUser);
+    </script>
+</body>
+</html>
