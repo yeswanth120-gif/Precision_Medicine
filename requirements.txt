@@ -5,7 +5,6 @@ joblib
 numpy
 llama-index
 llama-index-embeddings-huggingface
-llama-index-node-parser
 pyodbc
 pandas
 scikit-learn
