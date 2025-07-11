@@ -1,25 +1,13 @@
-Flask==3.0.3
-Flask-Cors==4.0.1
-Flask-SQLAlchemy==3.1.1
-sqlalchemy==2.0.30
-pyodbc==5.1.0
-pandas==2.3.0
-numpy==2.2.0
-scikit-learn==1.7.0
-xgboost==3.0.2
-joblib==1.5.1
-requests==2.32.3
-llama-index-core==0.12.33
-llama-index-embeddings-huggingface==0.5.5
-streamlit==1.46.1
-# Jupyter stack (for notebooks)
-notebook==7.2.0
-jupyterlab==4.2.1
-ipykernel==6.29.4
-# For HuggingFace embeddings
-transformers==4.41.2
-torch==2.3.0
-# Optional: for PDF export in analytics/report
-fpdf==1.7.2
-# Optional: for CORS, if needed
-python-dotenv==1.0.1
+Flask
+flask_cors
+SQLAlchemy
+joblib
+numpy
+llama-index
+llama-index-embeddings-huggingface
+llama-index-node-parser
+pyodbc
+pandas
+scikit-learn
+requests
+python-dotenv
