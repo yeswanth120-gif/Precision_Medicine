@@ -19,13 +19,15 @@ requests==2.31.0
 # Environment variables
 python-dotenv==1.0.0
 
-# LlamaIndex for RAG
-llama-index==0.10.0
+# Lightweight versions for deployment
+llama-index==0.9.48
 llama-index-embeddings-huggingface==0.1.0
 
-# Additional dependencies
-transformers==4.36.0
-torch==2.1.0
+# Transformers & Torch
+transformers==4.35.0
+torch==2.0.1
 sentence-transformers==2.2.2
+
+# Setup tools
 setuptools>=68.0.0
 wheel>=0.41.0
