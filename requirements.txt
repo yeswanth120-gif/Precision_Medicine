@@ -20,7 +20,7 @@ seaborn==0.13.2
 shap==0.48.0
 
 # --- LlamaIndex & Embeddings ---
-llama-index-core==0.10.28
+llama-index-core==0.12.33
 llama-index-embeddings-huggingface==0.5.5
 
 # --- Streamlit (for local chatbot and dashboards) ---
