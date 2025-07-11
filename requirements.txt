@@ -1,23 +1,31 @@
-# Flask backend requirements
-Flask==2.3.3
+# Core Flask dependencies
+Flask==3.0.0
 flask-cors==4.0.0
-numpy==1.24.3
-pandas==2.0.3
+Werkzeug==3.0.1
+
+# Data processing
+numpy==1.26.2
+pandas==2.1.3
+scikit-learn==1.3.2
 joblib==1.3.2
-scikit-learn==1.3.0
-pyodbc==4.0.39
-SQLAlchemy==2.0.21
+
+# Database
+pyodbc==5.0.1
+SQLAlchemy==2.0.23
+
+# HTTP requests
 requests==2.31.0
+
+# Environment variables
 python-dotenv==1.0.0
 
-# LlamaIndex requirements (shared)
+# LlamaIndex for RAG
 llama-index==0.10.0
 llama-index-embeddings-huggingface==0.1.0
 
-# Streamlit requirements (for chatbot)
-streamlit==1.27.0
-
 # Additional dependencies
-transformers==4.33.2
-torch==2.0.1
+transformers==4.36.0
+torch==2.1.0
 sentence-transformers==2.2.2
+setuptools>=68.0.0
+wheel>=0.41.0
