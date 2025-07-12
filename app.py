@@ -6,13 +6,14 @@ from flask_cors import CORS
 import json
 import re
 from datetime import datetime
+from urllib.parse import quote_plus
 from sqlalchemy import create_engine, text
 import random
 import sys
 
 app = Flask(__name__, 
-            static_folder='frontend',
-            template_folder='frontend')
+            static_folder='../frontend',
+            template_folder='../frontend')
 
 # Enable CORS for all domains on all routes (for development)
 CORS(app)
@@ -545,34 +546,70 @@ simple_bot = SimpleQAChatbot(knowledge_folder)
 
 # =============================================================================
 # DATABASE CONFIGURATION
-# =============================================================================
+# ============================================================================
 
-# Database configuration
-DB_CONFIG = {
-    'server': 'YESWANTH\\SQLEXPRESS',
+
+# ---------- 1) Local Windows config ----------
+LOCAL_CONFIG = {
+    'server': r'YESWANTH\SQLEXPRESS',
     'database': 'PrecisionMedicine',
     'driver': 'ODBC Driver 17 for SQL Server',
     'trusted_connection': 'yes'
 }
 
-def get_db_connection():
-    """Create database connection using a direct connection string"""
+# ---------- 2) Connection factory ----------
+def get_db_connection() :
+    """
+    Returns an SQLAlchemy engine.
+    Priority:
+        1. Railway (MSSQL_URL env var)
+        2. Local Windows/SQLEXPRESS (fallback)
+    """
     try:
-        print("🔗 Attempting database connection with direct connection string...")
-        # Use direct connection string (no URL encoding)
-        connection_string = f"mssql+pyodbc://YESWANTH\\SQLEXPRESS/PrecisionMedicine?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes"
-        print(f"🔗 Connection string: {connection_string}")
-        engine = create_engine(connection_string, echo=False)
+        # ---------- Railway (production) ----------
+        railway_url = os.getenv("MSSQL_URL")
+        if railway_url:
+            # Massage Railway's ADO-style string into SQLAlchemy URL
+            # Example input:
+            # Server=xxx.railway.app,5678;Database=PrecisionMedicine;User Id=sa;Password=***;Encrypt=true;TrustServerCertificate=true;
+            from sqlalchemy.engine.url import make_url
 
-        # Test the connection
-        with engine.connect() as conn:
-            conn.execute(text("SELECT 1"))
-            print("✅ Database connection successful!")
+            # 1) Replace tokens
+            sa_url = (
+                railway_url.replace("Server=", "microsoftsql.railway.internal,1433")
+                           .replace(",", ":")
+                           .replace("User Id=", "sa")
+                           .replace("Password=", "OwYD7iBQ3q3-~.rxrm~lzxvR8EgKwD30")
+                           .replace("Database=", "PrecisionMedicine")
+                           .replace(";", "?")
+            )
+            # 2) Fix parameters
+            sa_url = sa_url.replace("?Encrypt=true", "&Encrypt=true")
+
+            engine = create_engine(make_url(sa_url), echo=False)
+            with engine.connect() as conn:
+                conn.execute(text("SELECT 1"))
+            print("✅ Railway SQL-Server connected")
             return engine
 
+        # ---------- Local Windows/SQLEXPRESS (development) ----------
+        print("🔗 Attempting local SQLEXPRESS connection...")
+        odbc_str = (
+            f"DRIVER={{{LOCAL_CONFIG['driver']}}};"
+            f"SERVER={LOCAL_CONFIG['server']};"
+            f"DATABASE={LOCAL_CONFIG['database']};"
+            f"Trusted_Connection={LOCAL_CONFIG['trusted_connection']};"
+        )
+        sa_url = "mssql+pyodbc:///?odbc_connect=" + quote_plus(odbc_str)
+        engine = create_engine(sa_url, echo=False)
+
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        print("✅ Local SQLEXPRESS connected")
+        return engine
+
     except Exception as e:
-        print(f"❌ Database connection failed: {e}")
-        # You can add further fallback methods here if needed, or just return None
+        print("❌ Database connection failed:", e)
         return None
 
 def validate_database_schema():
@@ -2161,8 +2198,8 @@ def test_db():
             return jsonify({
                 'status': 'success', 
                 'message': 'Database connection successful',
-                'server': DB_CONFIG['server'],
-                'database': DB_CONFIG['database'],
+                'server': LOCAL_CONFIG['server'],
+                'database': LOCAL_CONFIG['database'],
                 'test_query_result': row[0] if row else None,
                 'server_time': str(row[1]) if row and len(row) > 1 else None,
                 'schema_validation': 'passed' if schema_valid else 'failed'
@@ -2308,9 +2345,9 @@ if __name__ == '__main__':
     print("  🔧 Firebase Test:    http://localhost:5000/test-firebase")
     print("=" * 60)
     print("💾 Database Configuration:")
-    print(f"  Server: {DB_CONFIG['server']}")
-    print(f"  Database: {DB_CONFIG['database']}")
-    print(f"  Driver: {DB_CONFIG['driver']}")
+    print(f"  Server: {LOCAL_CONFIG['server']}")
+    print(f"  Database: {LOCAL_CONFIG['database']}")
+    print(f"  Driver: {LOCAL_CONFIG['driver']}")
     print("=" * 60)
     print("🚀 Starting Flask application...")
     print("=" * 60)
