@@ -11,8 +11,8 @@ import random
 import sys
 
 app = Flask(__name__, 
-            static_folder='../frontend',
-            template_folder='../frontend')
+            static_folder='frontend',
+            template_folder='frontend')
 
 # Enable CORS for all domains on all routes (for development)
 CORS(app)
