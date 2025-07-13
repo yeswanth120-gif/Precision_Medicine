@@ -8,6 +8,7 @@ gunicorn
 # Data Science and Machine Learning
 numpy
 scikit-learn
+xgboost
 joblib
 
 # Database
