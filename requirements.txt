@@ -1,0 +1,15 @@
+# Core Web Framework
+Flask
+Flask-CORS
+
+# Production WSGI Server
+gunicorn
+
+# Data Science and Machine Learning
+numpy
+scikit-learn
+joblib
+
+# Database
+SQLAlchemy
+psycopg2-binary
