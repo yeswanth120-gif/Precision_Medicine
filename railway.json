@@ -3,6 +3,6 @@
     "command": "pip install -r requirements.txt"
   },
   "deploy": {
-    "startCommand": "gunicorn --bind 0.0.0.0:$PORT backend.app:app"
+    "startCommand": "gunicorn --bind 0.0.0.0:$PORT app:app"
   }
 }
