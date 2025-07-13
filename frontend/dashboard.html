@@ -1,0 +1,2508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precision Medicine Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            --card-shadow-hover: 0 30px 80px rgba(0, 0, 0, 0.15);
+            --text-primary: #2c3e50;
+            --text-secondary: #64748b;
+            --white-transparent: rgba(255, 255, 255, 0.95);
+            --border-radius: 25px;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Enhanced Background with same color shifting as landing page */
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, 
+                #fef3c7 0%,     /* Light amber */
+                #fed7aa 15%,    /* Light orange */
+                #fbb6ce 30%,    /* Light pink */
+                #c7d2fe 45%,    /* Light indigo */
+                #a5f3fc 60%,    /* Light cyan */
+                #bbf7d0 75%,    /* Light emerald */
+                #fde68a 90%,    /* Light yellow */
+                #fef3c7 100%);  /* Back to light amber */
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+            position: relative;
+            overflow-x: hidden;
+            /* Fix for footer spacing */
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 100% 25%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 75%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Add subtle floating particles same as landing page */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.4) 1px, transparent 1px),
+                radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+                radial-gradient(circle at 60% 90%, rgba(255, 255, 255, 0.3) 1px, transparent 1px);
+            background-size: 100px 100px, 120px 120px, 80px 80px, 150px 150px;
+            animation: floatParticles 25s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        @keyframes floatParticles {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+
+        /* Clean & Simple Navigation Bar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .nav-brand {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            letter-spacing: 0.2px;
+        }
+
+        .nav-link:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .nav-link.active {
+            color: white;
+            background: var(--primary-gradient);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .profile-email {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 1rem;
+            min-width: 180px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-top: 10px;
+        }
+
+        .profile-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(102, 126, 234, 0.08);
+        }
+
+        .dropdown-item.logout {
+            color: #ef4444;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            margin-top: 0.5rem;
+        }
+
+        .dropdown-item.logout:hover {
+            background: rgba(239, 68, 68, 0.08);
+        }
+
+        /* Mobile Navigation Toggle */
+        .mobile-nav-toggle {
+            display: none;
+            background: none;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 8px;
+            padding: 8px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav-toggle:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        /* Enhanced Header */
+        .header {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 140px 20px 60px; /* Increased top padding for navbar */
+            color: var(--text-primary);
+        }
+        
+        .header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: slideDown 1s ease-out 0.2s forwards;
+            background: linear-gradient(135deg, #1e293b 0%, #475569 50%, #64748b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header p {
+            font-size: 1.3rem;
+            font-weight: 600; /* Increased from 400 to 600 for better visibility */
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+            opacity: 0;
+            animation: slideDown 1s ease-out 0.4s forwards;
+            /* Enhanced color and shadow for better visibility */
+            color: #1e293b; /* Dark slate color instead of text-secondary */
+            text-shadow: 0 2px 8px rgba(255, 255, 255, 0.8); /* White shadow for contrast */
+            background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            padding: 15px 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .welcome-message {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            opacity: 0;
+            animation: slideDown 1s ease-out 0.6s forwards;
+            /* Enhanced styling for welcome message */
+            color: #374151; /* Darker gray color */
+            font-weight: 500;
+            text-shadow: 0 1px 4px rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.7);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Predictions Section with Transparent Box */
+        .predictions-section {
+            position: relative;
+            z-index: 10;
+            padding: 80px 50px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px);
+            margin: 0 50px;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px; /* Reduced from 50px to 30px */
+        }
+        
+        .predictions-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+        
+        /* Enhanced Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+            padding: 0;
+        }
+        
+        /* Enhanced Prediction Cards with glassmorphism and flexbox for button alignment */
+        .prediction-card {
+            background: var(--white-transparent);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius);
+            padding: 50px 35px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(60px);
+            animation: cardSlideUp 1s ease-out forwards;
+            
+            /* Flexbox layout for consistent button alignment */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 400px; /* Ensure consistent card height */
+        }
+        
+        .prediction-card:nth-child(1) { animation-delay: 0.1s; }
+        .prediction-card:nth-child(2) { animation-delay: 0.2s; }
+        .prediction-card:nth-child(3) { animation-delay: 0.3s; }
+        .prediction-card:nth-child(4) { animation-delay: 0.4s; }
+        
+        @keyframes cardSlideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .prediction-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+        
+        .prediction-card:hover::before {
+            left: 100%;
+        }
+        
+        .prediction-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: var(--card-shadow-hover);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        /* Card content wrapper to push button to bottom */
+        .card-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        
+        /* Card button wrapper to align at bottom */
+        .card-button {
+            margin-top: auto;
+            padding-top: 20px;
+        }
+        
+        /* Enhanced Card Icons with 3D effects */
+        .card-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            transition: var(--transition);
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-icon::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), transparent);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .prediction-card:hover .card-icon::after {
+            opacity: 1;
+        }
+        
+        .heart-card .card-icon {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+        
+        .diabetes-card .card-icon {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            color: white;
+            box-shadow: 0 10px 30px rgba(78, 205, 196, 0.3);
+        }
+        
+        .lung-card .card-icon {
+            background: linear-gradient(135deg, #45b7d1, #3498db);
+            color: white;
+            box-shadow: 0 10px 30px rgba(69, 183, 209, 0.3);
+        }
+        
+        .kidney-card .card-icon {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.3);
+        }
+        
+        .prediction-card:hover .card-icon {
+            transform: scale(1.15) rotate(10deg);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Enhanced Typography */
+        .card-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 18px;
+            line-height: 1.3;
+        }
+        
+        .card-description {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+        
+        /* Enhanced Button with 3D effect */
+        .select-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 30px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: 'Poppins', sans-serif;
+            width: 100%;
+            max-width: 250px;
+            margin: 0 auto;
+        }
+        
+        .select-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+        
+        .select-btn:hover::before {
+            left: 100%;
+        }
+        
+        .select-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .select-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        /* Fixed Footer - Ensure no extra space after footer */
+        .footer {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 30px 40px;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            margin: 0 50px; /* Remove all bottom margins */
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.05);
+            /* Ensure no extra space after footer */
+            margin-bottom: 0 !important;
+        }
+        
+        .footer p {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+        
+        .footer p:last-child {
+            font-weight: 300;
+            opacity: 0.8;
+            margin-bottom: 0;
+        }
+        
+        /* Enhanced Responsive Design - Fix footer margins for all screen sizes */
+        @media (max-width: 1024px) {
+            .predictions-section {
+                margin: 0 25px;
+                padding: 60px 30px;
+                margin-bottom: 20px; /* Reduced bottom margin */
+            }
+            
+            .footer {
+                margin: 0 25px !important;
+                padding: 25px 30px;
+                margin-bottom: 0 !important;
+            }
+            
+            .cards-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 35px;
+            }
+            
+            .prediction-card {
+                min-height: 380px;
+            }
+
+            .nav-links {
+                gap: 0.25rem;
+            }
+
+            .nav-link {
+                font-size: 0.9rem;
+                padding: 0.6rem 1.2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-left {
+                gap: 1.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .nav-links.mobile-active {
+                display: flex;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 1.5rem;
+                border-top: 1px solid rgba(0, 0, 0, 0.05);
+                border-radius: 0 0 15px 15px;
+                gap: 0.5rem;
+                margin-top: 10px;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            }
+
+            .nav-links.mobile-active .nav-link {
+                width: 100%;
+                text-align: center;
+                padding: 1rem;
+                border-radius: 12px;
+                font-size: 0.95rem;
+                border: 1px solid rgba(0, 0, 0, 0.05);
+                background: rgba(255, 255, 255, 0.5);
+                margin-bottom: 0.5rem;
+            }
+
+            .nav-links.mobile-active .nav-link:hover {
+                transform: none;
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.15);
+            }
+
+            .nav-links.mobile-active .nav-link.active {
+                background: var(--primary-gradient);
+                color: white;
+                border-color: transparent;
+            }
+
+            .mobile-nav-toggle {
+                display: block;
+            }
+
+            .nav-profile {
+                gap: 0.5rem;
+            }
+
+            .profile-info {
+                display: none;
+            }
+
+            .header {
+                padding: 120px 20px 40px;
+            }
+            
+            .header h1 {
+                font-size: 3rem;
+            }
+            
+            .header p {
+                font-size: 1.1rem;
+                padding: 0 15px;
+            }
+            
+            .predictions-section {
+                margin: 0 15px;
+                padding: 50px 20px;
+                margin-bottom: 15px; /* Reduced bottom margin */
+            }
+            
+            .footer {
+                margin: 0 15px !important;
+                padding: 25px 20px;
+                margin-bottom: 0 !important;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            
+            .prediction-card {
+                padding: 40px 25px;
+                min-height: 360px;
+            }
+            
+            .card-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 2.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .predictions-section {
+                margin: 0 10px;
+                padding: 40px 15px;
+                margin-bottom: 10px; /* Reduced bottom margin */
+            }
+            
+            .footer {
+                margin: 0 10px !important;
+                padding: 20px 15px;
+                margin-bottom: 0 !important;
+            }
+            
+            .prediction-card {
+                padding: 35px 20px;
+                min-height: 340px;
+            }
+        }
+        
+        /* Loading Animation */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            flex-direction: column;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(102, 126, 234, 0.3);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: center;
+        }
+        
+        /* Enhanced accessibility and interactions */
+        .keyboard-navigation .prediction-card:focus {
+            outline: 3px solid rgba(102, 126, 234, 0.5);
+            outline-offset: 2px;
+        }
+        
+        .prediction-card {
+            transition: var(--transition), outline 0.2s ease;
+        }
+
+        /* Auth Guard */
+        .auth-guard {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+        }
+
+        .auth-message {
+            text-align: center;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .auth-redirect-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .auth-redirect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Chatbot Widget Styles */
+        .chatbot-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
+        }
+
+        .chatbot-toggle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chatbot-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .chatbot-toggle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.2) 50%, transparent 70%);
+            border-radius: 50%;
+            animation: shimmer 2s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .chatbot-window {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 380px;
+            height: 600px; /* Increased height */
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 9999;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .chatbot-window.active {
+            display: flex;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .chatbot-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 600;
+        }
+
+        .chatbot-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chatbot-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+        }
+
+        .chatbot-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            padding: 15px 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 300px; /* Fixed height for messages */
+            min-height: 200px; /* Minimum height */
+        }
+
+        .chatbot-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chatbot-messages::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 3px;
+        }
+
+        .chatbot-messages::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.3);
+            border-radius: 3px;
+        }
+
+        .chatbot-messages::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 126, 234, 0.5);
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            animation: messageSlide 0.3s ease;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            background: var(--primary-gradient);
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .message.bot {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--text-primary);
+            align-self: flex-start;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .message.bot.typing {
+            background: rgba(102, 126, 234, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(102, 126, 234, 0.6);
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        .chatbot-input {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 25px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .chatbot-input input:focus {
+            border-color: #667eea;
+        }
+
+        .chatbot-send {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chatbot-send:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .chatbot-send:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .welcome-message {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .chatbot-window {
+                width: calc(100vw - 40px);
+                height: 500px;
+                bottom: 90px;
+                right: 20px;
+                left: 20px;
+            }
+            
+            .chatbot-messages {
+                max-height: 220px;
+                min-height: 150px;
+            }
+            
+            .chatbot-questions {
+                max-height: 220px;
+            }
+            
+            .questions-container {
+                max-height: 140px;
+            }
+            
+            .question-item {
+                font-size: 0.75rem;
+                padding: 8px 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chatbot-window {
+                width: calc(100vw - 20px);
+                height: 450px;
+                bottom: 80px;
+                right: 10px;
+                left: 10px;
+            }
+            
+            .chatbot-messages {
+                max-height: 180px;
+                min-height: 120px;
+            }
+            
+            .chatbot-questions {
+                max-height: 200px;
+            }
+            
+            .questions-container {
+                max-height: 120px;
+            }
+            
+            .questions-navigation {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .nav-btn {
+                width: 100%;
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Authentication Guard -->
+    <div class="auth-guard" id="authGuard" style="display: none;">
+        <div class="auth-message">
+            <h2>🔒 Authentication Required</h2>
+            <p>Please log in to access the Precision Medicine Dashboard</p>
+        </div>
+        <button class="auth-redirect-btn" onclick="redirectToLogin()">
+            Go to Login
+        </button>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="nav-brand">
+                🔬 PRED.AI
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="#" class="nav-link active" onclick="navigateTo('home')">Home</a>
+                <a href="#" class="nav-link" onclick="navigateTo('analytics')">Analytics</a>
+                <a href="#" class="nav-link" onclick="navigateTo('report')">Report</a>
+                <a href="#" class="nav-link" onclick="navigateTo('feedback')">Feedback</a>
+            </div>
+        </div>
+        <div class="nav-profile" onclick="toggleProfileDropdown()">
+            <button class="mobile-nav-toggle" onclick="toggleMobileNav()">☰</button>
+            <div class="profile-avatar" id="profileAvatar">
+                U
+            </div>
+            <div class="profile-info">
+                <div class="profile-name" id="profileName">Loading...</div>
+                <div class="profile-email" id="profileEmail">Loading...</div>
+            </div>
+            <div class="profile-dropdown" id="profileDropdown">
+                <div class="dropdown-item" onclick="navigateTo('profile')">
+                    <span>👤</span>
+                    <span>Profile</span>
+                </div>
+                <div class="dropdown-item" onclick="navigateTo('settings')">
+                    <span>⚙️</span>
+                    <span>Settings</span>
+                </div>
+                <div class="dropdown-item logout" onclick="logout()">
+                    <span>🚪</span>
+                    <span>Sign Out</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Enhanced Header Section -->
+    <div class="header">
+        <div class="welcome-message" id="welcomeMessage">
+            Welcome back! Ready to analyze your health data?
+        </div>
+        <h1>🔬 Precision Medicine</h1>
+        <p>AI-powered medical predictions for early diagnosis and personalized treatment</p>
+    </div>
+    
+    <!-- Predictions Section with Transparent Box -->
+    <div class="predictions-section">
+        <div class="predictions-container">
+            <div class="cards-grid">
+                <!-- Heart Disease Prediction Card -->
+                <div class="prediction-card heart-card" onclick="selectPrediction('heart')">
+                    <div class="card-content">
+                        <div class="card-icon">
+                            ❤️
+                        </div>
+                        <h3 class="card-title">Heart Disease Prediction</h3>
+                        <p class="card-description">
+                            Analyze cardiovascular risk factors using advanced machine learning algorithms to predict heart disease probability.
+                        </p>
+                    </div>
+                    <div class="card-button">
+                        <button class="select-btn">
+                            Select Prediction
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Diabetes Prediction Card -->
+                <div class="prediction-card diabetes-card" onclick="selectPrediction('diabetes')">
+                    <div class="card-content">
+                        <div class="card-icon">
+                            🩺
+                        </div>
+                        <h3 class="card-title">Diabetes Prediction</h3>
+                        <p class="card-description">
+                            Evaluate diabetes risk using glucose levels, BMI, and other metabolic indicators with high precision.
+                        </p>
+                    </div>
+                    <div class="card-button">
+                        <button class="select-btn">
+                            Select Prediction
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Lung Cancer Prediction Card -->
+                <div class="prediction-card lung-card" onclick="selectPrediction('lung')">
+                    <div class="card-content">
+                        <div class="card-icon">
+                            🫁
+                        </div>
+                        <h3 class="card-title">Lung Cancer Prediction</h3>
+                        <p class="card-description">
+                            Assess lung cancer risk using genetic markers, clinical data, and patient history for early detection.
+                        </p>
+                    </div>
+                    <div class="card-button">
+                        <button class="select-btn">
+                            Select Prediction
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Kidney Disease Prediction Card -->
+                <div class="prediction-card kidney-card" onclick="selectPrediction('kidney')">
+                    <div class="card-content">
+                        <div class="card-icon">
+                            🫘
+                        </div>
+                        <h3 class="card-title">Kidney Disease Prediction</h3>
+                        <p class="card-description">
+                            Predict chronic kidney disease using laboratory results, blood pressure, and renal function markers.
+                        </p>
+                    </div>
+                    <div class="card-button">
+                        <button class="select-btn">
+                            Select Prediction
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer with Transparent Box -->
+    <div class="footer">
+        <p>© 2025 Precision Medicine - Advanced Healthcare Analytics</p>
+        <p>Empowering healthcare professionals with AI-driven insights</p>
+    </div>
+    
+    <!-- Enhanced Loading Screen -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">
+            <div id="loadingMessage">Loading prediction system...</div>
+        </div>
+    </div>
+
+    <!-- Firebase Configuration -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        console.log('🔥 Firebase script loaded in dashboard');
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2K6-ynId7_cKsMfLWUdT83WJDLQTdsSc",
+            authDomain: "precision-medicine-df7ed.firebaseapp.com",
+            projectId: "precision-medicine-df7ed",
+            storageBucket: "precision-medicine-df7ed.firebasestorage.app",
+            messagingSenderId: "147856529086",
+            appId: "1:147856529086:web:839879f4d26764d50630ef",
+            measurementId: "G-WWMV7MHKJ5"
+        };
+
+        let auth, db;
+
+        try {
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            
+            console.log('✅ Firebase initialized successfully in dashboard');
+            
+            // Make available globally
+            window.auth = auth;
+            window.db = db;
+            
+        } catch (error) {
+            console.error('❌ Firebase initialization error in dashboard:', error);
+        }
+
+        // Enhanced Load user profile with direct Firestore fetch
+        async function loadUserProfile(user) {
+            console.log('🔄 Loading user profile with data:', user);
+            
+            const profileName = document.getElementById('profileName');
+            const profileEmail = document.getElementById('profileEmail');
+            const profileAvatar = document.getElementById('profileAvatar');
+            const welcomeMessage = document.getElementById('welcomeMessage');
+
+            let displayName = '';
+            let avatarInitial = '';
+
+            try {
+                // Always fetch fresh data from Firestore
+                console.log('🔄 Fetching user data from Firestore...');
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                
+                if (userDoc.exists()) {
+                    const firestoreData = userDoc.data();
+                    displayName = firestoreData.username || firestoreData.displayName;
+                    console.log('✅ Username fetched from Firestore:', displayName);
+                    
+                    // Update localStorage with fresh data
+                    const updatedUserData = {
+                        ...user,
+                        username: firestoreData.username,
+                        displayName: firestoreData.username,
+                        phone: firestoreData.phone,
+                        lastFetch: Date.now()
+                    };
+                    localStorage.setItem('userAuth', JSON.stringify(updatedUserData));
+                    
+                } else {
+                    console.log('⚠️ No user document found in Firestore');
+                    // Fallback to localStorage data
+                    displayName = user.username || user.displayName;
+                }
+                
+            } catch (error) {
+                console.error('❌ Error fetching from Firestore:', error);
+                // Fallback to localStorage data
+                displayName = user.username || user.displayName;
+            }
+
+            // Final fallback: extract from email
+            if (!displayName) {
+                const emailUsername = user.email.split('@')[0];
+                displayName = emailUsername.charAt(0).toUpperCase() + emailUsername.slice(1);
+                console.log('⚠️ Final fallback: extracted from email:', displayName);
+            }
+
+            // Get first letter for avatar (handle multi-word names)
+            if (displayName) {
+                // If it's a full name, get first letter of first name
+                const firstName = displayName.split(' ')[0];
+                avatarInitial = firstName.charAt(0).toUpperCase();
+            } else {
+                // Ultimate fallback
+                avatarInitial = user.email.charAt(0).toUpperCase();
+            }
+
+            // Update profile elements
+            if (profileName) {
+                profileName.textContent = displayName || 'User';
+            }
+            if (profileEmail) {
+                profileEmail.textContent = user.email || 'No email';
+            }
+            if (profileAvatar) {
+                profileAvatar.textContent = avatarInitial;
+            }
+            
+            // Update welcome message with personalized greeting
+            if (welcomeMessage) {
+                const timeOfDay = getTimeOfDayGreeting();
+                welcomeMessage.textContent = `${timeOfDay}, ${displayName}! Ready to analyze your health data?`;
+            }
+
+            console.log('✅ User profile loaded successfully');
+            console.log('Display Name:', displayName);
+            console.log('Avatar Initial:', avatarInitial);
+        }
+
+        // Helper function to get time-appropriate greeting
+        function getTimeOfDayGreeting() {
+            const hour = new Date().getHours();
+            if (hour < 12) return 'Good morning';
+            if (hour < 17) return 'Good afternoon';
+            return 'Good evening';
+        }
+
+        // Make loadUserProfile available globally
+        window.loadUserProfile = loadUserProfile;
+    </script>
+
+    <script>
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            addHoverSound();
+            initializeCards();
+        });
+
+        // Authentication check
+        function checkAuthentication() {
+            const userAuth = localStorage.getItem('userAuth');
+            
+            if (!userAuth) {
+                // Show auth guard if no user is logged in
+                document.getElementById('authGuard').style.display = 'flex';
+                return;
+            }
+
+            try {
+                const user = JSON.parse(userAuth);
+                
+                // Check if we have Firebase initialized and can fetch fresh data
+                if (window.db && user.uid) {
+                    loadUserProfile(user);
+                } else {
+                    // Fallback to localStorage data
+                    loadUserProfileFromCache(user);
+                }
+            } catch (error) {
+                console.error('Error parsing user data:', error);
+                document.getElementById('authGuard').style.display = 'flex';
+            }
+        }
+
+        // Fallback function for when Firebase is not available
+        function loadUserProfileFromCache(user) {
+            console.log('🔄 Loading user profile from cache:', user);
+            
+            const profileName = document.getElementById('profileName');
+            const profileEmail = document.getElementById('profileEmail');
+            const profileAvatar = document.getElementById('profileAvatar');
+            const welcomeMessage = document.getElementById('welcomeMessage');
+
+            let displayName = user.username || user.displayName;
+            
+            if (!displayName) {
+                const emailUsername = user.email.split('@')[0];
+                displayName = emailUsername.charAt(0).toUpperCase() + emailUsername.slice(1);
+            }
+
+            const firstName = displayName.split(' ')[0];
+            const avatarInitial = firstName.charAt(0).toUpperCase();
+
+            // Update profile elements
+            if (profileName) {
+                profileName.textContent = displayName || 'User';
+            }
+            if (profileEmail) {
+                profileEmail.textContent = user.email || 'No email';
+            }
+            if (profileAvatar) {
+                profileAvatar.textContent = avatarInitial;
+            }
+            
+            // Update welcome message with personalized greeting
+            if (welcomeMessage) {
+                const timeOfDay = getTimeOfDayGreeting();
+                welcomeMessage.textContent = `${timeOfDay}, ${displayName}! Ready to analyze your health data?`;
+            }
+
+            console.log('✅ User profile loaded from cache');
+        }
+
+        // Navigation Functions
+        function navigateTo(page) {
+            console.log(`🔗 Navigating to: ${page}`);
+            
+            // Update active nav link
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            
+            // Find and activate the clicked link
+            const clickedLink = Array.from(navLinks).find(link => 
+                link.textContent.toLowerCase() === page.toLowerCase()
+            );
+            if (clickedLink) {
+                clickedLink.classList.add('active');
+            }
+            
+            // Close mobile nav if open
+            const navLinksContainer = document.getElementById('navLinks');
+            navLinksContainer.classList.remove('mobile-active');
+            
+            // Close profile dropdown if open
+            const dropdown = document.getElementById('profileDropdown');
+            dropdown.classList.remove('active');
+            
+            // Handle navigation based on page
+            switch(page.toLowerCase()) {
+                case 'home':
+                    // Already on dashboard/home - refresh or scroll to top
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    break;
+                case 'analytics':
+                    // Navigate to analytics page (placeholder for now)
+                    window.location.href = '/analytics';
+                    break;
+                case 'report':
+                    // Navigate to reports page (placeholder for now)
+                    window.location.href = '/report';
+                    break;
+                    
+                case 'feedback':
+                    // Navigate to feedback page (placeholder for now)
+                    window.location.href = '/feedback';
+                    break;
+                case 'profile':
+                    // Navigate to profile page (placeholder for now)
+                    window.location.href = '/profile';
+                    break;
+                    
+                case 'settings':
+                    // Navigate to settings page (placeholder for now)
+                    window.location.href = '/settings';
+                    break;
+                default:
+                    console.log('Unknown navigation target');
+            }
+        }
+
+        // Simple notification function (placeholder)
+        function showNotification(message, type = 'info') {
+            // Create a simple notification
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: rgba(102, 126, 234, 0.9);
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                z-index: 10001;
+                font-size: 0.9rem;
+                backdrop-filter: blur(10px);
+                animation: slideInRight 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Toggle mobile navigation
+        function toggleMobileNav() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('mobile-active');
+        }
+
+        // Toggle profile dropdown
+        function toggleProfileDropdown() {
+            const dropdown = document.getElementById('profileDropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const navProfile = document.querySelector('.nav-profile');
+            const dropdown = document.getElementById('profileDropdown');
+            const navLinks = document.getElementById('navLinks');
+            
+            if (!navProfile.contains(event.target)) {
+                dropdown.classList.remove('active');
+            }
+            
+            // Close mobile nav when clicking outside
+            if (!event.target.closest('.nav-left') && !event.target.closest('.mobile-nav-toggle')) {
+                navLinks.classList.remove('mobile-active');
+            }
+        });
+
+        // Enhanced logout function with cleanup
+        function logout() {
+            // Clear all user data
+            localStorage.removeItem('userAuth');
+            localStorage.removeItem('userProfile');
+            
+            // Show loading
+            const loading = document.getElementById('loading');
+            const loadingMessage = document.getElementById('loadingMessage');
+            loading.style.display = 'flex';
+            loadingMessage.textContent = 'Signing out...';
+            
+            console.log('🔄 User logged out, clearing data');
+            
+            // Redirect to login page
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1500);
+        }
+
+        // Redirect to login
+        function redirectToLogin() {
+            window.location.href = '/';
+        }
+
+        // Enhanced prediction selection with smooth animations
+        function selectPrediction(type) {
+            const card = event.currentTarget;
+            
+            // Add click animation
+            card.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                card.style.transform = '';
+            }, 150);
+            
+            // Show enhanced loading screen
+            const loading = document.getElementById('loading');
+            const loadingMessage = document.getElementById('loadingMessage');
+            
+            loading.style.display = 'flex';
+            
+            // Update loading message based on prediction type
+            const messages = {
+                'heart': 'Initializing cardiovascular analysis...',
+                'diabetes': 'Loading metabolic assessment tools...',
+                'lung': 'Preparing genetic marker analysis...',
+                'kidney': 'Activating renal function assessment...'
+            };
+            
+            loadingMessage.textContent = messages[type] || 'Loading prediction system...';
+            
+            // Add haptic feedback (if supported)
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+            
+            // Simulate loading delay with enhanced feedback
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                
+                switch(type) {
+                    case 'heart':
+                        window.location.href = '/heart_disease';
+                        break;
+                    case 'diabetes':
+                        window.location.href = '/diabeties';
+                        break;
+                    case 'lung':
+                        window.location.href = '/lung_cancer';
+                        break;
+                    case 'kidney':
+                        window.location.href = '/kidney_disease';
+                        break;
+                }
+            }, 1800);
+        }
+
+        // Enhanced hover effects with sound placeholder
+        function addHoverSound() {
+            const cards = document.querySelectorAll('.prediction-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    // Placeholder for hover sound effect
+                    if (navigator.vibrate) {
+                        navigator.vibrate(10);
+                    }
+                });
+            });
+        }
+
+        // Initialize cards with enhanced interactions
+        function initializeCards() {
+            const cards = document.querySelectorAll('.prediction-card');
+            cards.forEach((card, index) => {
+                // Make cards keyboard accessible
+                card.setAttribute('tabindex', '0');
+                card.setAttribute('role', 'button');
+                
+                // Add keyboard event listeners
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        card.click();
+                    }
+                });
+                
+                // Enhanced hover effects
+                let isHovered = false;
+                card.addEventListener('mouseenter', function() {
+                    if (!isHovered) {
+                        isHovered = true;
+                        this.style.background = 'rgba(255, 255, 255, 0.98)';
+                        this.style.borderColor = 'rgba(255, 255, 255, 0.4)';
+                    }
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    if (isHovered) {
+                        isHovered = false;
+                        this.style.background = 'rgba(255, 255, 255, 0.95)';
+                        this.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                    }
+                });
+                
+                // Add touch support for mobile
+                card.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.98)';
+                });
+                
+                card.addEventListener('touchend', function() {
+                    this.style.transform = '';
+                });
+            });
+            
+            // Add keyboard navigation support
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Tab') {
+                    document.body.classList.add('keyboard-navigation');
+                }
+            });
+            
+            document.addEventListener('mousedown', () => {
+                document.body.classList.remove('keyboard-navigation');
+            });
+        }
+
+        // Helper function to get time-appropriate greeting (for cache fallback)
+        function getTimeOfDayGreeting() {
+            const hour = new Date().getHours();
+            if (hour < 12) return 'Good morning';
+            if (hour < 17) return 'Good afternoon';
+            return 'Good evening';
+        }
+
+        // Utility function to refresh user profile from Firestore
+        window.refreshUserProfile = async function() {
+            const userAuth = localStorage.getItem('userAuth');
+            if (userAuth && window.db) {
+                try {
+                    const user = JSON.parse(userAuth);
+                    await loadUserProfile(user);
+                    console.log('✅ User profile refreshed from Firestore');
+                } catch (error) {
+                    console.error('❌ Error refreshing user profile:', error);
+                }
+            }
+        };
+
+        // Update the selectQuestion function
+        async function selectQuestion(question, questionElement) {
+            if (isLoadingResponse) return;
+            
+            // Add user question to chat
+            addMessage(question, 'user');
+            
+            // Show loading state on question
+            questionElement.classList.add('loading');
+            isLoadingResponse = true;
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            try {
+                // Send to your chatbot API
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        question: question
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                
+                const data = await response.json();
+                
+                // Remove typing indicator
+                removeTypingIndicator();
+                
+                // Clean the response text to remove confidence indicators
+                let responseText = data.response_text || 'Sorry, I encountered an error processing your request.';
+                responseText = cleanResponseText(responseText);
+                
+                // Add bot response
+                addMessage(responseText, 'bot');
+                
+            } catch (error) {
+                console.error('Chatbot error:', error);
+                removeTypingIndicator();
+                addMessage('Sorry, I\'m having trouble connecting right now. Please try again later.', 'bot');
+            } finally {
+                // Remove loading state
+                questionElement.classList.remove('loading');
+                isLoadingResponse = false;
+            }
+        }
+
+        // Add function to clean response text
+        function cleanResponseText(text) {
+            // Remove confidence indicators and similar phrases
+            const confidencePatterns = [
+                /with high confidence/gi,
+                /with medium confidence/gi,
+                /with low confidence/gi,
+                /confidence level: \d+%/gi,
+                /confidence: \d+%/gi,
+                /\(confidence: [^)]+\)/gi,
+                /\[confidence: [^\]]+\]/gi,
+                /based on my training data/gi,
+                /according to my knowledge/gi,
+                /to the best of my knowledge/gi
+            ];
+            
+            let cleanedText = text;
+            
+            // Remove confidence patterns
+            confidencePatterns.forEach(pattern => {
+                cleanedText = cleanedText.replace(pattern, '');
+            });
+            
+            // Clean up extra spaces and punctuation
+            cleanedText = cleanedText
+                .replace(/\s+/g, ' ')           // Multiple spaces to single space
+                .replace(/\s+\./g, '.')         // Space before period
+                .replace(/\s+,/g, ',')          // Space before comma
+                .replace(/\.\s*\./g, '.')       // Multiple periods
+                .trim();                        // Trim leading/trailing spaces
+        
+            return cleanedText;
+        }
+
+        // Update addMessage function for better text wrapping
+        function addMessage(text, sender) {
+            const messagesContainer = document.getElementById('chatbotMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            // Handle long text with proper wrapping
+            messageDiv.style.wordWrap = 'break-word';
+            messageDiv.style.overflowWrap = 'break-word';
+            messageDiv.textContent = text;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Add to history
+            chatHistory.push({ text, sender, timestamp: new Date() });
+            
+            // Keep only last 30 messages to prevent overflow
+            if (chatHistory.length > 30) {
+                chatHistory = chatHistory.slice(-30);
+                
+                // Remove oldest messages from DOM
+                const messages = messagesContainer.querySelectorAll('.message');
+                if (messages.length > 30) {
+                    for (let i = 0; i < messages.length - 30; i++) {
+                        messages[i].remove();
+                    }
+                }
+            }
+        }
+
+        async function sendQuestionToBackend(question, typingIndicator) {
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        question: question  // Changed from 'message' to 'question' to match backend
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                
+                // Remove typing indicator
+                typingIndicator.remove();
+                
+                // Add bot response
+                const botMessage = document.createElement('div');
+                botMessage.className = 'message bot';
+                
+                // Clean the response - remove confidence indicators
+                let cleanResponse = data.response_text || data.response || data.message || "I'm here to help with your medical questions!";
+                cleanResponse = cleanResponse.replace(/\b(with\s+)?(low|medium|high|very\s+high)\s+confidence\b/gi, '');
+                cleanResponse = cleanResponse.replace(/\b(confidence\s*:?\s*\d+%?)\b/gi, '');
+                cleanResponse = cleanResponse.replace(/\b(based on my training data|according to my knowledge|to the best of my knowledge)\b/gi, '');
+                cleanResponse = cleanResponse.trim();
+                
+                botMessage.innerHTML = `<div>${cleanResponse}</div>`;
+                
+                const messagesContainer = document.getElementById('chatbotMessages');
+                messagesContainer.appendChild(botMessage);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            } catch (error) {
+                console.error('Error sending question:', error);
+                
+                // Remove typing indicator
+                typingIndicator.remove();
+                
+                // Add error message
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'message bot';
+                errorMessage.innerHTML = `
+                    <div>I apologize, but I'm having trouble connecting right now. Please try again later.</div>
+                    <div style="margin-top: 8px; font-size: 0.8em; opacity: 0.7;">🔄 You can try selecting another question from the list.</div>
+                `;
+                
+                const messagesContainer = document.getElementById('chatbotMessages');
+                messagesContainer.appendChild(errorMessage);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        }
+    </script>
+
+    <!-- Chatbot Widget -->
+    <div class="chatbot-widget">
+        <button class="chatbot-toggle" onclick="toggleChatbot()">
+            🤖
+        </button>
+        <div class="chatbot-window" id="chatbotWindow">
+            <div class="chatbot-header">
+                <h3>🤖 Ask Medical Questions</h3>
+                <button class="chatbot-close" onclick="toggleChatbot()">×</button>
+            </div>
+            <div class="chatbot-messages" id="chatbotMessages"></div>
+            <div class="chatbot-questions" id="chatbotQuestions">
+                <div class="questions-header">
+                    <h4>Select a Question:</h4>
+                    <div class="questions-counter">
+                        <span id="questionsCounter">1-6 of 48</span>
+                    </div>
+                </div>
+                <div class="questions-container" id="questionsContainer">
+                    <!-- Questions will be loaded here -->
+                </div>
+                <div class="questions-navigation">
+                    <button class="nav-btn" id="prevBtn" onclick="navigateQuestions(-1)">← Previous</button>
+                    <button class="nav-btn" id="nextBtn" onclick="navigateQuestions(1)">Next →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let chatbotOpen = false;
+        let currentQuestionSet = 0;
+        let selectedQuestion = null;
+        const questionsPerPage = 6;
+
+        // Questions from your actual knowledge base
+        const allQuestions = [
+            // Platform & Site Information Questions
+            "What is PRED.AI and what does it do?",
+            "How do I navigate the PRED.AI platform?",
+            "What medical parameters do I need for heart disease prediction?",
+            "What inputs are required for diabetes prediction?",
+            "What information is needed for lung cancer prediction?",
+            "What parameters does the kidney disease prediction use?",
+            "How accurate are the AI predictions?",
+            "What do the prediction results mean?",
+            "How does the AI Health Assistant work?",
+            "Is my medical data secure and private?",
+            "Can I save or export my prediction results?",
+            "How often should I use the prediction tools?",
+            "What should I do if I receive a high-risk prediction?",
+            "Can healthcare professionals use this platform?",
+            "How do I get the most accurate predictions?",
+            "What makes this platform different from other health apps?",
+            "Are there any limitations to the predictions?",
+            "How can I provide feedback or report issues?",
+            "What future features are planned?",
+            "How do I interpret the confidence levels?",
+            "Can I use the platform on mobile devices?",
+            "What browsers are supported?",
+            "How do I contact support?",
+            "How do I use the PRED.AI platform?",
+            "What are the required inputs for heart disease prediction?",
+            "What inputs are needed for diabetes prediction?",
+            "What genetic markers are analyzed for lung cancer prediction?",
+            "What parameters does kidney disease prediction use?",
+            "What do the prediction results show?",
+            "How do I interpret the health scores?",
+            "What are the AI-powered suggestions?",
+            "How do I clear results and start over?",
+            "How do I navigate between different prediction tools?",
+            "Are there sample data sets available?",
+            "What happens to my data after prediction?",
+            "How do I access the AI Health Assistant chatbot?",
+            "What can I ask the AI Health Assistant?",
+            
+            // Prevention & Lifestyle Questions
+            "How can I prevent heart disease?",
+            "What are the best diabetes prevention strategies?",
+            "How can I reduce lung cancer risk?",
+            "What can I do to prevent kidney disease?",
+            "What dietary changes help prevent cardiovascular disease?",
+            "What exercise recommendations help prevent diabetes?",
+            "How can I improve my lung health?",
+            "What lifestyle changes support kidney health?",
+            "How can I manage stress to prevent disease?",
+            "What screening recommendations help with early detection?",
+            "How can I maintain long-term health improvements?",
+            "What role does sleep play in disease prevention?",
+            
+            // Medical Parameter Questions
+            "What is an ejection fraction test and why is it important?",
+            "What do creatinine levels indicate about kidney function?",
+            "What is HbA1c and how does it relate to diabetes?",
+            "What are genetic mutations and how do they affect lung cancer risk?",
+            "What is blood pressure and what do the numbers mean?",
+            "What is BMI and how is it calculated?",
+            "What are troponin levels and when are they tested?",
+            "What is insulin and how does it work in the body?",
+            "What are normal platelet counts and what do abnormal levels indicate?",
+            "What is serum sodium and why is it important?",
+            "What are white blood cells and what do counts indicate?",
+            "What is blood glucose and what are normal levels?",
+            "What is blood urea nitrogen (BUN) and what does it indicate?",
+            
+            // Heart Disease Questions
+            "What is heart disease and how common is it?",
+            "What are the main types of heart disease?",
+            "What are the warning signs and symptoms of heart disease?",
+            "What causes heart disease and what are the risk factors?",
+            "How is heart disease diagnosed?",
+            "What is ejection fraction and why is it important?",
+            "How does high blood pressure affect the heart?",
+            "What role does cholesterol play in heart disease?",
+            "How does diabetes increase heart disease risk?",
+            "What is the connection between smoking and heart disease?",
+            "What is a heart-healthy diet?",
+            "What types of exercise are best for heart health?",
+            "How is heart disease treated?",
+            "What medications are commonly used for heart disease?",
+            "What are the warning signs of a heart attack?",
+            "How can stress affect heart health?",
+            "What is cardiac rehabilitation?",
+            "How does sleep affect heart health?",
+            "What heart health screenings should I get?",
+            "Can heart disease be reversed?",
+            "How does age affect heart disease risk?",
+            "What is the difference between heart attack and heart failure?",
+            "How do I know if my heart disease treatment is working?",
+            
+            // Diabetes Questions
+            "What is diabetes and how does it affect the body?",
+            "What are the different types of diabetes?",
+            "What are the symptoms of diabetes?",
+            "What causes diabetes and what are the risk factors?",
+            "How is diabetes diagnosed?",
+            "What is HbA1c and why is it important?",
+            "What are the complications of diabetes?",
+            "How does diabetes affect the cardiovascular system?",
+            "What is diabetic neuropathy?",
+            "How does diabetes affect the eyes?",
+            "What is diabetic kidney disease?",
+            "How is diabetes managed and treated?",
+            "What medications are used to treat diabetes?",
+            "What should I eat if I have diabetes?",
+            "How does exercise help with diabetes?",
+            "What is hypoglycemia and how do I treat it?",
+            "How often should I check my blood sugar?",
+            "What is the dawn phenomenon?",
+            "How can I prevent Type 2 diabetes?",
+            "What should I do if I'm diagnosed with prediabetes?",
+            "How does stress affect blood sugar?",
+            "What are the warning signs of diabetic emergencies?",
+            "How do I manage diabetes during illness?",
+            "What role does sleep play in diabetes management?",
+            "How can I travel safely with diabetes?",
+            "What support resources are available for diabetes?",
+            
+            // Lung Cancer Questions
+            "What is lung cancer and how does it develop?",
+            "What are the main types of lung cancer?",
+            "What are the symptoms of lung cancer?",
+            "What causes lung cancer and what are the risk factors?",
+            "How is lung cancer diagnosed?",
+            "What is lung cancer staging?",
+            "What genetic mutations are important in lung cancer?",
+            "How is lung cancer treated?",
+            "What is targeted therapy for lung cancer?",
+            "What is immunotherapy for lung cancer?",
+            "What are the side effects of lung cancer treatment?",
+            "What is the prognosis for lung cancer?",
+            "How can lung cancer be prevented?",
+            "Who should be screened for lung cancer?",
+            "What lifestyle changes help during lung cancer treatment?",
+            "How does smoking cessation help after lung cancer diagnosis?",
+            "What is palliative care for lung cancer?",
+            "How can I manage shortness of breath from lung cancer?",
+            "What role does nutrition play in lung cancer care?",
+            "How do I cope with the emotional impact of lung cancer?",
+            "What questions should I ask my oncologist?",
+            "What are clinical trials and should I consider them?",
+            "How can family members and caregivers help?",
+            "What resources are available for lung cancer patients?",
+            "How has lung cancer treatment evolved in recent years?",
+            
+            // Kidney Disease Questions
+            "What is chronic kidney disease and how does it develop?",
+            "What are the main causes of chronic kidney disease?",
+            "What are the symptoms of chronic kidney disease?",
+            "How is chronic kidney disease diagnosed and staged?",
+            "What is glomerular filtration rate (GFR)?",
+            "What are the complications of chronic kidney disease?",
+            "How does chronic kidney disease affect the heart?",
+            "What is diabetic kidney disease?",
+            "How is chronic kidney disease treated?",
+            "What dietary changes are recommended for CKD?",
+            "What medications should be avoided or adjusted in CKD?",
+            "What is anemia in chronic kidney disease?",
+            "How does CKD affect bone health?",
+            "What is dialysis and when is it needed?",
+            "What is kidney transplantation?",
+            "How can chronic kidney disease be prevented?",
+            "What is the role of blood pressure control in CKD?",
+            "How does smoking affect kidney health?",
+            "What is the prognosis for chronic kidney disease?",
+            "How often should I have kidney function tests?",
+            "What lifestyle modifications help with CKD?",
+            "How can I prepare for kidney replacement therapy?",
+            "What support resources are available for CKD patients?",
+            "How has CKD treatment evolved in recent years?"
+        ];
+
+        function toggleChatbot() {
+            const chatbotWindow = document.getElementById('chatbotWindow');
+            chatbotOpen = !chatbotOpen;
+            
+            if (chatbotOpen) {
+                chatbotWindow.classList.add('active');
+                displayCurrentQuestions();
+                addWelcomeMessage();
+            } else {
+                chatbotWindow.classList.remove('active');
+            }
+        }
+
+        function addWelcomeMessage() {
+            const messagesContainer = document.getElementById('chatbotMessages');
+            if (messagesContainer.children.length === 0) {
+                const welcomeMessage = document.createElement('div');
+                welcomeMessage.className = 'message bot';
+                welcomeMessage.innerHTML = `
+                    <div>🤖 Hello! I'm your medical assistant. I can help you with questions about health, diseases, and medical procedures.</div>
+                    <div style="margin-top: 8px; font-size: 0.8em; opacity: 0.7;">📋 Select a question below to get started!</div>
+                `;
+                messagesContainer.appendChild(welcomeMessage);
+            }
+        }
+
+        function displayCurrentQuestions() {
+            const questionsContainer = document.getElementById('questionsContainer');
+            const questionsCounter = document.getElementById('questionsCounter');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            // Clear existing questions
+            questionsContainer.innerHTML = '';
+            
+            // Calculate start and end indices
+            const startIndex = currentQuestionSet * questionsPerPage;
+            const endIndex = Math.min(startIndex + questionsPerPage, allQuestions.length);
+            const currentQuestions = allQuestions.slice(startIndex, endIndex);
+            
+            // Display questions
+            currentQuestions.forEach((question, index) => {
+                const questionElement = document.createElement('div');
+                questionElement.className = 'question-item';
+                questionElement.textContent = question;
+                questionElement.onclick = () => selectQuestion(question);
+                questionsContainer.appendChild(questionElement);
+            });
+            
+            // Update counter
+            questionsCounter.textContent = `${startIndex + 1}-${endIndex} of ${allQuestions.length}`;
+            
+            // Update button states
+            prevBtn.disabled = currentQuestionSet === 0;
+            nextBtn.disabled = endIndex >= allQuestions.length;
+        }
+
+        function navigateQuestions(direction) {
+            const totalSets = Math.ceil(allQuestions.length / questionsPerPage);
+            currentQuestionSet += direction;
+            
+            // Ensure we stay within bounds
+            currentQuestionSet = Math.max(0, Math.min(currentQuestionSet, totalSets - 1));
+            
+            displayCurrentQuestions();
+        }
+
+        function selectQuestion(question) {
+            selectedQuestion = question;
+            
+            // Add user message
+            const messagesContainer = document.getElementById('chatbotMessages');
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message user';
+            userMessage.textContent = question;
+            messagesContainer.appendChild(userMessage);
+            
+            // Add typing indicator
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'message bot typing';
+            typingIndicator.innerHTML = `
+                <div class="typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+                <span>Thinking...</span>
+            `;
+            messagesContainer.appendChild(typingIndicator);
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Send question to backend
+            setTimeout(() => {
+                sendQuestionToBackend(question, typingIndicator);
+            }, 1000);
+        }
+
+        async function sendQuestionToBackend(question, typingIndicator) {
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        question: question  // Changed from 'message' to 'question' to match backend
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                
+                // Remove typing indicator
+                typingIndicator.remove();
+                
+                // Add bot response
+                const botMessage = document.createElement('div');
+                botMessage.className = 'message bot';
+                
+                // Clean the response - remove confidence indicators
+                let cleanResponse = data.response_text || data.response || data.message || "I'm here to help with your medical questions!";
+                cleanResponse = cleanResponse.replace(/\b(with\s+)?(low|medium|high|very\s+high)\s+confidence\b/gi, '');
+                cleanResponse = cleanResponse.replace(/\b(confidence\s*:?\s*\d+%?)\b/gi, '');
+                cleanResponse = cleanResponse.replace(/\b(based on my training data|according to my knowledge|to the best of my knowledge)\b/gi, '');
+                cleanResponse = cleanResponse.trim();
+                
+                botMessage.innerHTML = `<div>${cleanResponse}</div>`;
+                
+                const messagesContainer = document.getElementById('chatbotMessages');
+                messagesContainer.appendChild(botMessage);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            } catch (error) {
+                console.error('Error sending question:', error);
+                
+                // Remove typing indicator
+                typingIndicator.remove();
+                
+                // Add error message
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'message bot';
+                errorMessage.innerHTML = `
+                    <div>I apologize, but I'm having trouble connecting right now. Please try again later.</div>
+                    <div style="margin-top: 8px; font-size: 0.8em; opacity: 0.7;">🔄 You can try selecting another question from the list.</div>
+                `;
+                
+                const messagesContainer = document.getElementById('chatbotMessages');
+                messagesContainer.appendChild(errorMessage);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        }
+
+        // Close chatbot when clicking outside
+        document.addEventListener('click', function(event) {
+            const chatbotWidget = document.querySelector('.chatbot-widget');
+            if (!chatbotWidget.contains(event.target) && chatbotOpen) {
+                toggleChatbot();
+            }
+        });
+
+        // Initialize chatbot when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            displayCurrentQuestions();
+        });
+
+        // Additional CSS for the question-based layout
+        const additionalStyles = `
+            <style>
+                .chatbot-questions {
+                    padding: 15px 20px 20px;
+                    border-top: 2px solid rgba(102, 126, 234, 0.2);
+                    background: rgba(248, 250, 252, 0.9);
+                    backdrop-filter: blur(10px);
+                    max-height: 280px;
+                    overflow-y: auto;
+                    flex-shrink: 0;
+                }
+
+                .questions-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 12px;
+                    padding-bottom: 8px;
+                    border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+                }
+
+                .questions-header h4 {
+                    margin: 0;
+                    font-size: 0.9rem;
+                    color: var(--text-primary);
+                    font-weight: 600;
+                }
+
+                .questions-counter {
+                    font-size: 0.8rem;
+                    color: var(--text-secondary);
+                    background: rgba(102, 126, 234, 0.1);
+                    padding: 4px 8px;
+                    border-radius: 10px;
+                    font-weight: 500;
+                }
+
+                .questions-container {
+                    min-height: 160px;
+                    max-height: 180px;
+                    overflow-y: auto;
+                    margin-bottom: 15px;
+                }
+
+                .question-item {
+                    background: rgba(255, 255, 255, 0.9);
+                    border: 1px solid rgba(102, 126, 234, 0.2);
+                    border-radius: 10px;
+                    padding: 10px 12px;
+                    margin-bottom: 6px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 0.8rem;
+                    line-height: 1.3;
+                    color: var(--text-primary);
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                .question-item:hover {
+                    background: rgba(102, 126, 234, 0.1);
+                    border-color: rgba(102, 126, 234, 0.4);
+                    transform: translateY(-1px);
+                    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+                }
+
+                .question-item:active {
+                    transform: translateY(0);
+                    background: rgba(102, 126, 234, 0.2);
+                }
+
+                .questions-navigation {
+                    display: flex;
+                    justify-content: space-between;
+                    gap: 10px;
+                    margin-top: 10px;
+                }
+
+                .nav-btn {
+                    flex: 1;
+                    padding: 10px 15px;
+                    background: var(--primary-gradient);
+                    color: white;
+                    border: none;
+                    border-radius: 10px;
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 5px;
+                }
+
+                .nav-btn:hover:not(:disabled) {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+                }
+
+                .nav-btn:disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                    transform: none;
+                }
+
+                .questions-container::-webkit-scrollbar {
+                    width: 4px;
+                }
+
+                .questions-container::-webkit-scrollbar-track {
+                    background: rgba(0, 0, 0, 0.05);
+                    border-radius: 2px;
+                }
+
+                .questions-container::-webkit-scrollbar-thumb {
+                    background: rgba(102, 126, 234, 0.3);
+                    border-radius: 2px;
+                }
+
+                .questions-container::-webkit-scrollbar-thumb:hover {
+                    background: rgba(102, 126, 234, 0.5);
+                }
+
+                .chatbot-questions::-webkit-scrollbar {
+                    width: 4px;
+                }
+
+                .chatbot-questions::-webkit-scrollbar-track {
+                    background: rgba(0, 0, 0, 0.05);
+                    border-radius: 2px;
+                }
+
+                .chatbot-questions::-webkit-scrollbar-thumb {
+                    background: rgba(102, 126, 234, 0.3);
+                    border-radius: 2px;
+                }
+
+                .chatbot-questions::-webkit-scrollbar-thumb:hover {
+                    background: rgba(102, 126, 234, 0.5);
+                }
+            </style>
+        `;
+
+        // Add the additional styles to the document
+        document.head.insertAdjacentHTML('beforeend', additionalStyles);
+    </script>
+</body>
+</html>
