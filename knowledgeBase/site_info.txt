@@ -1,0 +1,197 @@
+Q: What is PRED.AI and what does it do?
+A: PRED.AI is a comprehensive precision medicine platform that uses advanced artificial intelligence to predict disease risks and provide personalized health insights. Our platform combines machine learning algorithms with medical expertise to analyze individual patient data and deliver accurate risk assessments for heart disease, diabetes, lung cancer, and chronic kidney disease. The system processes medical parameters through trained AI models to generate probability scores, health scores, and personalized recommendations for preventive care and treatment planning.
+
+Q: How do I navigate the PRED.AI platform?
+A: After logging in, you'll reach the main dashboard with four prediction cards. Click on any card (Heart Disease, Diabetes, Lung Cancer, or Kidney Disease) to access that specific prediction tool. Each tool has a patient information form where you input medical parameters using sliders and dropdown menus. After completing the form, click "Predict" to receive your risk assessment. Results include risk levels, probability scores, health scores, and personalized AI-generated recommendations. Use the "Clear" button to reset results, and the "Back to Dashboard" button to return to the main menu.
+
+Q: What medical parameters do I need for heart disease prediction?
+A: The heart disease prediction tool requires the following parameters: Age (years), Sex (Male/Female), Anemia status (Yes/No), Creatinine Phosphokinase levels (U/L), Diabetes status (Yes/No), Ejection Fraction (%), High Blood Pressure (Yes/No), Platelet count (platelets/mL), Serum Creatinine (mg/dL), Serum Sodium (mEq/L), Smoking status (Yes/No), and Follow-up period (months). Each parameter has helpful tooltips explaining its medical significance. The system analyzes these cardiovascular risk factors to predict the probability of heart failure.
+
+Q: What inputs are required for diabetes prediction?
+A: The diabetes prediction tool requires: Number of pregnancies, Plasma glucose concentration (mg/dL), Diastolic blood pressure (mm Hg), Triceps skin fold thickness (mm), 2-hour serum insulin (mu U/ml), Body mass index (kg/m²), Diabetes pedigree function (genetic likelihood), and Age (years). These metabolic indicators help the AI model assess your risk of developing Type 2 diabetes. The system evaluates insulin sensitivity, glucose metabolism, and genetic predisposition to provide accurate risk assessment.
+
+Q: What information is needed for lung cancer prediction?
+A: The lung cancer prediction tool analyzes genetic markers and clinical data including: Age (years), Sex (Male/Female), and genetic mutations: EGFR, KRAS, ALK, TP53, STK11, KEAP1, BRAF, ROS1, and MET. These genetic mutations are key biomarkers for lung cancer risk and treatment response. The AI model uses this genetic profile to assess lung cancer probability and recommend appropriate screening protocols. This tool is particularly valuable for high-risk individuals with family history or environmental exposures.
+
+Q: What parameters does the kidney disease prediction use?
+A: The kidney disease prediction tool requires: Age (years), Blood pressure (mmHg), Blood glucose random (mg/dL), Blood urea nitrogen (mg/dL), Serum sodium (mEq/L), Serum potassium (mEq/L), White blood cell count (cells/cmm), and several yes/no indicators: Hypertension, Diabetes mellitus, Coronary artery disease, Poor appetite, Pedal edema, and Anemia. These laboratory values and clinical signs help assess kidney function and predict chronic kidney disease risk.
+
+Q: How accurate are the AI predictions?
+A: Our machine learning models achieve 85-95% accuracy across all prediction types, validated on extensive medical datasets. Each prediction includes a confidence indicator showing the model's certainty level. The models are trained using Random Forest, XGBoost, and other advanced algorithms on curated medical datasets. However, these are risk assessments meant to supplement, not replace, professional medical diagnosis. All predictions should be discussed with healthcare providers for proper medical interpretation and treatment planning.
+
+Q: What do the prediction results mean?
+A: Each prediction provides: Risk Level (Low, Moderate, or High Risk), Probability percentages for different outcomes, Health Score (0-100 scale), Confidence level of the prediction, and Personalized recommendations. Low Risk means minimal likelihood of developing the condition, Moderate Risk indicates some concerning factors requiring monitoring, and High Risk suggests significant probability requiring immediate medical attention. The health score reflects overall condition-specific wellness, with higher scores indicating better health status.
+
+Q: How does the AI Health Assistant work?
+A: The AI Health Assistant uses advanced Natural Language Processing with Retrieval-Augmented Generation (RAG) technology. It maintains a comprehensive knowledge base of medical information and uses semantic search to provide accurate, contextual responses to health questions. The system can handle greetings, medical queries about diseases, symptoms, prevention, treatment options, and platform functionality while maintaining conversation context throughout your session.
+
+Q: Is my medical data secure and private?
+A: Yes, your privacy is completely protected. The AI Health Assistant runs entirely on secure servers without storing personal conversations. All prediction models process data locally during your session only. No personal health information is permanently stored or shared with third parties. Each prediction session is independent and confidential. The platform uses enterprise-grade encryption and follows strict medical data privacy standards.
+
+Q: Can I save or export my prediction results?
+A: Currently, predictions are session-based for maximum privacy protection. Each assessment is independent and not stored permanently. You can view detailed results during your session including risk levels, probability scores, health scores, and personalized recommendations. For ongoing health monitoring, we recommend consulting with your healthcare provider who can maintain comprehensive medical records and track changes over time.
+
+Q: How often should I use the prediction tools?
+A: The frequency depends on your health status and risk factors. For general health monitoring, annual assessments may be sufficient. However, if you have risk factors like family history, existing conditions, or lifestyle changes, more frequent assessments (every 3-6 months) may be beneficial. Always consult with your healthcare provider to determine the appropriate monitoring schedule for your individual situation.
+
+Q: What should I do if I receive a high-risk prediction?
+A: High-risk predictions require immediate medical attention. Schedule an appointment with your healthcare provider as soon as possible to discuss the results. The AI provides initial screening, but professional medical evaluation is essential for accurate diagnosis and treatment planning. Your doctor can order additional tests, confirm the risk assessment, and develop an appropriate treatment or prevention plan based on your complete medical history.
+
+Q: Can healthcare professionals use this platform?
+A: Yes, the platform is designed for healthcare professionals, medical researchers, students, and individuals interested in understanding health risks. Medical professionals can use it as a screening tool, risk assessment aid, and patient education resource. However, all predictions should be integrated with clinical judgment and comprehensive medical evaluation for proper diagnosis and treatment planning.
+
+Q: How do I get the most accurate predictions?
+A: For the most accurate results: Ensure all input parameters are as precise as possible, use recent medical test results when available, be honest about lifestyle factors like smoking and exercise, double-check all entered values before submitting, and consider having recent lab work done if your last tests were over 6 months ago. The more accurate your input data, the more reliable your risk assessment will be.
+
+Q: What makes this platform different from other health apps?
+A: PRED.AI stands out through its comprehensive approach combining multiple disease predictions in one platform, advanced AI models trained on curated medical datasets, personalized recommendations based on individual risk profiles, transparent methodology with confidence indicators, integration of genetic markers for lung cancer prediction, and professional-grade accuracy suitable for healthcare settings. The platform bridges the gap between consumer health apps and clinical decision support tools.
+
+Q: Are there any limitations to the predictions?
+A: Yes, important limitations include: Predictions are risk assessments, not definitive diagnoses, Models are trained on specific datasets which may not represent all populations, Results should always be confirmed with healthcare providers, The platform cannot replace comprehensive medical evaluation, Some rare conditions or individual variations may not be captured, and Predictions are based on the specific parameters included in each model. Always use results as one factor in your overall health assessment.
+
+Q: How can I provide feedback or report issues?
+A: We value your feedback to improve the platform. You can report issues, suggest improvements, or share your experience through the feedback section in your dashboard. For technical issues, include details about your browser, device, and the specific problem encountered. For medical concerns, always consult with your healthcare provider first, then share your experience to help us improve the platform's accuracy and usability.
+
+Q: What future features are planned?
+A: We're continuously expanding the platform with new prediction models for additional diseases, enhanced AI recommendations with lifestyle coaching, integration with wearable devices and health apps, advanced analytics for healthcare providers, mobile app development for better accessibility, and expanded genetic markers for more precise risk assessment. The platform evolves based on user feedback and advances in medical AI research.
+
+Q: How do I interpret the confidence levels?
+A: Confidence levels indicate how certain the AI model is about its prediction. High confidence (>90%) suggests the model has strong certainty based on clear patterns in your data. Moderate confidence (70-90%) indicates reasonable certainty but with some uncertainty factors. Low confidence (<70%) suggests the prediction should be interpreted cautiously and verified with additional medical evaluation. Higher confidence doesn't necessarily mean higher risk - it means the model is more certain about its assessment.
+
+Q: Can I use the platform on mobile devices?
+A: Yes! The platform features a fully responsive design that works seamlessly across desktop computers, tablets, and mobile devices. The interface automatically adapts to different screen sizes while maintaining full functionality. All prediction tools, AI assistant, and dashboard features are optimized for mobile use, ensuring you can access health insights anytime, anywhere.
+
+Q: What browsers are supported?
+A: The platform supports all modern browsers including Chrome, Firefox, Safari, Edge, and Opera. For the best experience, we recommend using the latest version of your preferred browser. The platform is optimized for HTML5 and modern JavaScript features, ensuring smooth performance across different browsers and devices.
+
+Q: How do I contact support?
+A: For technical support or questions about the platform, use the AI Health Assistant chatbot available on every page - it can answer most questions about features, usage, and medical information. For complex technical issues, you can reach out through the contact information provided in your dashboard. For medical concerns, always consult with your healthcare provider first.
+
+# Website Functionality and Platform Guide
+
+Q: How do I use the PRED.AI platform?
+A: To use PRED.AI, first sign up or log in to access the dashboard. You'll see four prediction cards: Heart Disease, Diabetes, Lung Cancer, and Kidney Disease. Click on any card to open that specific prediction tool. Each tool has a patient information form with input fields for medical parameters. Use the sliders and dropdown menus to enter your data, then click "Predict" to receive comprehensive risk assessment results including probability scores, health scores, and personalized AI-generated recommendations.
+
+Q: What are the required inputs for heart disease prediction?
+A: The heart disease prediction tool requires 12 key parameters: Age (40-95 years), Sex (Male/Female), Anemia status (Yes/No), Creatinine Phosphokinase levels (23-7861 U/L), Diabetes status (Yes/No), Ejection Fraction (14-80%), High Blood Pressure (Yes/No), Platelet count (25100-850000 platelets/mL), Serum Creatinine (0.5-9.4 mg/dL), Serum Sodium (113-148 mEq/L), Smoking status (Yes/No), and Follow-up period (4-285 days). Each parameter has tooltips explaining its medical significance and ideal ranges.
+
+Q: What inputs are needed for diabetes prediction?
+A: The diabetes prediction tool requires 8 metabolic parameters: Number of pregnancies (0-17), Plasma glucose concentration (0-199 mg/dL), Diastolic blood pressure (0-122 mmHg), Triceps skin fold thickness (0-99 mm), 2-hour serum insulin (0-846 mu U/ml), Body mass index (0-67.1 kg/m²), Diabetes pedigree function (0.078-2.42 genetic likelihood score), and Age (21-81 years). These indicators help assess insulin sensitivity, glucose metabolism, and genetic predisposition to Type 2 diabetes.
+
+Q: What genetic markers are analyzed for lung cancer prediction?
+A: The lung cancer prediction tool analyzes Age (20-90 years), Sex (Male/Female), and 9 genetic mutations: EGFR (Epidermal Growth Factor Receptor), KRAS (Kirsten RAS), ALK (Anaplastic Lymphoma Kinase), TP53 (Tumor Protein 53), STK11 (Serine/Threonine Kinase 11), KEAP1 (Kelch ECH Associating Protein 1), BRAF (B-Raf Proto-Oncogene), ROS1 (ROS Proto-Oncogene 1), and MET (MET Proto-Oncogene). These genetic biomarkers are crucial for lung cancer risk assessment and treatment planning.
+
+Q: What parameters does kidney disease prediction use?
+A: The kidney disease prediction tool requires 13 parameters: Age (2-90 years), Blood pressure (50-180 mmHg), Blood glucose random (22-490 mg/dL), Blood urea nitrogen (1.5-391 mg/dL), Serum sodium (4.5-163 mEq/L), Serum potassium (2.5-47 mEq/L), White blood cell count (2200-26400 cells/cmm), and 6 yes/no indicators: Hypertension, Diabetes mellitus, Coronary artery disease, Poor appetite, Pedal edema, and Anemia. These laboratory values and clinical signs assess kidney function and chronic kidney disease risk.
+
+Q: What do the prediction results show?
+A: Each prediction provides comprehensive health assessment including: Risk level classification (Low, Moderate, or High Risk), Probability percentages for different outcomes, Overall health score (0-100 scale), Confidence level of the prediction (75-95%), Personalized recommendations for health improvement, and Detailed interpretation explaining the results. The system also generates AI-powered suggestions covering lifestyle, medical care, dietary, exercise, and monitoring recommendations specific to your condition.
+
+Q: How do I interpret the health scores?
+A: Health scores range from 0-100 with color-coded visualization: 80-100 (Green) indicates excellent health with low risk, 60-79 (Yellow) suggests good health with room for improvement, and below 60 (Red) indicates health concerns requiring attention. The score is calculated using your input parameters, risk factors, and AI model predictions. Higher scores indicate better health status and lower disease risk.
+
+Q: What are the AI-powered suggestions?
+A: After completing a prediction, click "Explore AI Suggestions" to receive personalized recommendations powered by Google Gemini AI. The AI analyzes your specific health profile and generates detailed advice covering: Condition-specific lifestyle recommendations, Medical care and monitoring suggestions, Dietary guidelines tailored to your condition, Exercise recommendations appropriate for your risk level, and Health monitoring strategies. Each suggestion is personalized based on your unique health parameters and risk assessment.
+
+Q: How do I clear results and start over?
+A: Each prediction page has a "Clear" button (🗑️) in the top-right corner of the Health Score card. Clicking this button resets the health score, clears all prediction results, disables AI suggestions, and allows you to start fresh with new input parameters. You'll see a confirmation message "Results cleared successfully!" when the reset is complete.
+
+Q: How do I navigate between different prediction tools?
+A: Use the "Back to Dashboard" button (←) in the top navigation bar to return to the main dashboard from any prediction tool. From the dashboard, you can select any of the four prediction cards to switch between Heart Disease, Diabetes, Lung Cancer, and Kidney Disease prediction tools. Each tool maintains its own session, so you can work with multiple predictions independently.
+
+Q: Are there sample data sets available?
+A: Yes! Each prediction tool has a "📊" button that opens a modal with sample data from real medical datasets. You can view sample entries to understand the expected input ranges and copy sample data directly into the prediction forms. This helps you understand typical parameter values and test the system with realistic medical data.
+
+Q: What happens to my data after prediction?
+A: Your privacy is completely protected. All predictions are session-based and not stored permanently. The data is processed locally during your session only, and no personal health information is saved on our servers. Each prediction session is independent and confidential. When you close your browser or navigate away, your data is automatically cleared.
+
+Q: Can I use the platform on mobile devices?
+A: Yes! PRED.AI features a fully responsive design that works seamlessly on desktop computers, tablets, and mobile devices. The interface automatically adapts to different screen sizes while maintaining full functionality. All prediction tools, forms, and AI suggestions are optimized for mobile use with touch-friendly controls and readable text.
+
+Q: How do I access the AI Health Assistant chatbot?
+A: The AI Health Assistant is available through the floating chatbot icon (🤖) in the bottom-right corner of your screen. Click the icon to open the chat window where you can ask questions about health topics, medical conditions, wellness tips, and platform functionality. The chatbot uses advanced Natural Language Processing to provide accurate, contextual responses based on comprehensive medical knowledge.
+
+Q: What can I ask the AI Health Assistant?
+A: You can ask the AI Health Assistant about: Medical conditions and symptoms, Disease prevention strategies, Wellness and lifestyle tips, Medication information, Diagnostic procedures, Treatment options, Health monitoring guidance, Platform functionality questions, Prediction result interpretation, and General health advice. The AI uses a comprehensive medical knowledge base to provide evidence-based responses.
+
+Q: How accurate are the AI predictions?
+A: Our machine learning models achieve 85-95% accuracy across all prediction types, validated on extensive medical datasets. Each prediction includes a confidence indicator showing the model's certainty level. The models use Random Forest, XGBoost, and other advanced algorithms trained on curated medical datasets. However, these are risk assessments meant to supplement, not replace, professional medical diagnosis. Always consult healthcare providers for proper medical interpretation and treatment planning.
+
+# Prevention and Treatment Strategies
+
+Q: How can I prevent heart disease?
+A: Heart disease prevention involves multiple strategies: Quit smoking immediately (reduces risk by 50% within 1 year), maintain healthy diet rich in fruits, vegetables, whole grains, and omega-3 fatty acids, exercise at least 150 minutes of moderate activity weekly, control blood pressure (target <120/80 mmHg), manage cholesterol levels (LDL <100 mg/dL), maintain healthy weight (BMI 18.5-24.9), limit alcohol consumption, manage stress through meditation or yoga, get 7-9 hours of quality sleep nightly, and schedule regular health screenings. These lifestyle modifications can reduce heart disease risk by up to 80%.
+
+Q: What are the best diabetes prevention strategies?
+A: Type 2 diabetes prevention focuses on lifestyle modifications: Maintain healthy weight through portion control and regular exercise, engage in 150 minutes of moderate physical activity weekly, follow a balanced diet with controlled carbohydrate intake, choose whole grains over refined carbohydrates, include lean proteins and healthy fats, limit sugary drinks and processed foods, monitor blood glucose levels regularly if at risk, get adequate sleep (7-9 hours nightly), manage stress effectively, and avoid smoking. Weight loss of just 5-10% can reduce diabetes risk by 60%.
+
+Q: How can I reduce lung cancer risk?
+A: Lung cancer prevention strategies include: Complete smoking cessation (most important - reduces risk by 90%), avoid secondhand smoke exposure, test home for radon gas levels, limit exposure to carcinogens like asbestos and diesel exhaust, maintain healthy diet rich in fruits and vegetables, exercise regularly to improve lung function, avoid excessive alcohol consumption, consider lung cancer screening if high-risk (50-80 years old with 20+ pack-year smoking history), practice breathing exercises, and maintain good indoor air quality. Never smoking or quitting smoking provides the greatest risk reduction.
+
+Q: What can I do to prevent kidney disease?
+A: Chronic kidney disease prevention involves: Control blood pressure (target <130/80 mmHg), manage diabetes effectively (HbA1c <7%), maintain healthy weight, exercise regularly, follow kidney-friendly diet low in sodium, limit protein intake if advised by doctor, stay hydrated with 8-10 glasses of water daily, avoid excessive use of NSAIDs (ibuprofen, naproxen), quit smoking, limit alcohol consumption, manage stress, get regular health screenings, and follow medication instructions carefully. Early detection and management of diabetes and hypertension can prevent up to 50% of kidney disease cases.
+
+Q: What dietary changes help prevent cardiovascular disease?
+A: Heart-healthy diet recommendations include: Follow Mediterranean or DASH diet patterns, consume 5-9 servings of fruits and vegetables daily, choose whole grains over refined carbohydrates, include omega-3 rich fish 2-3 times weekly, limit saturated fat to <7% of total calories, avoid trans fats completely, reduce sodium intake to <2300mg daily, choose lean proteins like poultry and legumes, include nuts and seeds for healthy fats, limit processed and packaged foods, cook at home more often, and stay hydrated with water instead of sugary drinks.
+
+Q: What exercise recommendations help prevent diabetes?
+A: Diabetes prevention exercise plan includes: 150 minutes of moderate aerobic activity weekly (brisk walking, swimming, cycling), include strength training 2-3 times per week, add flexibility and balance exercises, start gradually if sedentary, monitor blood glucose before and after exercise, stay hydrated during workouts, wear proper footwear, exercise with a partner for motivation, track progress with fitness apps, and consult healthcare provider before starting new programs. Regular physical activity can reduce diabetes risk by 40-60%.
+
+Q: How can I improve my lung health?
+A: Lung health improvement strategies include: Quit smoking and avoid secondhand smoke, practice deep breathing exercises daily, maintain good posture for optimal lung expansion, exercise regularly to improve respiratory function, avoid air pollution when possible, use air purifiers indoors, practice yoga or tai chi for breathing techniques, stay hydrated to thin mucus, eat antioxidant-rich foods (berries, leafy greens), avoid respiratory infections through good hygiene, and consider pulmonary rehabilitation if needed. These strategies can improve lung function by 10-15%.
+
+Q: What lifestyle changes support kidney health?
+A: Kidney-healthy lifestyle includes: Maintain healthy blood pressure through diet and exercise, control blood sugar levels if diabetic, stay hydrated with adequate water intake, limit sodium to <2300mg daily, choose fresh foods over processed, maintain healthy weight, exercise regularly, avoid smoking and excessive alcohol, manage stress effectively, get adequate sleep, and follow prescribed medications correctly. Regular monitoring of kidney function through blood and urine tests helps detect problems early.
+
+Q: How can I manage stress to prevent disease?
+A: Stress management for disease prevention includes: Practice meditation or mindfulness for 10-20 minutes daily, engage in regular physical activity, maintain social connections and support networks, get adequate sleep (7-9 hours nightly), practice deep breathing exercises, consider counseling or therapy if needed, limit caffeine and alcohol, engage in hobbies and relaxation activities, set realistic goals and expectations, and learn time management skills. Chronic stress management can reduce disease risk by up to 30%.
+
+Q: What screening recommendations help with early detection?
+A: Early detection screening guidelines include: Blood pressure checks annually after age 18, cholesterol screening every 5 years after age 20, diabetes screening every 3 years after age 45, mammograms annually for women 40-74, colonoscopy every 10 years starting at age 50, lung cancer screening for high-risk individuals 50-80 years old, skin cancer checks annually, eye exams every 1-2 years, and bone density testing for women over 65. Early detection can improve treatment outcomes by 70-90%.
+
+Q: How can I maintain long-term health improvements?
+A: Sustainable health maintenance involves: Set realistic, achievable goals, make gradual lifestyle changes, track progress with health apps or journals, build support networks, celebrate small victories, plan for setbacks and have recovery strategies, make health a priority in daily schedules, invest in preventive care, stay informed about health topics, and work with healthcare providers for personalized guidance. Long-term success comes from consistent, sustainable habits rather than drastic changes.
+
+Q: What role does sleep play in disease prevention?
+A: Quality sleep is crucial for disease prevention: Aim for 7-9 hours nightly, maintain consistent sleep schedule, create cool, dark, quiet sleep environment, avoid screens 1 hour before bedtime, limit caffeine after 2 PM, avoid large meals before bed, use relaxation techniques, and address sleep disorders promptly. Poor sleep increases risk of diabetes by 30%, heart disease by 48%, and obesity by 55%. Good sleep supports immune function, hormone regulation, and cellular repair processes.
+
+# Medical Tests and Procedures Guide
+
+Q: What is an ejection fraction test and why is it important?
+A: Ejection fraction (EF) is a measurement of how much blood the left ventricle pumps out with each heartbeat, expressed as a percentage. Normal EF is 55-70%. It's measured using echocardiography, cardiac MRI, or nuclear stress tests. Low EF (<40%) indicates heart failure or cardiomyopathy, while preserved EF (>50%) with symptoms suggests heart failure with preserved ejection fraction. This test helps diagnose heart conditions, guide treatment decisions, and monitor response to therapy.
+
+Q: What do creatinine levels indicate about kidney function?
+A: Serum creatinine is a waste product from muscle metabolism that's filtered by the kidneys. Normal levels are 0.6-1.2 mg/dL for men and 0.5-1.1 mg/dL for women. Elevated creatinine suggests reduced kidney function. It's used to calculate estimated glomerular filtration rate (eGFR), which stages kidney disease: Stage 1 (>90 ml/min/1.73m²), Stage 2 (60-89), Stage 3 (30-59), Stage 4 (15-29), and Stage 5 (<15). Regular monitoring helps detect kidney disease early and guide treatment.
+
+Q: What is HbA1c and how does it relate to diabetes?
+A: HbA1c (glycated hemoglobin) measures average blood sugar levels over 2-3 months by testing the percentage of hemoglobin with attached glucose. Normal is <5.7%, prediabetes is 5.7-6.4%, and diabetes is ≥6.5%. For people with diabetes, target is usually <7%. This test doesn't require fasting and provides better long-term glucose control assessment than single blood glucose measurements. It's used for diabetes diagnosis, monitoring, and treatment adjustment.
+
+Q: What are genetic mutations and how do they affect lung cancer risk?
+A: Genetic mutations are changes in DNA that can increase cancer risk or affect treatment response. Key lung cancer mutations include: EGFR (found in 10-15% of lung cancers, treatable with targeted therapy), KRAS (25-30% of cases, historically difficult to treat), ALK (3-5% of cases, responds well to ALK inhibitors), TP53 (50-70% of cases, indicates aggressive disease), and ROS1 (1-2% of cases, treatable with targeted drugs). Genetic testing helps personalize treatment and predict prognosis.
+
+Q: What is blood pressure and what do the numbers mean?
+A: Blood pressure measures the force of blood against artery walls during heartbeats. It's recorded as systolic/diastolic pressure in mmHg. Normal is <120/80, elevated is 120-129/<80, stage 1 hypertension is 130-139/80-89, stage 2 is ≥140/90, and hypertensive crisis is >180/120. Systolic (top number) measures pressure during heart contraction, diastolic (bottom number) during relaxation. High blood pressure damages arteries and increases heart disease, stroke, and kidney disease risk.
+
+Q: What is BMI and how is it calculated?
+A: Body Mass Index (BMI) is calculated as weight (kg) divided by height (m) squared, or weight (lbs) × 703 divided by height (inches) squared. Categories are: Underweight (<18.5), Normal (18.5-24.9), Overweight (25-29.9), Obese Class I (30-34.9), Class II (35-39.9), and Class III (≥40). While BMI doesn't distinguish between muscle and fat, it's a useful screening tool for weight-related health risks including diabetes, heart disease, and certain cancers.
+
+Q: What are troponin levels and when are they tested?
+A: Troponin is a protein complex found in heart muscle that's released into blood when heart muscle is damaged. Normal levels are <0.04 ng/mL. Elevated troponin indicates heart muscle damage, most commonly from heart attack but also from other conditions like heart failure, myocarditis, or pulmonary embolism. Troponin levels are measured in emergency situations when heart attack is suspected, with peak levels occurring 12-24 hours after symptom onset.
+
+Q: What is insulin and how does it work in the body?
+A: Insulin is a hormone produced by pancreatic beta cells that regulates blood glucose levels. It allows cells to absorb glucose from blood for energy or storage. In Type 1 diabetes, the pancreas produces little or no insulin. In Type 2 diabetes, cells become resistant to insulin or the pancreas doesn't produce enough. Normal fasting insulin levels are 2-25 mIU/L. Insulin resistance, measured by HOMA-IR, precedes Type 2 diabetes development by years.
+
+Q: What are normal platelet counts and what do abnormal levels indicate?
+A: Normal platelet count is 150,000-450,000 platelets per microliter. Thrombocytopenia (low platelets <150,000) can cause easy bruising and bleeding, while thrombocytosis (high platelets >450,000) may increase clotting risk. In heart disease, very low platelets might indicate bleeding risk from anticoagulant medications, while very high counts could increase heart attack or stroke risk. Platelet function is also important for cardiovascular health.
+
+Q: What is serum sodium and why is it important?
+A: Serum sodium measures sodium concentration in blood, normally 135-145 mEq/L. Hyponatremia (low sodium <135) can cause confusion, seizures, and coma, often from heart failure, kidney disease, or medication side effects. Hypernatremia (high sodium >145) causes thirst, confusion, and dehydration, usually from inadequate fluid intake or excessive losses. In heart failure, low sodium often indicates more severe disease and poorer prognosis.
+
+Q: What are white blood cells and what do counts indicate?
+A: White blood cells (WBCs) are immune system cells that fight infection. Normal count is 4,000-11,000 cells/mm³. Elevated WBC (leukocytosis) may indicate infection, inflammation, stress, or blood cancers. Low WBC (leukopenia) suggests weakened immune system from medications, autoimmune diseases, or bone marrow problems. In kidney disease, WBC counts help assess infection risk and overall health status.
+
+Q: What is blood glucose and what are normal levels?
+A: Blood glucose measures sugar concentration in blood. Normal fasting levels are 70-99 mg/dL, prediabetes is 100-125 mg/dL, and diabetes is ≥126 mg/dL. Random glucose ≥200 mg/dL suggests diabetes. Post-meal glucose should be <140 mg/dL at 2 hours. Continuous glucose monitoring provides detailed glucose patterns. High glucose damages blood vessels and organs, while low glucose can cause confusion, seizures, and coma.
+
+Q: What is blood urea nitrogen (BUN) and what does it indicate?
+A: BUN measures urea nitrogen in blood, a waste product from protein metabolism filtered by kidneys. Normal levels are 7-20 mg/dL. Elevated BUN suggests kidney dysfunction, dehydration, high protein intake, or increased protein breakdown. Low BUN may indicate liver disease, malnutrition, or overhydration. BUN is often evaluated with creatinine; BUN/creatinine ratio helps distinguish kidney problems from other causes of elevated BUN.
