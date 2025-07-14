@@ -11,8 +11,8 @@ import random
 import sys
 
 app = Flask(__name__, 
-            static_folder='frontend',
-            template_folder='frontend')
+            static_folder='../frontend',
+            template_folder='../frontend')
 
 # Enable CORS for all domains on all routes (for development)
 CORS(app)
@@ -1893,6 +1893,8 @@ def get_user_predictions_by_username_email():
                     p.healthscore,
                     p.confidence,
                     p.created_at,
+                    p.inputdata,
+                    p.outputdata,
                     u.username,
                     u.email
                 FROM predictions p
@@ -1917,8 +1919,10 @@ def get_user_predictions_by_username_email():
                     'HealthScore': row[5],
                     'Confidence': row[6],
                     'CreatedAt': row[7].isoformat() if row[7] else None,
-                    'Username': row[8],
-                    'Email': row[9]
+                    'InputData': row[8],  # Complete input parameters
+                    'OutputData': row[9],  # Complete output data
+                    'Username': row[10],
+                    'Email': row[11]
                 }
                 predictions.append(prediction)
             
