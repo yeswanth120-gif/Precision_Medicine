@@ -1020,7 +1020,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script type="module">
         // Configuration
-        const API_BASE_URL = 'https://precisionmedicine-production.up.railway.app';
+        const API_BASE_URL = 'http://localhost:5000';
 
         let currentUser = null;
         let currentUserEmail = null;
@@ -1432,11 +1432,14 @@
                         <div class="input-details-section">
                             <div class="input-details-title">
                                 <i class="fas fa-clipboard-list"></i>
-                                Input Parameters
+                                Input Parameters from Database
                             </div>
-                            <p style="color: var(--text-secondary); font-style: italic;">
-                                Input parameters not available for this prediction.
-                            </p>
+                            <div style="text-align: center; padding: 20px; color: var(--text-secondary);">
+                                <i class="fas fa-database" style="font-size: 1.5rem; margin-bottom: 10px; opacity: 0.5;"></i>
+                                <p><strong>Input Data Not Available</strong></p>
+                                <p>Detailed input parameters for Prediction ID ${report.PredictionID} were not saved to the database.</p>
+                                <small>This may be an older prediction before input storage was implemented.</small>
+                            </div>
                         </div>
                     `;
                 }
@@ -1445,28 +1448,35 @@
                     <div class="input-details-section">
                         <div class="input-details-title">
                             <i class="fas fa-clipboard-list"></i>
-                            Complete Input Parameters
+                            Real Input Parameters from Database
                         </div>
                         <div class="input-details-grid">
                 `;
 
-                // Get input fields based on prediction type
+                // Get input fields based on prediction type - only show fields with actual data
                 const inputFields = getInputFieldsForType(report.PredictionType);
                 
                 inputFields.forEach(field => {
-                    const value = inputData[field.key] || 'N/A';
-                    html += `
-                        <div class="input-detail-item">
-                            <div class="input-detail-label">${field.label}</div>
-                            <div class="input-detail-value">
-                                ${value}
-                                ${field.unit ? `<span class="input-detail-unit">${field.unit}</span>` : ''}
+                    const value = inputData[field.key];
+                    if (value !== undefined && value !== null) {
+                        html += `
+                            <div class="input-detail-item">
+                                <div class="input-detail-label">${field.label}</div>
+                                <div class="input-detail-value">
+                                    ${value}
+                                    ${field.unit ? `<span class="input-detail-unit">${field.unit}</span>` : ''}
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
+                    }
                 });
 
                 html += `
+                        </div>
+                        <div style="margin-top: 15px; padding: 10px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border-left: 4px solid #10b981;">
+                            <small style="color: #10b981; font-weight: 600;">
+                                <i class="fas fa-check-circle"></i> Real data retrieved from PostgreSQL database (Prediction ID: ${report.PredictionID})
+                            </small>
                         </div>
                     </div>
                 `;
@@ -1480,9 +1490,11 @@
                             <i class="fas fa-clipboard-list"></i>
                             Input Parameters
                         </div>
-                        <p style="color: var(--text-secondary); font-style: italic;">
-                            Unable to load input parameters for this prediction.
-                        </p>
+                        <div style="text-align: center; padding: 20px; color: var(--danger-red);">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 1.5rem; margin-bottom: 10px;"></i>
+                            <p><strong>Error Loading Input Data</strong></p>
+                            <p>Unable to retrieve input parameters: ${error.message}</p>
+                        </div>
                     </div>
                 `;
             }
