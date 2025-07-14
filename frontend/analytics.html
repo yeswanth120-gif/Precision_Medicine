@@ -1138,7 +1138,7 @@
 
     <script>
         // Configuration
-        const API_BASE_URL = 'https://precisionmedicine-production.up.railway.app';
+        const API_BASE_URL = 'http://localhost:5000';
 
         // Global variables for user management
         let currentUser = null;
@@ -1554,96 +1554,59 @@
                 // Fetch detailed input data from the backend
                 let inputData = await fetchDetailedInputData(prediction.PredictionID, diseaseType);
 
-                // If no real input data, always use sample data as fallback
-                if (!inputData) {
-                    const sampleInputData = {
-                        heart_disease: {
-                            age: 65,
-                            sex: 'Male',
-                            anaemia: 'No',
-                            creatinine_phosphokinase: 582,
-                            diabetes: 'No',
-                            ejection_fraction: 38,
-                            high_blood_pressure: 'Yes',
-                            platelets: 265000,
-                            serum_creatinine: 1.9,
-                            serum_sodium: 136,
-                            smoking: 'Yes',
-                            time: 4
-                        },
-                        diabetes: {
-                            pregnancies: 6,
-                            glucose: 148,
-                            blood_pressure: 72,
-                            skin_thickness: 35,
-                            insulin: 0,
-                            bmi: 33.6,
-                            diabetes_pedigree_function: 0.627,
-                            age: 50
-                        },
-                        lung_cancer: {
-                            age: 69,
-                            sex: 'Male',
-                            smoking: 'Yes',
-                            yellow_fingers: 'No',
-                            anxiety: 'No',
-                            peer_pressure: 'No',
-                            chronic_disease: 'No',
-                            fatigue: 'Yes',
-                            allergy: 'No',
-                            wheezing: 'Yes',
-                            alcohol_consuming: 'No',
-                            coughing: 'Yes',
-                            shortness_of_breath: 'Yes',
-                            swallowing_difficulty: 'No',
-                            chest_pain: 'Yes'
-                        },
-                        kidney_disease: {
-                            age: 62,
-                            blood_pressure: 80,
-                            blood_glucose_random: 148,
-                            blood_urea: 25,
-                            serum_sodium: 140,
-                            potassium: 4.0,
-                            white_blood_cells: 9800,
-                            hypertension: 'Yes',
-                            diabetes_mellitus: 'No',
-                            coronary_artery_disease: 'No',
-                            appetite: 'Good',
-                            pedal_edema: 'No',
-                            anemia: 'No'
-                        }
-                    };
-                    inputData = sampleInputData[diseaseType] || {};
+                // If no real input data, show clear message
+                if (!inputData || Object.keys(inputData).length === 0) {
+                    return `
+                        <div class="input-details-section">
+                            <div class="input-details-title">
+                                <i class="fas fa-clipboard-list"></i>
+                                Input Parameters from Database
+                            </div>
+                            <div style="text-align: center; padding: 30px; color: var(--text-secondary); background: var(--gray-100); border-radius: 10px;">
+                                <i class="fas fa-database" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
+                                <p><strong>Input Data Not Available</strong></p>
+                                <p>Detailed input parameters for Prediction ID ${prediction.PredictionID} were not saved to the database.</p>
+                                <p><small>This may be an older prediction before input storage was implemented.</small></p>
+                            </div>
+                        </div>
+                    `;
                 }
 
+                // Generate input details grid with real data
                 let inputHTML = `
                     <div class="input-details-section">
                         <div class="input-details-title">
                             <i class="fas fa-clipboard-list"></i>
-                            Complete Input Parameters
+                            Real Input Parameters from Database
                         </div>
                         <div class="input-details-grid">
                 `;
 
-                // Generate input details based on disease type
+                // Generate input details based on disease type with real data
                 const inputFields = getInputFieldsForDiseaseType(diseaseType);
                 inputFields.forEach(field => {
-                    const value = inputData[field.key] || 'N/A';
-                    const status = getInputStatus(field.key, value, diseaseType);
-                    inputHTML += `
-                        <div class="input-detail-item">
-                            <div class="input-detail-label">${field.label}</div>
-                            <div class="input-detail-value">
-                                ${value}
-                                ${field.unit ? `<span class="input-detail-unit">${field.unit}</span>` : ''}
+                    const value = inputData[field.key];
+                    if (value !== undefined && value !== null) {
+                        const status = getInputStatus(field.key, value, diseaseType);
+                        inputHTML += `
+                            <div class="input-detail-item">
+                                <div class="input-detail-label">${field.label}</div>
+                                <div class="input-detail-value">
+                                    ${value}
+                                    ${field.unit ? `<span class="input-detail-unit">${field.unit}</span>` : ''}
+                                </div>
+                                <div class="input-detail-status ${status}">${getStatusText(status)}</div>
                             </div>
-                            <div class="input-detail-status ${status}">${getStatusText(status)}</div>
-                        </div>
-                    `;
+                        `;
+                    }
                 });
 
                 inputHTML += `
+                        </div>
+                        <div style="margin-top: 15px; padding: 10px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border-left: 4px solid var(--success-green);">
+                            <small style="color: var(--success-green); font-weight: 600;">
+                                <i class="fas fa-check-circle"></i> Real data retrieved from PostgreSQL database
+                            </small>
                         </div>
                     </div>
                 `;
@@ -1651,101 +1614,27 @@
                 return inputHTML;
             } catch (error) {
                 console.error('Error generating input details:', error);
-                // On error, fallback to sample data as well
-                const sampleInputData = {
-                    heart_disease: {
-                        age: 65,
-                        sex: 'Male',
-                        anaemia: 'No',
-                        creatinine_phosphokinase: 582,
-                        diabetes: 'No',
-                        ejection_fraction: 38,
-                        high_blood_pressure: 'Yes',
-                        platelets: 265000,
-                        serum_creatinine: 1.9,
-                        serum_sodium: 136,
-                        smoking: 'Yes',
-                        time: 4
-                    },
-                    diabetes: {
-                        pregnancies: 6,
-                        glucose: 148,
-                        blood_pressure: 72,
-                        skin_thickness: 35,
-                        insulin: 0,
-                        bmi: 33.6,
-                        diabetes_pedigree_function: 0.627,
-                        age: 50
-                    },
-                    lung_cancer: {
-                        age: 69,
-                        sex: 'Male',
-                        smoking: 'Yes',
-                        yellow_fingers: 'No',
-                        anxiety: 'No',
-                        peer_pressure: 'No',
-                        chronic_disease: 'No',
-                        fatigue: 'Yes',
-                        allergy: 'No',
-                        wheezing: 'Yes',
-                        alcohol_consuming: 'No',
-                        coughing: 'Yes',
-                        shortness_of_breath: 'Yes',
-                        swallowing_difficulty: 'No',
-                        chest_pain: 'Yes'
-                    },
-                    kidney_disease: {
-                        age: 62,
-                        blood_pressure: 80,
-                        blood_glucose_random: 148,
-                        blood_urea: 25,
-                        serum_sodium: 140,
-                        potassium: 4.0,
-                        white_blood_cells: 9800,
-                        hypertension: 'Yes',
-                        diabetes_mellitus: 'No',
-                        coronary_artery_disease: 'No',
-                        appetite: 'Good',
-                        pedal_edema: 'No',
-                        anemia: 'No'
-                    }
-                };
-                const inputData = sampleInputData[diseaseType] || {};
-                let inputHTML = `
+                // On error, show error message instead of fake data
+                return `
                     <div class="input-details-section">
                         <div class="input-details-title">
                             <i class="fas fa-clipboard-list"></i>
-                            Complete Input Parameters
+                            Input Parameters
                         </div>
-                        <div class="input-details-grid">
-                `;
-                const inputFields = getInputFieldsForDiseaseType(diseaseType);
-                inputFields.forEach(field => {
-                    const value = inputData[field.key] || 'N/A';
-                    const status = getInputStatus(field.key, value, diseaseType);
-                    inputHTML += `
-                        <div class="input-detail-item">
-                            <div class="input-detail-label">${field.label}</div>
-                            <div class="input-detail-value">
-                                ${value}
-                                ${field.unit ? `<span class="input-detail-unit">${field.unit}</span>` : ''}
-                            </div>
-                            <div class="input-detail-status ${status}">${getStatusText(status)}</div>
-                        </div>
-                    `;
-                });
-                inputHTML += `
+                        <div style="text-align: center; padding: 30px; color: var(--danger-red); background: var(--gray-100); border-radius: 10px;">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                            <p><strong>Error Loading Input Data</strong></p>
+                            <p>Unable to retrieve input parameters from database: ${error.message}</p>
                         </div>
                     </div>
                 `;
-                return inputHTML;
             }
         }
 
         // Fetch detailed input data from backend
         async function fetchDetailedInputData(predictionId, diseaseType) {
             try {
-                console.log(`🔍 Fetching detailed input data for prediction ${predictionId}...`);
+                console.log(`🔍 Fetching real input data for prediction ${predictionId} (${diseaseType})...`);
                 
                 // Fetch real input data from the database based on prediction ID and disease type
                 const response = await fetch(`${API_BASE_URL}/api/predictions/input-data`, {
@@ -1765,72 +1654,14 @@
                     if (data.success && data.inputData) {
                         console.log(`✅ Retrieved real input data for prediction ${predictionId}:`, data.inputData);
                         return data.inputData;
+                    } else {
+                        console.log(`⚠️ No input data found for prediction ${predictionId} in database`);
+                        return null;
                     }
+                } else {
+                    console.error(`❌ Failed to fetch input data: ${response.status} ${response.statusText}`);
+                    return null;
                 }
-                
-                console.log(`⚠️ Could not fetch real input data for prediction ${predictionId}, using fallback data`);
-                
-                // Fallback to sample data if real data is not available
-                const sampleInputData = {
-                    heart_disease: {
-                        age: 65,
-                        sex: 'Male',
-                        anaemia: 'No',
-                        creatinine_phosphokinase: 582,
-                        diabetes: 'No',
-                        ejection_fraction: 38,
-                        high_blood_pressure: 'Yes',
-                        platelets: 265000,
-                        serum_creatinine: 1.9,
-                        serum_sodium: 136,
-                        smoking: 'Yes',
-                        time: 4
-                    },
-                    diabetes: {
-                        pregnancies: 6,
-                        glucose: 148,
-                        blood_pressure: 72,
-                        skin_thickness: 35,
-                        insulin: 0,
-                        bmi: 33.6,
-                        diabetes_pedigree_function: 0.627,
-                        age: 50
-                    },
-                    lung_cancer: {
-                        age: 69,
-                        sex: 'Male',
-                        smoking: 'Yes',
-                        yellow_fingers: 'No',
-                        anxiety: 'No',
-                        peer_pressure: 'No',
-                        chronic_disease: 'No',
-                        fatigue: 'Yes',
-                        allergy: 'No',
-                        wheezing: 'Yes',
-                        alcohol_consuming: 'No',
-                        coughing: 'Yes',
-                        shortness_of_breath: 'Yes',
-                        swallowing_difficulty: 'No',
-                        chest_pain: 'Yes'
-                    },
-                    kidney_disease: {
-                        age: 62,
-                        blood_pressure: 80,
-                        blood_glucose_random: 148,
-                        blood_urea: 25,
-                        serum_sodium: 140,
-                        potassium: 4.0,
-                        white_blood_cells: 9800,
-                        hypertension: 'Yes',
-                        diabetes_mellitus: 'No',
-                        coronary_artery_disease: 'No',
-                        appetite: 'Good',
-                        pedal_edema: 'No',
-                        anemia: 'No'
-                    }
-                };
-
-                return sampleInputData[diseaseType] || null;
             } catch (error) {
                 console.error('Error fetching detailed input data:', error);
                 return null;
@@ -2611,395 +2442,76 @@
             return featureMappings[diseaseType] || {};
         }
 
-        // Generate sample input data for visualizations (simulated from database patterns)
-        function generateSampleInputData(data, diseaseType, count = 100) {
-            const features = getDiseaseFeatureMapping(diseaseType);
-            const sampleData = [];
-            
-            for (let i = 0; i < Math.min(count, data.length * 10); i++) {
-                const sample = {};
-                const baseRecord = data[i % data.length];
-                
-                // Generate realistic values based on disease type and risk level
-                const isHighRisk = baseRecord.RiskLevel === 'High Risk';
-                
-                if (diseaseType === 'heart_disease') {
-                    sample.age = Math.round(Math.random() * 40 + 40 + (isHighRisk ? 15 : 0));
-                    sample.sex = Math.random() > 0.5 ? 'Male' : 'Female';
-                    sample.anaemia = Math.random() > (isHighRisk ? 0.6 : 0.8) ? 'Yes' : 'No';
-                    sample.creatinine_phosphokinase = Math.round(Math.random() * 1000 + 100 + (isHighRisk ? 200 : 0));
-                    sample.diabetes = Math.random() > (isHighRisk ? 0.7 : 0.9) ? 'Yes' : 'No';
-                    sample.ejection_fraction = Math.round(Math.random() * 40 + 20 + (isHighRisk ? 0 : 20));
-                    sample.high_blood_pressure = Math.random() > (isHighRisk ? 0.5 : 0.8) ? 'Yes' : 'No';
-                    sample.platelets = Math.round(Math.random() * 200000 + 150000);
-                    sample.serum_creatinine = Math.round((Math.random() * 3 + 0.5 + (isHighRisk ? 1 : 0)) * 10) / 10;
-                    sample.serum_sodium = Math.round(Math.random() * 20 + 130);
-                    sample.smoking = Math.random() > (isHighRisk ? 0.6 : 0.8) ? 'Yes' : 'No';
-                    sample.time = Math.round(Math.random() * 250 + 4);
-                    sample.death_event = isHighRisk ? 1 : 0;
-                } else if (diseaseType === 'diabetes') {
-                    sample.pregnancies = Math.round(Math.random() * 8);
-                    sample.glucose = Math.round(Math.random() * 100 + 80 + (isHighRisk ? 40 : 0));
-                    sample.blood_pressure = Math.round(Math.random() * 50 + 60 + (isHighRisk ? 20 : 0));
-                    sample.skin_thickness = Math.round(Math.random() * 30 + 10);
-                    sample.insulin = Math.round(Math.random() * 300);
-                    sample.bmi = Math.round((Math.random() * 20 + 20 + (isHighRisk ? 10 : 0)) * 10) / 10;
-                    sample.diabetes_pedigree_function = Math.round((Math.random() * 1.5 + 0.1) * 1000) / 1000;
-                    sample.age = Math.round(Math.random() * 40 + 20 + (isHighRisk ? 15 : 0));
-                    sample.outcome = isHighRisk ? 1 : 0;
-                } else if (diseaseType === 'lung_cancer') {
-                    sample.age = Math.round(Math.random() * 40 + 40 + (isHighRisk ? 15 : 0));
-                    sample.sex = Math.random() > 0.5 ? 'Male' : 'Female';
-                    sample.smoking = Math.random() > (isHighRisk ? 0.3 : 0.8) ? 'Yes' : 'No';
-                    sample.yellow_fingers = Math.random() > (isHighRisk ? 0.7 : 0.9) ? 'Yes' : 'No';
-                    sample.anxiety = Math.random() > (isHighRisk ? 0.6 : 0.8) ? 'Yes' : 'No';
-                    sample.peer_pressure = Math.random() > 0.8 ? 'Yes' : 'No';
-                    sample.chronic_disease = Math.random() > (isHighRisk ? 0.7 : 0.9) ? 'Yes' : 'No';
-                    sample.fatigue = Math.random() > (isHighRisk ? 0.5 : 0.8) ? 'Yes' : 'No';
-                    sample.allergy = Math.random() > 0.8 ? 'Yes' : 'No';
-                    sample.wheezing = Math.random() > (isHighRisk ? 0.6 : 0.9) ? 'Yes' : 'No';
-                    sample.alcohol_consuming = Math.random() > 0.7 ? 'Yes' : 'No';
-                    sample.coughing = Math.random() > (isHighRisk ? 0.4 : 0.8) ? 'Yes' : 'No';
-                    sample.shortness_of_breath = Math.random() > (isHighRisk ? 0.5 : 0.9) ? 'Yes' : 'No';
-                    sample.swallowing_difficulty = Math.random() > (isHighRisk ? 0.8 : 0.95) ? 'Yes' : 'No';
-                    sample.chest_pain = Math.random() > (isHighRisk ? 0.6 : 0.9) ? 'Yes' : 'No';
-                    sample.lung_cancer = isHighRisk ? 1 : 0;
-                } else if (diseaseType === 'kidney_disease') {
-                    sample.age = Math.round(Math.random() * 40 + 40 + (isHighRisk ? 15 : 0));
-                    sample.blood_pressure = Math.round(Math.random() * 60 + 70 + (isHighRisk ? 20 : 0));
-                    sample.blood_glucose_random = Math.round(Math.random() * 200 + 80 + (isHighRisk ? 50 : 0));
-                    sample.blood_urea = Math.round(Math.random() * 100 + 20 + (isHighRisk ? 40 : 0));
-                    sample.serum_sodium = Math.round(Math.random() * 20 + 130);
-                    sample.potassium = Math.round((Math.random() * 3 + 3) * 10) / 10;
-                    sample.white_blood_cells = Math.round(Math.random() * 10000 + 5000);
-                    sample.hypertension = Math.random() > (isHighRisk ? 0.4 : 0.8) ? 'Yes' : 'No';
-                    sample.diabetes_mellitus = Math.random() > (isHighRisk ? 0.6 : 0.9) ? 'Yes' : 'No';
-                    sample.coronary_artery_disease = Math.random() > (isHighRisk ? 0.7 : 0.95) ? 'Yes' : 'No';
-                    sample.appetite = Math.random() > (isHighRisk ? 0.6 : 0.9) ? 'Poor' : 'Good';
-                    sample.pedal_edema = Math.random() > (isHighRisk ? 0.7 : 0.9) ? 'Yes' : 'No';
-                    sample.anemia = Math.random() > (isHighRisk ? 0.6 : 0.9) ? 'Yes' : 'No';
-                    sample.classification = isHighRisk ? 1 : 0;
-                }
-                
-                sampleData.push(sample);
-            }
-            
-            return sampleData;
-        }
+        // Note: generateSampleInputData function removed to ensure only real database data is used
+        // All chart visualizations now show informational messages instead of synthetic data
 
         // Advanced chart creation functions with detailed visualizations
         function createCorrelationHeatmap(data, diseaseType, color) {
-            const features = getDiseaseFeatureMapping(diseaseType);
-            const sampleData = generateSampleInputData(data, diseaseType);
-            
-            if (sampleData.length === 0) {
-                document.getElementById('correlationHeatmapChart').innerHTML = '<p>No data available for correlation analysis</p>';
-                return;
-            }
-
-            // Calculate correlation matrix for numeric features
-            const numericFeatures = features.numeric || [];
-            const correlationMatrix = [];
-            const featureNames = [];
-
-            numericFeatures.forEach(feature1 => {
-                const row = [];
-                numericFeatures.forEach(feature2 => {
-                    const correlation = calculateCorrelation(sampleData, feature1, feature2);
-                    row.push(correlation);
-                });
-                correlationMatrix.push(row);
-                featureNames.push(features.labels[feature1] || feature1);
-            });
-
-            // Create heatmap
-            const heatmapData = [{
-                z: correlationMatrix,
-                x: featureNames,
-                y: featureNames,
-                type: 'heatmap',
-                colorscale: [
-                    [0, '#1f77b4'], [0.25, '#87ceeb'], [0.5, '#ffffff'], 
-                    [0.75, '#ffa07a'], [1, '#ff6347']
-                ],
-                showscale: true,
-                zmin: -1,
-                zmax: 1,
-                hoverongaps: false,
-                hovertemplate: '<b>%{x}</b> vs <b>%{y}</b><br>Correlation: %{z:.3f}<extra></extra>'
-            }];
-
-            const layout = {
-                title: {
-                    text: `Feature Correlation Matrix for ${currentUser} (${data.length} records)`,
-                    font: { family: 'Inter', size: 14, color: '#1a202c' }
-                },
-                font: { family: 'Inter', size: 10 },
-                margin: { t: 60, b: 80, l: 120, r: 80 },
-                height: 450,
-                xaxis: { tickangle: -45 },
-                yaxis: { tickangle: 0 }
-            };
-
-            Plotly.newPlot('correlationHeatmapChart', heatmapData, layout, {responsive: true, displayModeBar: false});
+            // Show message instead of generating fake sample data
+            document.getElementById('correlationHeatmapChart').innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                    <i class="fas fa-chart-line" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
+                    <h3>Correlation Analysis</h3>
+                    <p>Feature correlation analysis requires detailed input parameter data.</p>
+                    <p>This visualization will be available when comprehensive input data is stored in the database.</p>
+                    <small style="color: var(--text-muted);">Currently showing real prediction results only - no synthetic data</small>
+                </div>
+            `;
         }
 
         function createFeatureBoxplots(data, diseaseType, color) {
-            const features = getDiseaseFeatureMapping(diseaseType);
-            const sampleData = generateSampleInputData(data, diseaseType);
-            
-            if (sampleData.length === 0) {
-                document.getElementById('featureBoxplotsChart').innerHTML = '<p>No data available for boxplot analysis</p>';
-                return;
-            }
-
-            const numericFeatures = features.numeric || [];
-            const plotData = [];
-
-            numericFeatures.slice(0, 4).forEach(feature => { // Show first 4 features
-                // Low risk group
-                const lowRiskValues = sampleData.filter(d => d[features.target] === 0).map(d => d[feature]);
-                plotData.push({
-                    y: lowRiskValues,
-                    type: 'box',
-                    name: `${features.labels[feature] || feature} (Low Risk)`,
-                    marker: { color: '#10b981' },
-                    boxpoints: 'outliers'
-                });
-
-                // High risk group
-                const highRiskValues = sampleData.filter(d => d[features.target] === 1).map(d => d[feature]);
-                plotData.push({
-                    y: highRiskValues,
-                    type: 'box',
-                    name: `${features.labels[feature] || feature} (High Risk)`,
-                    marker: { color: '#ef4444' },
-                    boxpoints: 'outliers'
-                });
-            });
-
-            const layout = {
-                title: {
-                    text: `Feature Distribution Boxplots for ${currentUser}`,
-                    font: { family: 'Inter', size: 14, color: '#1a202c' }
-                },
-                font: { family: 'Inter', size: 11 },
-                yaxis: { title: 'Feature Values' },
-                margin: { t: 60, b: 100, l: 70, r: 30 },
-                height: 400,
-                showlegend: false
-            };
-
-            Plotly.newPlot('featureBoxplotsChart', plotData, layout, {responsive: true, displayModeBar: false});
+            // Show message instead of generating fake sample data
+            document.getElementById('featureBoxplotsChart').innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                    <i class="fas fa-chart-bar" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
+                    <h3>Feature Distribution Analysis</h3>
+                    <p>Box plot analysis requires detailed input parameter data.</p>
+                    <p>This visualization will be available when comprehensive input data is stored in the database.</p>
+                    <small style="color: var(--text-muted);">Currently showing real prediction results only - no synthetic data</small>
+                </div>
+            `;
         }
 
         function createStripPlots(data, diseaseType, color) {
-            const features = getDiseaseFeatureMapping(diseaseType);
-            const sampleData = generateSampleInputData(data, diseaseType);
-            
-            if (sampleData.length === 0) {
-                document.getElementById('stripPlotsChart').innerHTML = '<p>No data available for strip plot analysis</p>';
-                return;
-            }
-
-            const numericFeatures = features.numeric || [];
-            if (numericFeatures.length === 0) {
-                document.getElementById('stripPlotsChart').innerHTML = '<p>No numeric features available for strip plots</p>';
-                return;
-            }
-
-            const feature = numericFeatures[0]; // Show first numeric feature
-            
-            // Low risk group
-            const lowRiskData = sampleData.filter(d => d[features.target] === 0);
-            const highRiskData = sampleData.filter(d => d[features.target] === 1);
-
-            const plotData = [
-                {
-                    y: lowRiskData.map(d => d[feature]),
-                    x: lowRiskData.map(() => 'Low Risk'),
-                    type: 'scatter',
-                    mode: 'markers',
-                    name: 'Low Risk',
-                    marker: {
-                        color: '#10b981',
-                        size: 8,
-                        opacity: 0.6
-                    },
-                    jitter: 0.3
-                },
-                {
-                    y: highRiskData.map(d => d[feature]),
-                    x: highRiskData.map(() => 'High Risk'),
-                    type: 'scatter',
-                    mode: 'markers',
-                    name: 'High Risk',
-                    marker: {
-                        color: '#ef4444',
-                        size: 8,
-                        opacity: 0.6
-                    },
-                    jitter: 0.3
-                }
-            ];
-
-            const layout = {
-                title: {
-                    text: `${features.labels[feature] || feature} Strip Plot for ${currentUser}`,
-                    font: { family: 'Inter', size: 14, color: '#1a202c' }
-                },
-                font: { family: 'Inter', size: 11 },
-                xaxis: { title: 'Risk Level' },
-                yaxis: { title: features.labels[feature] || feature },
-                margin: { t: 60, b: 70, l: 70, r: 30 },
-                height: 400,
-                showlegend: false
-            };
-
-            Plotly.newPlot('stripPlotsChart', plotData, layout, {responsive: true, displayModeBar: false});
+            // Show message instead of generating fake sample data
+            document.getElementById('stripPlotsChart').innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                    <i class="fas fa-chart-scatter" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
+                    <h3>Feature Strip Plot Analysis</h3>
+                    <p>Strip plot analysis requires detailed input parameter data.</p>
+                    <p>This visualization will be available when comprehensive input data is stored in the database.</p>
+                    <small style="color: var(--text-muted);">Currently showing real prediction results only - no synthetic data</small>
+                </div>
+            `;
         }
 
         function createPairplotAnalysis(data, diseaseType, color) {
-            const features = getDiseaseFeatureMapping(diseaseType);
-            const sampleData = generateSampleInputData(data, diseaseType);
-            
-            if (sampleData.length === 0) {
-                document.getElementById('pairplotChart').innerHTML = '<p>No data available for pairplot analysis</p>';
-                return;
-            }
-
-            const numericFeatures = features.numeric || [];
-            if (numericFeatures.length < 2) {
-                document.getElementById('pairplotChart').innerHTML = '<p>Need at least 2 numeric features for pairplot</p>';
-                return;
-            }
-
-            // Use first 3 features for pairplot
-            const selectedFeatures = numericFeatures.slice(0, 3);
-            const lowRiskData = sampleData.filter(d => d[features.target] === 0);
-            const highRiskData = sampleData.filter(d => d[features.target] === 1);
-
-            const plotData = [];
-
-            // Create scatter plot for first two features
-            plotData.push({
-                x: lowRiskData.map(d => d[selectedFeatures[0]]),
-                y: lowRiskData.map(d => d[selectedFeatures[1]]),
-                type: 'scatter',
-                mode: 'markers',
-                name: 'Low Risk',
-                marker: {
-                    color: '#10b981',
-                    size: 8,
-                    opacity: 0.6
-                }
-            });
-
-            plotData.push({
-                x: highRiskData.map(d => d[selectedFeatures[0]]),
-                y: highRiskData.map(d => d[selectedFeatures[1]]),
-                type: 'scatter',
-                mode: 'markers',
-                name: 'High Risk',
-                marker: {
-                    color: '#ef4444',
-                    size: 8,
-                    opacity: 0.6
-                }
-            });
-
-            const layout = {
-                title: {
-                    text: `Pairplot: ${features.labels[selectedFeatures[0]]} vs ${features.labels[selectedFeatures[1]]} for ${currentUser}`,
-                    font: { family: 'Inter', size: 14, color: '#1a202c' }
-                },
-                font: { family: 'Inter', size: 11 },
-                xaxis: { title: features.labels[selectedFeatures[0]] || selectedFeatures[0] },
-                yaxis: { title: features.labels[selectedFeatures[1]] || selectedFeatures[1] },
-                margin: { t: 60, b: 70, l: 80, r: 30 },
-                height: 450
-            };
-
-            Plotly.newPlot('pairplotChart', plotData, layout, {responsive: true, displayModeBar: false});
+            // Show message instead of generating fake sample data
+            document.getElementById('pairplotChart').innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                    <i class="fas fa-project-diagram" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
+                    <h3>Pairplot Analysis</h3>
+                    <p>Pairplot analysis requires detailed input parameter data.</p>
+                    <p>This visualization will be available when comprehensive input data is stored in the database.</p>
+                    <small style="color: var(--text-muted);">Currently showing real prediction results only - no synthetic data</small>
+                </div>
+            `;
         }
 
         function createFeatureImportance(data, diseaseType, color) {
-            const features = getDiseaseFeatureMapping(diseaseType);
-            const allFeatures = [...(features.numeric || []), ...(features.categorical || [])];
-            
-            if (allFeatures.length === 0) {
-                document.getElementById('featureImportanceChart').innerHTML = '<p>No features available for importance analysis</p>';
-                return;
-            }
-
-            // Simulate feature importance based on disease type and data patterns
-            const importanceScores = allFeatures.map(feature => {
-                let baseScore = Math.random() * 0.5 + 0.1; // Base random score
-                
-                // Boost importance for known critical features
-                if (diseaseType === 'heart_disease') {
-                    if (['ejection_fraction', 'serum_creatinine', 'age', 'time'].includes(feature)) {
-                        baseScore += 0.3;
-                    }
-                } else if (diseaseType === 'diabetes') {
-                    if (['glucose', 'bmi', 'age', 'diabetes_pedigree_function'].includes(feature)) {
-                        baseScore += 0.3;
-                    }
-                } else if (diseaseType === 'lung_cancer') {
-                    if (['smoking', 'age', 'coughing', 'shortness_of_breath'].includes(feature)) {
-                        baseScore += 0.3;
-                    }
-                } else if (diseaseType === 'kidney_disease') {
-                    if (['blood_urea', 'serum_sodium', 'age', 'hypertension'].includes(feature)) {
-                        baseScore += 0.3;
-                    }
-                }
-                
-                return Math.min(baseScore, 1.0);
-            });
-
-            // Sort by importance
-            const featureImportance = allFeatures.map((feature, index) => ({
-                feature,
-                importance: importanceScores[index],
-                label: features.labels[feature] || feature
-            })).sort((a, b) => b.importance - a.importance);
-
-            const plotData = [{
-                x: featureImportance.map(f => f.importance),
-                y: featureImportance.map(f => f.label),
-                type: 'bar',
-                orientation: 'h',
-                marker: {
-                    color: featureImportance.map(f => f.importance),
-                    colorscale: [[0, '#f3f4f6'], [0.5, color], [1, '#1f2937']],
-                    showscale: false
-                },
-                hovertemplate: '<b>%{y}</b><br>Importance: %{x:.3f}<extra></extra>'
-            }];
-
-            const layout = {
-                title: {
-                    text: `Feature Importance Analysis for ${currentUser} (${data.length} records)`,
-                    font: { family: 'Inter', size: 14, color: '#1a202c' }
-                },
-                font: { family: 'Inter', size: 11 },
-                xaxis: { 
-                    title: 'Feature Importance Score',
-                    range: [0, 1]
-                },
-                yaxis: { 
-                    title: '',
-                    automargin: true
-                },
-                margin: { t: 60, b: 70, l: 200, r: 30 },
-                height: 400
-            };
-
-            Plotly.newPlot('featureImportanceChart', plotData, layout, {responsive: true, displayModeBar: false});
+            // Show message instead of generating fake importance data
+            document.getElementById('featureImportanceChart').innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                    <i class="fas fa-chart-line" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
+                    <h3>Feature Importance Analysis</h3>
+                    <p>Feature importance analysis requires trained models and input data.</p>
+                    <p>This visualization will be available when comprehensive input data is stored in the database.</p>
+                    <small style="color: var(--text-muted);">Currently showing real prediction results only - no synthetic data</small>
+                </div>
+            `;
         }
 
-        // Helper function to calculate correlation between two features
+        // Helper function to calculate correlation between two features (for future use with real data)
         function calculateCorrelation(data, feature1, feature2) {
             const values1 = data.map(d => d[feature1]).filter(v => v !== undefined && v !== null);
             const values2 = data.map(d => d[feature2]).filter(v => v !== undefined && v !== null);
