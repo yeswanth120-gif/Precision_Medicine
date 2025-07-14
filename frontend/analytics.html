@@ -1554,59 +1554,50 @@
                 // Fetch detailed input data from the backend
                 let inputData = await fetchDetailedInputData(prediction.PredictionID, diseaseType);
 
-                // If no real input data, show clear message
-                if (!inputData || Object.keys(inputData).length === 0) {
+                // If no real input data, show message instead of fake data
+                if (!inputData) {
                     return `
                         <div class="input-details-section">
                             <div class="input-details-title">
                                 <i class="fas fa-clipboard-list"></i>
-                                Input Parameters from Database
+                                Complete Input Parameters
                             </div>
                             <div style="text-align: center; padding: 30px; color: var(--text-secondary); background: var(--gray-100); border-radius: 10px;">
                                 <i class="fas fa-database" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
-                                <p><strong>Input Data Not Available</strong></p>
-                                <p>Detailed input parameters for Prediction ID ${prediction.PredictionID} were not saved to the database.</p>
-                                <p><small>This may be an older prediction before input storage was implemented.</small></p>
+                                <p><strong>Input data not available</strong></p>
+                                <p>Raw input parameters for this prediction were not saved in the database.</p>
                             </div>
                         </div>
                     `;
                 }
 
-                // Generate input details grid with real data
                 let inputHTML = `
                     <div class="input-details-section">
                         <div class="input-details-title">
                             <i class="fas fa-clipboard-list"></i>
-                            Real Input Parameters from Database
+                            Complete Input Parameters (Real Database Data)
                         </div>
                         <div class="input-details-grid">
                 `;
 
-                // Generate input details based on disease type with real data
+                // Generate input details based on disease type
                 const inputFields = getInputFieldsForDiseaseType(diseaseType);
                 inputFields.forEach(field => {
-                    const value = inputData[field.key];
-                    if (value !== undefined && value !== null) {
-                        const status = getInputStatus(field.key, value, diseaseType);
-                        inputHTML += `
-                            <div class="input-detail-item">
-                                <div class="input-detail-label">${field.label}</div>
-                                <div class="input-detail-value">
-                                    ${value}
-                                    ${field.unit ? `<span class="input-detail-unit">${field.unit}</span>` : ''}
-                                </div>
-                                <div class="input-detail-status ${status}">${getStatusText(status)}</div>
+                    const value = inputData[field.key] || 'N/A';
+                    const status = getInputStatus(field.key, value, diseaseType);
+                    inputHTML += `
+                        <div class="input-detail-item">
+                            <div class="input-detail-label">${field.label}</div>
+                            <div class="input-detail-value">
+                                ${value}
+                                ${field.unit ? `<span class="input-detail-unit">${field.unit}</span>` : ''}
                             </div>
-                        `;
-                    }
+                            <div class="input-detail-status ${status}">${getStatusText(status)}</div>
+                        </div>
+                    `;
                 });
 
                 inputHTML += `
-                        </div>
-                        <div style="margin-top: 15px; padding: 10px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border-left: 4px solid var(--success-green);">
-                            <small style="color: var(--success-green); font-weight: 600;">
-                                <i class="fas fa-check-circle"></i> Real data retrieved from PostgreSQL database
-                            </small>
                         </div>
                     </div>
                 `;
@@ -1619,11 +1610,11 @@
                     <div class="input-details-section">
                         <div class="input-details-title">
                             <i class="fas fa-clipboard-list"></i>
-                            Input Parameters
+                            Complete Input Parameters
                         </div>
                         <div style="text-align: center; padding: 30px; color: var(--danger-red); background: var(--gray-100); border-radius: 10px;">
                             <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 10px;"></i>
-                            <p><strong>Error Loading Input Data</strong></p>
+                            <p><strong>Error loading input data</strong></p>
                             <p>Unable to retrieve input parameters from database: ${error.message}</p>
                         </div>
                     </div>
