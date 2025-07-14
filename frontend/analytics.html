@@ -2020,28 +2020,41 @@
 
         // Generate detailed insights section with explanations
         function generateDetailedInsightsSection(analysisData, diseaseType) {
-            const insights = generateEnhancedInsights(analysisData, diseaseType);
-            
             return `
-                <div style="margin: 35px 0; padding: 30px; background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.95) 100%); border-radius: 20px; border: 1px solid rgba(102, 126, 234, 0.2); box-shadow: var(--shadow-md);">
-                    <h4 style="margin-bottom: 25px; color: var(--text-primary); font-size: 1.4rem; display: flex; align-items: center; gap: 10px;">
-                        <i class="fas fa-lightbulb"></i> Detailed Health Insights for ${currentUser}
+                <div style="margin: 35px 0; padding: 30px; background: white; border-radius: 20px; border: 1px solid rgba(102, 126, 234, 0.2); box-shadow: 0 8px 16px rgba(0,0,0,0.1);">
+                    <h4 style="margin-bottom: 25px; color: #1a202c; font-size: 1.4rem;">
+                        📊 Detailed Textual Analysis
                     </h4>
                     <div style="display: grid; gap: 20px;">
-                        ${insights.map(insight => `
-                            <div style="padding: 20px; background: ${insight.bgColor}; border-radius: 15px; border-left: 4px solid ${insight.borderColor}; box-shadow: var(--shadow-sm);">
-                                <div style="display: flex; align-items: flex-start; gap: 15px;">
-                                    <div style="font-size: 1.5rem; color: ${insight.borderColor};">${insight.icon}</div>
-                                    <div style="flex: 1;">
-                                        <h5 style="margin-bottom: 10px; color: var(--text-primary); font-weight: 700;">${insight.title}</h5>
-                                        <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 10px;">${insight.description}</p>
-                                        <div style="font-size: 0.9rem; color: ${insight.borderColor}; font-weight: 600;">
-                                            💡 ${insight.recommendation}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `).join('')}
+                        <div style="padding: 20px; background: rgba(59, 130, 246, 0.05); border-radius: 15px; border-left: 4px solid #3b82f6;">
+                            <h5 style="color: #3b82f6; margin-bottom: 15px;">🔍 Data Comparisons</h5>
+                            <p style="color: #4a5568; line-height: 1.6;">
+                                Analysis shows ${analysisData.totalPredictions} total predictions with ${analysisData.highRiskCount} high-risk cases (${Math.round((analysisData.highRiskCount / analysisData.totalPredictions) * 100)}%) and ${analysisData.lowRiskCount} low-risk cases (${Math.round((analysisData.lowRiskCount / analysisData.totalPredictions) * 100)}%). 
+                                The average health score of ${analysisData.avgHealthScore} indicates ${analysisData.avgHealthScore >= 80 ? 'excellent' : analysisData.avgHealthScore >= 60 ? 'good' : 'concerning'} overall health status.
+                            </p>
+                        </div>
+                        <div style="padding: 20px; background: rgba(16, 185, 129, 0.05); border-radius: 15px; border-left: 4px solid #10b981;">
+                            <h5 style="color: #10b981; margin-bottom: 15px;">📈 Key Differences</h5>
+                            <p style="color: #4a5568; line-height: 1.6;">
+                                Prediction confidence averages ${analysisData.avgConfidence}%, indicating ${analysisData.avgConfidence >= 85 ? 'very reliable' : analysisData.avgConfidence >= 70 ? 'moderately reliable' : 'variable'} assessment quality. 
+                                Risk trends show ${analysisData.riskTrend} patterns, while health scores demonstrate ${analysisData.healthScoreTrend} trajectory over the analysis period from ${analysisData.dateRange.earliest} to ${analysisData.dateRange.latest}.
+                            </p>
+                        </div>
+                        <div style="padding: 20px; background: rgba(139, 92, 246, 0.05); border-radius: 15px; border-left: 4px solid #8b5cf6;">
+                            <h5 style="color: #8b5cf6; margin-bottom: 15px;">🤝 Common Patterns</h5>
+                            <p style="color: #4a5568; line-height: 1.6;">
+                                Common factors across all predictions include consistent data collection methods, standardized risk assessment protocols, and uniform health scoring systems. 
+                                All predictions share similar evaluation criteria and benefit from the same machine learning model accuracy standards, ensuring reliable and comparable results across different time periods.
+                            </p>
+                        </div>
+                        <div style="padding: 20px; background: rgba(245, 158, 11, 0.05); border-radius: 15px; border-left: 4px solid #f59e0b;">
+                            <h5 style="color: #f59e0b; margin-bottom: 15px;">💡 Key Takeaways</h5>
+                            <p style="color: #4a5568; line-height: 1.6;">
+                                The analysis reveals ${analysisData.totalPredictions > 5 ? 'sufficient data volume' : 'limited data volume'} for meaningful trend analysis. 
+                                ${analysisData.highRiskCount > analysisData.lowRiskCount ? 'Higher proportion of high-risk cases suggests need for immediate medical attention' : 'Lower proportion of high-risk cases indicates effective health management'}. 
+                                Regular monitoring and preventive care remain essential for maintaining optimal health outcomes.
+                            </p>
+                        </div>
                     </div>
                 </div>
             `;
