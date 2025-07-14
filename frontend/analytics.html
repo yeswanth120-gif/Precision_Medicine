@@ -2448,234 +2448,871 @@
 
         // Advanced chart creation functions with detailed visualizations
         function createCorrelationHeatmap(data, diseaseType, color) {
+            console.log(`📊 Creating correlation heatmap for ${data.length} records...`);
             const chartContainer = document.getElementById('correlationHeatmapChart');
             
-            // Create a meaningful analysis based on available prediction data
-            const riskData = data.map(p => ({
-                healthScore: p.HealthScore || 0,
-                confidence: p.Confidence || 0,
-                riskLevel: p.RiskLevel === 'High Risk' ? 1 : 0
-            }));
-
-            const avgHealthScore = riskData.reduce((sum, d) => sum + d.healthScore, 0) / riskData.length;
-            const avgConfidence = riskData.reduce((sum, d) => sum + d.confidence, 0) / riskData.length;
-            const riskRate = riskData.reduce((sum, d) => sum + d.riskLevel, 0) / riskData.length;
-
-            chartContainer.innerHTML = `
-                <div style="padding: 20px;">
-                    <h4 style="margin-bottom: 20px; color: var(--text-primary);">Prediction Data Correlation Analysis</h4>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-                        <div style="background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 10px; text-align: center;">
-                            <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Health Score - Risk Correlation</div>
-                            <div style="font-size: 1.5rem; font-weight: 700; color: #3b82f6;">
-                                ${riskRate < 0.3 ? 'Positive' : riskRate > 0.7 ? 'Negative' : 'Moderate'}
+            if (data.length === 1) {
+                // Single record analysis - show individual score breakdown
+                const record = data[0];
+                chartContainer.innerHTML = `
+                    <div style="padding: 20px;">
+                        <h4 style="margin-bottom: 20px; color: var(--text-primary);">Individual Score Analysis</h4>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px;">
+                            <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%); padding: 20px; border-radius: 15px; text-align: center; border: 2px solid rgba(59, 130, 246, 0.2);">
+                                <div style="font-size: 2rem; font-weight: 800; color: #3b82f6; margin-bottom: 10px;">${record.HealthScore || 'N/A'}</div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Health Score</div>
+                                <div style="width: 100%; height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden;">
+                                    <div style="width: ${record.HealthScore || 0}%; height: 100%; background: linear-gradient(90deg, #3b82f6, #1d4ed8); border-radius: 4px;"></div>
+                                </div>
+                            </div>
+                            <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%); padding: 20px; border-radius: 15px; text-align: center; border: 2px solid rgba(16, 185, 129, 0.2);">
+                                <div style="font-size: 2rem; font-weight: 800; color: #10b981; margin-bottom: 10px;">${Math.round(record.Confidence || 0)}%</div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Confidence</div>
+                                <div style="width: 100%; height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden;">
+                                    <div style="width: ${record.Confidence || 0}%; height: 100%; background: linear-gradient(90deg, #10b981, #047857); border-radius: 4px;"></div>
+                                </div>
+                            </div>
+                            <div style="background: linear-gradient(135deg, rgba(${record.RiskLevel === 'High Risk' ? '239, 68, 68' : '245, 158, 11'}, 0.1) 0%, rgba(${record.RiskLevel === 'High Risk' ? '220, 38, 38' : '217, 119, 6'}, 0.1) 100%); padding: 20px; border-radius: 15px; text-align: center; border: 2px solid rgba(${record.RiskLevel === 'High Risk' ? '239, 68, 68' : '245, 158, 11'}, 0.2);">
+                                <div style="font-size: 1.2rem; font-weight: 800; color: ${record.RiskLevel === 'High Risk' ? '#ef4444' : '#f59e0b'}; margin-bottom: 10px;">${record.RiskLevel || 'Low Risk'}</div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Risk Level</div>
+                                <div style="padding: 8px; background: rgba(${record.RiskLevel === 'High Risk' ? '239, 68, 68' : '245, 158, 11'}, 0.1); border-radius: 8px; font-size: 0.8rem; font-weight: 600;">
+                                    ${record.RiskLevel === 'High Risk' ? '⚠️ Attention Required' : '✅ Good Status'}
+                                </div>
                             </div>
                         </div>
-                        <div style="background: rgba(16, 185, 129, 0.1); padding: 15px; border-radius: 10px; text-align: center;">
-                            <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Confidence - Risk Pattern</div>
-                            <div style="font-size: 1.5rem; font-weight: 700; color: #10b981;">
-                                ${avgConfidence > 80 ? 'Strong' : avgConfidence > 60 ? 'Moderate' : 'Weak'}
+                        <div style="background: var(--gray-100); padding: 20px; border-radius: 15px;">
+                            <h5 style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;"><i class="fas fa-chart-line"></i> Individual Analysis Summary</h5>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Prediction Date</div>
+                                    <div style="font-weight: 600;">${new Date(record.CreatedAt).toLocaleDateString()}</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Disease Type</div>
+                                    <div style="font-weight: 600;">${diseaseType.charAt(0).toUpperCase() + diseaseType.slice(1).replace('_', ' ')}</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Overall Assessment</div>
+                                    <div style="font-weight: 600; color: ${(record.HealthScore || 0) > 70 ? '#10b981' : (record.HealthScore || 0) > 50 ? '#f59e0b' : '#ef4444'};">
+                                        ${(record.HealthScore || 0) > 70 ? 'Good Health' : (record.HealthScore || 0) > 50 ? 'Moderate Health' : 'Needs Attention'}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Prediction Quality</div>
+                                    <div style="font-weight: 600; color: ${(record.Confidence || 0) > 80 ? '#10b981' : (record.Confidence || 0) > 60 ? '#f59e0b' : '#ef4444'};">
+                                        ${(record.Confidence || 0) > 80 ? 'High Confidence' : (record.Confidence || 0) > 60 ? 'Good Confidence' : 'Moderate Confidence'}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div style="background: var(--gray-100); padding: 15px; border-radius: 10px;">
-                        <h5 style="margin-bottom: 10px;">Key Correlations from ${data.length} Predictions:</h5>
-                        <ul style="list-style: none; padding: 0; margin: 0;">
-                            <li style="padding: 5px 0;">• Average Health Score: <strong>${avgHealthScore.toFixed(1)}</strong></li>
-                            <li style="padding: 5px 0;">• Average Confidence: <strong>${avgConfidence.toFixed(1)}%</strong></li>
-                            <li style="padding: 5px 0;">• High Risk Rate: <strong>${(riskRate * 100).toFixed(1)}%</strong></li>
-                            <li style="padding: 5px 0;">• Data Quality: <strong>${avgConfidence > 75 ? 'Excellent' : 'Good'}</strong></li>
-                        </ul>
+                `;
+            } else {
+                // Multiple records - show correlation analysis
+                const riskData = data.map(p => ({
+                    healthScore: p.HealthScore || 0,
+                    confidence: p.Confidence || 0,
+                    riskLevel: p.RiskLevel === 'High Risk' ? 1 : 0
+                }));
+
+                const avgHealthScore = riskData.reduce((sum, d) => sum + d.healthScore, 0) / riskData.length;
+                const avgConfidence = riskData.reduce((sum, d) => sum + d.confidence, 0) / riskData.length;
+                const riskRate = riskData.reduce((sum, d) => sum + d.riskLevel, 0) / riskData.length;
+
+                // Calculate correlation coefficients
+                const healthRiskCorr = calculateCorrelation(riskData.map(d => d.healthScore), riskData.map(d => d.riskLevel));
+                const confidenceRiskCorr = calculateCorrelation(riskData.map(d => d.confidence), riskData.map(d => d.riskLevel));
+
+                chartContainer.innerHTML = `
+                    <div style="padding: 20px;">
+                        <h4 style="margin-bottom: 20px; color: var(--text-primary);">Multi-Record Correlation Heatmap (${data.length} Records)</h4>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px;">
+                            <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%); padding: 20px; border-radius: 15px; text-align: center; border: 2px solid rgba(59, 130, 246, 0.2);">
+                                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px;">Health-Risk Correlation</div>
+                                <div style="font-size: 1.8rem; font-weight: 800; color: #3b82f6; margin-bottom: 8px;">
+                                    ${healthRiskCorr > 0.5 ? 'Strong' : healthRiskCorr > 0.2 ? 'Moderate' : 'Weak'}
+                                </div>
+                                <div style="font-size: 0.9rem; color: #3b82f6; font-weight: 600;">${(healthRiskCorr * 100).toFixed(1)}%</div>
+                            </div>
+                            <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%); padding: 20px; border-radius: 15px; text-align: center; border: 2px solid rgba(16, 185, 129, 0.2);">
+                                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px;">Confidence-Risk Pattern</div>
+                                <div style="font-size: 1.8rem; font-weight: 800; color: #10b981; margin-bottom: 8px;">
+                                    ${avgConfidence > 80 ? 'Strong' : avgConfidence > 60 ? 'Good' : 'Moderate'}
+                                </div>
+                                <div style="font-size: 0.9rem; color: #10b981; font-weight: 600;">${avgConfidence.toFixed(1)}%</div>
+                            </div>
+                            <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%); padding: 20px; border-radius: 15px; text-align: center; border: 2px solid rgba(139, 92, 246, 0.2);">
+                                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px;">Risk Distribution</div>
+                                <div style="font-size: 1.8rem; font-weight: 800; color: #8b5cf6; margin-bottom: 8px;">
+                                    ${riskRate < 0.3 ? 'Low' : riskRate > 0.7 ? 'High' : 'Mixed'}
+                                </div>
+                                <div style="font-size: 0.9rem; color: #8b5cf6; font-weight: 600;">${(riskRate * 100).toFixed(1)}%</div>
+                            </div>
+                        </div>
+                        <div style="background: var(--gray-100); padding: 20px; border-radius: 15px;">
+                            <h5 style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;"><i class="fas fa-fire"></i> Key Correlations from ${data.length} Predictions</h5>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Average Health Score</div>
+                                    <div style="font-weight: 700; font-size: 1.1rem; color: ${avgHealthScore > 70 ? '#10b981' : avgHealthScore > 50 ? '#f59e0b' : '#ef4444'};">${avgHealthScore.toFixed(1)}</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Average Confidence</div>
+                                    <div style="font-weight: 700; font-size: 1.1rem; color: ${avgConfidence > 80 ? '#10b981' : avgConfidence > 60 ? '#f59e0b' : '#ef4444'};">${avgConfidence.toFixed(1)}%</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">High Risk Rate</div>
+                                    <div style="font-weight: 700; font-size: 1.1rem; color: ${riskRate < 0.3 ? '#10b981' : riskRate > 0.7 ? '#ef4444' : '#f59e0b'};">${(riskRate * 100).toFixed(1)}%</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Data Quality</div>
+                                    <div style="font-weight: 700; font-size: 1.1rem; color: ${avgConfidence > 75 ? '#10b981' : '#f59e0b'};">${avgConfidence > 75 ? 'Excellent' : 'Good'}</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+            }
+            console.log(`✅ Correlation heatmap created successfully`);
         }
 
         function createFeatureBoxplots(data, diseaseType, color) {
+            console.log(`📊 Creating feature boxplots for ${data.length} records...`);
             const chartContainer = document.getElementById('featureBoxplotsChart');
             
-            // Analyze health score distribution
-            const healthScores = data.map(p => p.HealthScore || 0).filter(s => s > 0);
-            const confidenceScores = data.map(p => p.Confidence || 0).filter(s => s > 0);
-            
-            const healthMin = Math.min(...healthScores);
-            const healthMax = Math.max(...healthScores);
-            const healthMedian = healthScores.sort((a, b) => a - b)[Math.floor(healthScores.length / 2)];
-            
-            const confMin = Math.min(...confidenceScores);
-            const confMax = Math.max(...confidenceScores);
-            const confMedian = confidenceScores.sort((a, b) => a - b)[Math.floor(confidenceScores.length / 2)];
+            if (data.length === 1) {
+                // Single record - show detailed feature breakdown
+                const record = data[0];
+                const features = [
+                    { name: 'Health Score', value: record.HealthScore || 0, max: 100, unit: '', color: '#3b82f6' },
+                    { name: 'Confidence', value: record.Confidence || 0, max: 100, unit: '%', color: '#10b981' },
+                    { name: 'Risk Factor', value: record.RiskLevel === 'High Risk' ? 80 : 20, max: 100, unit: '', color: record.RiskLevel === 'High Risk' ? '#ef4444' : '#22c55e' }
+                ];
 
-            chartContainer.innerHTML = `
-                <div style="padding: 20px;">
-                    <h4 style="margin-bottom: 20px; color: var(--text-primary);">Score Distribution Analysis</h4>
-                    <div style="margin-bottom: 20px;">
-                        <h5 style="margin-bottom: 15px;">Health Score Distribution</h5>
-                        <div style="background: linear-gradient(to right, ${color}20, ${color}); height: 40px; border-radius: 10px; position: relative; margin-bottom: 10px;">
-                            <div style="position: absolute; left: ${(healthMin/100)*100}%; top: -5px; width: 2px; height: 50px; background: #333; border-radius: 1px;"></div>
-                            <div style="position: absolute; left: ${(healthMedian/100)*100}%; top: -5px; width: 3px; height: 50px; background: #fff; border-radius: 1px; box-shadow: 0 0 3px rgba(0,0,0,0.5);"></div>
-                            <div style="position: absolute; left: ${(healthMax/100)*100}%; top: -5px; width: 2px; height: 50px; background: #333; border-radius: 1px;"></div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-secondary);">
-                            <span>Min: ${healthMin}</span>
-                            <span>Median: ${healthMedian}</span>
-                            <span>Max: ${healthMax}</span>
-                        </div>
-                    </div>
-                    <div>
-                        <h5 style="margin-bottom: 15px;">Confidence Score Distribution</h5>
-                        <div style="background: linear-gradient(to right, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 1)); height: 40px; border-radius: 10px; position: relative; margin-bottom: 10px;">
-                            <div style="position: absolute; left: ${(confMin/100)*100}%; top: -5px; width: 2px; height: 50px; background: #333; border-radius: 1px;"></div>
-                            <div style="position: absolute; left: ${(confMedian/100)*100}%; top: -5px; width: 3px; height: 50px; background: #fff; border-radius: 1px; box-shadow: 0 0 3px rgba(0,0,0,0.5);"></div>
-                            <div style="position: absolute; left: ${(confMax/100)*100}%; top: -5px; width: 2px; height: 50px; background: #333; border-radius: 1px;"></div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-secondary);">
-                            <span>Min: ${confMin.toFixed(1)}%</span>
-                            <span>Median: ${confMedian.toFixed(1)}%</span>
-                            <span>Max: ${confMax.toFixed(1)}%</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function createStripPlots(data, diseaseType, color) {
-            const chartContainer = document.getElementById('stripPlotsChart');
-            
-            // Create risk level visualization
-            const highRisk = data.filter(p => p.RiskLevel === 'High Risk');
-            const lowRisk = data.filter(p => p.RiskLevel === 'Low Risk');
-            
-            chartContainer.innerHTML = `
-                <div style="padding: 20px;">
-                    <h4 style="margin-bottom: 20px; color: var(--text-primary);">Risk Level Distribution</h4>
-                    <div style="margin-bottom: 25px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                            <span style="font-weight: 600;">High Risk (${highRisk.length})</span>
-                            <span style="font-weight: 600;">Low Risk (${lowRisk.length})</span>
-                        </div>
-                        <div style="display: flex; height: 30px; border-radius: 15px; overflow: hidden; background: var(--gray-200);">
-                            <div style="background: linear-gradient(135deg, #ef4444, #dc2626); width: ${(highRisk.length/data.length)*100}%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.8rem;">
-                                ${((highRisk.length/data.length)*100).toFixed(1)}%
-                            </div>
-                            <div style="background: linear-gradient(135deg, #10b981, #059669); width: ${(lowRisk.length/data.length)*100}%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.8rem;">
-                                ${((lowRisk.length/data.length)*100).toFixed(1)}%
-                            </div>
-                        </div>
-                    </div>
-                    <div style="background: var(--gray-100); padding: 15px; border-radius: 10px;">
-                        <h5 style="margin-bottom: 10px;">Temporal Distribution:</h5>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px;">
-                            ${data.slice(-6).map((p, i) => `
-                                <div style="text-align: center; padding: 8px; background: ${p.RiskLevel === 'High Risk' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)'}; border-radius: 8px;">
-                                    <div style="font-size: 0.7rem; color: var(--text-secondary);">${new Date(p.CreatedAt).toLocaleDateString()}</div>
-                                    <div style="font-size: 0.8rem; font-weight: 600; color: ${p.RiskLevel === 'High Risk' ? '#ef4444' : '#10b981'};">
-                                        ${p.RiskLevel === 'High Risk' ? 'High' : 'Low'}
+                chartContainer.innerHTML = `
+                    <div style="padding: 20px;">
+                        <h4 style="margin-bottom: 20px; color: var(--text-primary);">Individual Feature Analysis</h4>
+                        <div style="space-y: 20px;">
+                            ${features.map(feature => `
+                                <div style="margin-bottom: 20px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                        <span style="font-weight: 600; font-size: 1rem;">${feature.name}</span>
+                                        <span style="font-weight: 800; font-size: 1.2rem; color: ${feature.color};">${feature.value}${feature.unit}</span>
+                                    </div>
+                                    <div style="background: var(--gray-200); height: 25px; border-radius: 12px; overflow: hidden; position: relative;">
+                                        <div style="background: linear-gradient(135deg, ${feature.color}, ${feature.color}80); width: ${(feature.value/feature.max)*100}%; height: 100%; border-radius: 12px; transition: width 0.8s ease; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.8rem;">
+                                            ${feature.value > 20 ? `${feature.value}${feature.unit}` : ''}
+                                        </div>
+                                        ${feature.value <= 20 ? `<div style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-weight: 600; color: var(--text-secondary);">${feature.value}${feature.unit}</div>` : ''}
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; margin-top: 5px; font-size: 0.75rem; color: var(--text-secondary);">
+                                        <span>0</span>
+                                        <span style="color: ${feature.color}; font-weight: 600;">
+                                            ${feature.value > 80 ? 'Excellent' : feature.value > 60 ? 'Good' : feature.value > 40 ? 'Moderate' : 'Needs Attention'}
+                                        </span>
+                                        <span>${feature.max}</span>
                                     </div>
                                 </div>
                             `).join('')}
                         </div>
+                        <div style="margin-top: 25px; padding: 20px; background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%); border-radius: 15px; border: 1px solid rgba(59, 130, 246, 0.1);">
+                            <h5 style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;"><i class="fas fa-chart-bar"></i> Individual Analysis Summary</h5>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Overall Performance</div>
+                                    <div style="font-weight: 700; color: ${((record.HealthScore || 0) + (record.Confidence || 0))/2 > 70 ? '#10b981' : '#f59e0b'};">
+                                        ${((record.HealthScore || 0) + (record.Confidence || 0))/2 > 70 ? 'Strong Profile' : 'Moderate Profile'}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Recommendation</div>
+                                    <div style="font-weight: 700; color: ${record.RiskLevel === 'High Risk' ? '#ef4444' : '#10b981'};">
+                                        ${record.RiskLevel === 'High Risk' ? 'Monitor Closely' : 'Maintain Status'}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+            } else {
+                // Multiple records - show distribution analysis
+                const healthScores = data.map(p => p.HealthScore || 0).filter(s => s > 0);
+                const confidenceScores = data.map(p => p.Confidence || 0).filter(s => s > 0);
+                
+                const healthStats = {
+                    min: Math.min(...healthScores),
+                    max: Math.max(...healthScores),
+                    avg: healthScores.reduce((sum, s) => sum + s, 0) / healthScores.length,
+                    median: healthScores.sort((a, b) => a - b)[Math.floor(healthScores.length / 2)]
+                };
+                
+                const confStats = {
+                    min: Math.min(...confidenceScores),
+                    max: Math.max(...confidenceScores),
+                    avg: confidenceScores.reduce((sum, s) => sum + s, 0) / confidenceScores.length,
+                    median: confidenceScores.sort((a, b) => a - b)[Math.floor(confidenceScores.length / 2)]
+                };
+
+                chartContainer.innerHTML = `
+                    <div style="padding: 20px;">
+                        <h4 style="margin-bottom: 20px; color: var(--text-primary);">Multi-Record Distribution Boxplots (${data.length} Records)</h4>
+                        
+                        <div style="margin-bottom: 30px;">
+                            <h5 style="margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                                <div style="width: 12px; height: 12px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-radius: 3px;"></div>
+                                Health Score Distribution
+                            </h5>
+                            <div style="background: linear-gradient(to right, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.6), rgba(59, 130, 246, 1)); height: 50px; border-radius: 15px; position: relative; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);">
+                                <div style="position: absolute; left: ${(healthStats.min/100)*100}%; top: -8px; width: 3px; height: 66px; background: #1e40af; border-radius: 2px; box-shadow: 0 2px 8px rgba(30, 64, 175, 0.4);"></div>
+                                <div style="position: absolute; left: ${(healthStats.median/100)*100}%; top: -8px; width: 4px; height: 66px; background: #fff; border-radius: 2px; box-shadow: 0 2px 10px rgba(0,0,0,0.3);"></div>
+                                <div style="position: absolute; left: ${(healthStats.max/100)*100}%; top: -8px; width: 3px; height: 66px; background: #1e40af; border-radius: 2px; box-shadow: 0 2px 8px rgba(30, 64, 175, 0.4);"></div>
+                                <div style="position: absolute; left: ${(healthStats.avg/100)*100}%; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: #fbbf24; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 2px 8px rgba(251, 191, 36, 0.5);"></div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; font-size: 0.85rem;">
+                                <div style="text-align: center; padding: 8px; background: rgba(59, 130, 246, 0.1); border-radius: 8px;">
+                                    <div style="font-weight: 600; color: #3b82f6;">Min: ${healthStats.min.toFixed(1)}</div>
+                                </div>
+                                <div style="text-align: center; padding: 8px; background: rgba(59, 130, 246, 0.1); border-radius: 8px;">
+                                    <div style="font-weight: 600; color: #3b82f6;">Median: ${healthStats.median.toFixed(1)}</div>
+                                </div>
+                                <div style="text-align: center; padding: 8px; background: rgba(251, 191, 36, 0.1); border-radius: 8px;">
+                                    <div style="font-weight: 600; color: #f59e0b;">Avg: ${healthStats.avg.toFixed(1)}</div>
+                                </div>
+                                <div style="text-align: center; padding: 8px; background: rgba(59, 130, 246, 0.1); border-radius: 8px;">
+                                    <div style="font-weight: 600; color: #3b82f6;">Max: ${healthStats.max.toFixed(1)}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 25px;">
+                            <h5 style="margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                                <div style="width: 12px; height: 12px; background: linear-gradient(135deg, #10b981, #047857); border-radius: 3px;"></div>
+                                Confidence Score Distribution
+                            </h5>
+                            <div style="background: linear-gradient(to right, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.6), rgba(16, 185, 129, 1)); height: 50px; border-radius: 15px; position: relative; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);">
+                                <div style="position: absolute; left: ${(confStats.min/100)*100}%; top: -8px; width: 3px; height: 66px; background: #047857; border-radius: 2px; box-shadow: 0 2px 8px rgba(4, 120, 87, 0.4);"></div>
+                                <div style="position: absolute; left: ${(confStats.median/100)*100}%; top: -8px; width: 4px; height: 66px; background: #fff; border-radius: 2px; box-shadow: 0 2px 10px rgba(0,0,0,0.3);"></div>
+                                <div style="position: absolute; left: ${(confStats.max/100)*100}%; top: -8px; width: 3px; height: 66px; background: #047857; border-radius: 2px; box-shadow: 0 2px 8px rgba(4, 120, 87, 0.4);"></div>
+                                <div style="position: absolute; left: ${(confStats.avg/100)*100}%; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: #fbbf24; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 2px 8px rgba(251, 191, 36, 0.5);"></div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; font-size: 0.85rem;">
+                                <div style="text-align: center; padding: 8px; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                                    <div style="font-weight: 600; color: #10b981;">Min: ${confStats.min.toFixed(1)}%</div>
+                                </div>
+                                <div style="text-align: center; padding: 8px; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                                    <div style="font-weight: 600; color: #10b981;">Median: ${confStats.median.toFixed(1)}%</div>
+                                </div>
+                                <div style="text-align: center; padding: 8px; background: rgba(251, 191, 36, 0.1); border-radius: 8px;">
+                                    <div style="font-weight: 600; color: #f59e0b;">Avg: ${confStats.avg.toFixed(1)}%</div>
+                                </div>
+                                <div style="text-align: center; padding: 8px; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                                    <div style="font-weight: 600; color: #10b981;">Max: ${confStats.max.toFixed(1)}%</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="padding: 20px; background: var(--gray-100); border-radius: 15px;">
+                            <h5 style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;"><i class="fas fa-chart-bar"></i> Distribution Analysis Summary</h5>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Health Score Spread</div>
+                                    <div style="font-weight: 700; color: ${(healthStats.max - healthStats.min) < 20 ? '#10b981' : '#f59e0b'};">
+                                        ${(healthStats.max - healthStats.min).toFixed(1)} points (${(healthStats.max - healthStats.min) < 20 ? 'Consistent' : 'Variable'})
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Confidence Spread</div>
+                                    <div style="font-weight: 700; color: ${(confStats.max - confStats.min) < 15 ? '#10b981' : '#f59e0b'};">
+                                        ${(confStats.max - confStats.min).toFixed(1)}% (${(confStats.max - confStats.min) < 15 ? 'Stable' : 'Variable'})
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            console.log(`✅ Feature boxplots created successfully`);
+        }
+
+        function createStripPlots(data, diseaseType, color) {
+            console.log(`📊 Creating strip plots for ${data.length} records...`);
+            const chartContainer = document.getElementById('stripPlotsChart');
+            
+            if (data.length === 1) {
+                // Single record - show individual risk profile
+                const record = data[0];
+                const isHighRisk = record.RiskLevel === 'High Risk';
+                
+                chartContainer.innerHTML = `
+                    <div style="padding: 20px;">
+                        <h4 style="margin-bottom: 20px; color: var(--text-primary);">Individual Risk Profile</h4>
+                        
+                        <div style="text-align: center; margin-bottom: 30px;">
+                            <div style="display: inline-block; padding: 40px; background: linear-gradient(135deg, ${isHighRisk ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)'} 0%, ${isHighRisk ? 'rgba(220, 38, 38, 0.05)' : 'rgba(5, 150, 105, 0.05)'} 100%); border-radius: 50%; border: 4px solid ${isHighRisk ? '#ef4444' : '#10b981'}; box-shadow: 0 10px 30px ${isHighRisk ? 'rgba(239, 68, 68, 0.3)' : 'rgba(16, 185, 129, 0.3)'};">
+                                <div style="font-size: 3rem; margin-bottom: 10px;">${isHighRisk ? '⚠️' : '✅'}</div>
+                                <div style="font-size: 1.5rem; font-weight: 800; color: ${isHighRisk ? '#ef4444' : '#10b981'}; margin-bottom: 5px;">
+                                    ${record.RiskLevel || 'Low Risk'}
+                                </div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary);">Current Assessment</div>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px;">
+                            <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.05) 100%); border-radius: 15px; border: 2px solid rgba(59, 130, 246, 0.2);">
+                                <div style="font-size: 2rem; color: #3b82f6; margin-bottom: 10px;">📊</div>
+                                <div style="font-size: 1.3rem; font-weight: 700; color: #3b82f6; margin-bottom: 5px;">${record.HealthScore || 'N/A'}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Health Score</div>
+                            </div>
+                            <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%); border-radius: 15px; border: 2px solid rgba(139, 92, 246, 0.2);">
+                                <div style="font-size: 2rem; color: #8b5cf6; margin-bottom: 10px;">🎯</div>
+                                <div style="font-size: 1.3rem; font-weight: 700; color: #8b5cf6; margin-bottom: 5px;">${Math.round(record.Confidence || 0)}%</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Confidence</div>
+                            </div>
+                            <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border-radius: 15px; border: 2px solid rgba(245, 158, 11, 0.2);">
+                                <div style="font-size: 2rem; color: #f59e0b; margin-bottom: 10px;">📅</div>
+                                <div style="font-size: 1rem; font-weight: 700; color: #f59e0b; margin-bottom: 5px;">${new Date(record.CreatedAt).toLocaleDateString()}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Prediction Date</div>
+                            </div>
+                        </div>
+
+                        <div style="padding: 20px; background: var(--gray-100); border-radius: 15px;">
+                            <h5 style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;"><i class="fas fa-user-md"></i> Individual Assessment</h5>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Risk Category</div>
+                                    <div style="font-weight: 700; color: ${isHighRisk ? '#ef4444' : '#10b981'};">
+                                        ${isHighRisk ? 'Requires Attention' : 'Well Managed'}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Next Action</div>
+                                    <div style="font-weight: 700; color: ${isHighRisk ? '#ef4444' : '#10b981'};">
+                                        ${isHighRisk ? 'Medical Consultation' : 'Continue Monitoring'}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Multiple records - show risk distribution over time
+                const highRisk = data.filter(p => p.RiskLevel === 'High Risk');
+                const lowRisk = data.filter(p => p.RiskLevel === 'Low Risk');
+                
+                // Sort data by date for timeline
+                const sortedData = [...data].sort((a, b) => new Date(a.CreatedAt) - new Date(b.CreatedAt));
+                
+                chartContainer.innerHTML = `
+                    <div style="padding: 20px;">
+                        <h4 style="margin-bottom: 20px; color: var(--text-primary);">Multi-Record Risk Distribution (${data.length} Records)</h4>
+                        
+                        <div style="margin-bottom: 30px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #ef4444, #dc2626); border-radius: 50%;"></div>
+                                    <span style="font-weight: 600;">High Risk (${highRisk.length})</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 50%;"></div>
+                                    <span style="font-weight: 600;">Low Risk (${lowRisk.length})</span>
+                                </div>
+                            </div>
+                            <div style="display: flex; height: 40px; border-radius: 20px; overflow: hidden; background: var(--gray-200); box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);">
+                                <div style="background: linear-gradient(135deg, #ef4444, #dc2626); width: ${(highRisk.length/data.length)*100}%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1rem; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">
+                                    ${((highRisk.length/data.length)*100).toFixed(1)}%
+                                </div>
+                                <div style="background: linear-gradient(135deg, #10b981, #059669); width: ${(lowRisk.length/data.length)*100}%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1rem; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">
+                                    ${((lowRisk.length/data.length)*100).toFixed(1)}%
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 25px;">
+                            <h5 style="margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-chart-line"></i> Risk Timeline (Latest ${Math.min(8, data.length)} Predictions)
+                            </h5>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px;">
+                                ${sortedData.slice(-8).map((p, i) => {
+                                    const isHighRisk = p.RiskLevel === 'High Risk';
+                                    return `
+                                        <div style="text-align: center; padding: 15px; background: ${isHighRisk ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%)' : 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%)'}; border-radius: 12px; border: 2px solid ${isHighRisk ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)'};position: relative;">
+                                            <div style="position: absolute; top: -8px; left: 50%; transform: translateX(-50%); background: ${isHighRisk ? '#ef4444' : '#10b981'}; color: white; font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; font-weight: 600;">#${i + 1}</div>
+                                            <div style="font-size: 1.5rem; margin-bottom: 8px;">${isHighRisk ? '⚠️' : '✅'}</div>
+                                            <div style="font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 5px;">${new Date(p.CreatedAt).toLocaleDateString()}</div>
+                                            <div style="font-size: 0.85rem; font-weight: 700; color: ${isHighRisk ? '#ef4444' : '#10b981'};">
+                                                ${isHighRisk ? 'High' : 'Low'}
+                                            </div>
+                                            <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 5px;">Score: ${p.HealthScore || 'N/A'}</div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+
+                        <div style="padding: 20px; background: var(--gray-100); border-radius: 15px;">
+                            <h5 style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;"><i class="fas fa-chart-pie"></i> Distribution Analysis Summary</h5>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Risk Trend</div>
+                                    <div style="font-weight: 700; color: ${(highRisk.length/data.length) > 0.5 ? '#ef4444' : (highRisk.length/data.length) > 0.25 ? '#f59e0b' : '#10b981'};">
+                                        ${(highRisk.length/data.length) > 0.5 ? 'High Risk Dominant' : (highRisk.length/data.length) > 0.25 ? 'Mixed Profile' : 'Low Risk Dominant'}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Total Period</div>
+                                    <div style="font-weight: 700;">
+                                        ${Math.ceil((new Date(sortedData[sortedData.length-1].CreatedAt) - new Date(sortedData[0].CreatedAt)) / (1000 * 60 * 60 * 24))} days
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Monitoring Status</div>
+                                    <div style="font-weight: 700; color: ${data.length > 5 ? '#10b981' : '#f59e0b'};">
+                                        ${data.length > 5 ? 'Well Tracked' : 'Needs More Data'}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            console.log(`✅ Strip plots created successfully`);
         }
 
         function createPairplotAnalysis(data, diseaseType, color) {
+            console.log(`📊 Creating pairplot analysis for ${data.length} records...`);
             const chartContainer = document.getElementById('pairplotChart');
             
-            // Create comprehensive relationship analysis
-            const highRiskData = data.filter(p => p.RiskLevel === 'High Risk');
-            const lowRiskData = data.filter(p => p.RiskLevel === 'Low Risk');
-            
-            const avgHealthByRisk = {
-                high: highRiskData.length > 0 ? highRiskData.reduce((sum, p) => sum + (p.HealthScore || 0), 0) / highRiskData.length : 0,
-                low: lowRiskData.length > 0 ? lowRiskData.reduce((sum, p) => sum + (p.HealthScore || 0), 0) / lowRiskData.length : 0
-            };
+            if (data.length === 1) {
+                // Single record - show comprehensive individual analysis
+                const record = data[0];
+                const healthScore = record.HealthScore || 0;
+                const confidence = record.Confidence || 0;
+                const isHighRisk = record.RiskLevel === 'High Risk';
 
-            const timeRange = {
-                earliest: new Date(Math.min(...data.map(p => new Date(p.CreatedAt)))),
-                latest: new Date(Math.max(...data.map(p => new Date(p.CreatedAt))))
-            };
+                chartContainer.innerHTML = `
+                    <div style="padding: 20px;">
+                        <h4 style="margin-bottom: 20px; color: var(--text-primary);">Individual Comprehensive Analysis</h4>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 30px;">
+                            <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.05) 100%); padding: 25px; border-radius: 20px; border: 2px solid rgba(59, 130, 246, 0.2);">
+                                <h5 style="color: #3b82f6; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-heart"></i> Health Assessment
+                                </h5>
+                                <div style="text-align: center; margin-bottom: 15px;">
+                                    <div style="font-size: 3rem; font-weight: 800; color: #3b82f6; margin-bottom: 10px;">${healthScore}</div>
+                                    <div style="font-size: 1rem; color: var(--text-secondary);">Health Score</div>
+                                </div>
+                                <div style="background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 12px;">
+                                    <div style="font-size: 0.9rem; color: #3b82f6; font-weight: 600; margin-bottom: 8px;">Assessment Level:</div>
+                                    <div style="font-weight: 700; color: ${healthScore > 80 ? '#10b981' : healthScore > 60 ? '#f59e0b' : '#ef4444'};">
+                                        ${healthScore > 80 ? 'Excellent Health Status' : healthScore > 60 ? 'Good Health Status' : healthScore > 40 ? 'Fair Health Status' : 'Health Needs Attention'}
+                                    </div>
+                                </div>
+                            </div>
 
-            chartContainer.innerHTML = `
-                <div style="padding: 20px;">
-                    <h4 style="margin-bottom: 20px; color: var(--text-primary);">Comprehensive Data Relationships</h4>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-                        <div style="background: rgba(239, 68, 68, 0.1); padding: 15px; border-radius: 10px;">
-                            <h5 style="color: #ef4444; margin-bottom: 10px;">High Risk Profile</h5>
-                            <div>Count: <strong>${highRiskData.length}</strong></div>
-                            <div>Avg Health Score: <strong>${avgHealthByRisk.high.toFixed(1)}</strong></div>
-                            <div>Percentage: <strong>${((highRiskData.length / data.length) * 100).toFixed(1)}%</strong></div>
+                            <div style="background: linear-gradient(135deg, ${isHighRisk ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)'} 0%, ${isHighRisk ? 'rgba(220, 38, 38, 0.05)' : 'rgba(5, 150, 105, 0.05)'} 100%); padding: 25px; border-radius: 20px; border: 2px solid ${isHighRisk ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)'};">
+                                <h5 style="color: ${isHighRisk ? '#ef4444' : '#10b981'}; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-shield-alt"></i> Risk Profile
+                                </h5>
+                                <div style="text-align: center; margin-bottom: 15px;">
+                                    <div style="font-size: 2.5rem; margin-bottom: 10px;">${isHighRisk ? '⚠️' : '✅'}</div>
+                                    <div style="font-size: 1.2rem; font-weight: 800; color: ${isHighRisk ? '#ef4444' : '#10b981'}; margin-bottom: 5px;">
+                                        ${record.RiskLevel || 'Low Risk'}
+                                    </div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Current Status</div>
+                                </div>
+                                <div style="background: ${isHighRisk ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)'}; padding: 15px; border-radius: 12px;">
+                                    <div style="font-size: 0.9rem; color: ${isHighRisk ? '#ef4444' : '#10b981'}; font-weight: 600; margin-bottom: 8px;">Recommendation:</div>
+                                    <div style="font-weight: 700;">
+                                        ${isHighRisk ? 'Immediate medical consultation recommended' : 'Continue current health management'}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div style="background: rgba(16, 185, 129, 0.1); padding: 15px; border-radius: 10px;">
-                            <h5 style="color: #10b981; margin-bottom: 10px;">Low Risk Profile</h5>
-                            <div>Count: <strong>${lowRiskData.length}</strong></div>
-                            <div>Avg Health Score: <strong>${avgHealthByRisk.low.toFixed(1)}</strong></div>
-                            <div>Percentage: <strong>${((lowRiskData.length / data.length) * 100).toFixed(1)}%</strong></div>
+
+                        <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%); padding: 25px; border-radius: 20px; border: 2px solid rgba(139, 92, 246, 0.2); margin-bottom: 25px;">
+                            <h5 style="color: #8b5cf6; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-brain"></i> Prediction Confidence Analysis
+                            </h5>
+                            <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: center;">
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Confidence Level</div>
+                                    <div style="font-size: 2rem; font-weight: 800; color: #8b5cf6;">${Math.round(confidence)}%</div>
+                                </div>
+                                <div style="width: 80px; height: 80px; border-radius: 50%; background: conic-gradient(#8b5cf6 0deg ${(confidence/100)*360}deg, #e5e7eb ${(confidence/100)*360}deg 360deg); display: flex; align-items: center; justify-content: center; position: relative;">
+                                    <div style="width: 60px; height: 60px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #8b5cf6; font-size: 0.9rem;">
+                                        ${Math.round(confidence)}%
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Quality Rating</div>
+                                    <div style="font-size: 1.2rem; font-weight: 700; color: ${confidence > 90 ? '#10b981' : confidence > 75 ? '#22c55e' : confidence > 60 ? '#f59e0b' : '#ef4444'};">
+                                        ${confidence > 90 ? 'Excellent' : confidence > 75 ? 'Very Good' : confidence > 60 ? 'Good' : confidence > 40 ? 'Fair' : 'Moderate'}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--gray-100); padding: 25px; border-radius: 20px;">
+                            <h5 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;"><i class="fas fa-clipboard-check"></i> Individual Profile Summary</h5>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Analysis Date</div>
+                                    <div style="font-weight: 700;">${new Date(record.CreatedAt).toLocaleDateString()}</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Disease Category</div>
+                                    <div style="font-weight: 700;">${diseaseType.charAt(0).toUpperCase() + diseaseType.slice(1).replace('_', ' ')}</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Overall Score</div>
+                                    <div style="font-weight: 700; color: ${((healthScore + confidence)/2) > 70 ? '#10b981' : '#f59e0b'};">
+                                        ${((healthScore + confidence)/2).toFixed(1)} / 100
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Next Review</div>
+                                    <div style="font-weight: 700;">${isHighRisk ? 'Within 2 weeks' : 'In 3-6 months'}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div style="background: var(--gray-100); padding: 15px; border-radius: 10px;">
-                        <h5 style="margin-bottom: 15px;">Data Timeline Analysis</h5>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
-                            <div>
-                                <div style="font-size: 0.8rem; color: var(--text-secondary);">First Prediction</div>
-                                <div style="font-weight: 600;">${timeRange.earliest.toLocaleDateString()}</div>
+                `;
+            } else {
+                // Multiple records - show comprehensive relationship analysis
+                const highRiskData = data.filter(p => p.RiskLevel === 'High Risk');
+                const lowRiskData = data.filter(p => p.RiskLevel === 'Low Risk');
+                
+                const avgHealthByRisk = {
+                    high: highRiskData.length > 0 ? highRiskData.reduce((sum, p) => sum + (p.HealthScore || 0), 0) / highRiskData.length : 0,
+                    low: lowRiskData.length > 0 ? lowRiskData.reduce((sum, p) => sum + (p.HealthScore || 0), 0) / lowRiskData.length : 0
+                };
+
+                const avgConfidenceByRisk = {
+                    high: highRiskData.length > 0 ? highRiskData.reduce((sum, p) => sum + (p.Confidence || 0), 0) / highRiskData.length : 0,
+                    low: lowRiskData.length > 0 ? lowRiskData.reduce((sum, p) => sum + (p.Confidence || 0), 0) / lowRiskData.length : 0
+                };
+
+                const timeRange = {
+                    earliest: new Date(Math.min(...data.map(p => new Date(p.CreatedAt)))),
+                    latest: new Date(Math.max(...data.map(p => new Date(p.CreatedAt))))
+                };
+
+                chartContainer.innerHTML = `
+                    <div style="padding: 20px;">
+                        <h4 style="margin-bottom: 20px; color: var(--text-primary);">Multi-Record Comprehensive Relationships (${data.length} Records)</h4>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 30px;">
+                            <div style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%); padding: 25px; border-radius: 20px; border: 2px solid rgba(239, 68, 68, 0.2);">
+                                <h5 style="color: #ef4444; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-exclamation-triangle"></i> High Risk Profile Analysis
+                                </h5>
+                                <div style="space-y: 15px;">
+                                    <div style="margin-bottom: 15px;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Count</span>
+                                            <span style="font-weight: 800; font-size: 1.2rem; color: #ef4444;">${highRiskData.length}</span>
+                                        </div>
+                                    </div>
+                                    <div style="margin-bottom: 15px;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Avg Health Score</span>
+                                            <span style="font-weight: 800; font-size: 1.2rem; color: #ef4444;">${avgHealthByRisk.high.toFixed(1)}</span>
+                                        </div>
+                                    </div>
+                                    <div style="margin-bottom: 15px;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Avg Confidence</span>
+                                            <span style="font-weight: 800; font-size: 1.2rem; color: #ef4444;">${avgConfidenceByRisk.high.toFixed(1)}%</span>
+                                        </div>
+                                    </div>
+                                    <div style="background: rgba(239, 68, 68, 0.1); padding: 15px; border-radius: 12px; text-align: center;">
+                                        <div style="font-size: 1.5rem; font-weight: 800; color: #ef4444; margin-bottom: 5px;">
+                                            ${((highRiskData.length / data.length) * 100).toFixed(1)}%
+                                        </div>
+                                        <div style="font-size: 0.8rem; color: var(--text-secondary);">of Total Predictions</div>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Latest Prediction</div>
-                                <div style="font-weight: 600;">${timeRange.latest.toLocaleDateString()}</div>
+
+                            <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%); padding: 25px; border-radius: 20px; border: 2px solid rgba(16, 185, 129, 0.2);">
+                                <h5 style="color: #10b981; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-check-circle"></i> Low Risk Profile Analysis
+                                </h5>
+                                <div style="space-y: 15px;">
+                                    <div style="margin-bottom: 15px;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Count</span>
+                                            <span style="font-weight: 800; font-size: 1.2rem; color: #10b981;">${lowRiskData.length}</span>
+                                        </div>
+                                    </div>
+                                    <div style="margin-bottom: 15px;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Avg Health Score</span>
+                                            <span style="font-weight: 800; font-size: 1.2rem; color: #10b981;">${avgHealthByRisk.low.toFixed(1)}</span>
+                                        </div>
+                                    </div>
+                                    <div style="margin-bottom: 15px;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Avg Confidence</span>
+                                            <span style="font-weight: 800; font-size: 1.2rem; color: #10b981;">${avgConfidenceByRisk.low.toFixed(1)}%</span>
+                                        </div>
+                                    </div>
+                                    <div style="background: rgba(16, 185, 129, 0.1); padding: 15px; border-radius: 12px; text-align: center;">
+                                        <div style="font-size: 1.5rem; font-weight: 800; color: #10b981; margin-bottom: 5px;">
+                                            ${((lowRiskData.length / data.length) * 100).toFixed(1)}%
+                                        </div>
+                                        <div style="font-size: 0.8rem; color: var(--text-secondary);">of Total Predictions</div>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Span</div>
-                                <div style="font-weight: 600;">${Math.ceil((timeRange.latest - timeRange.earliest) / (1000 * 60 * 60 * 24))} days</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Frequency</div>
-                                <div style="font-weight: 600;">${(data.length / Math.max(1, Math.ceil((timeRange.latest - timeRange.earliest) / (1000 * 60 * 60 * 24)))).toFixed(1)}/day</div>
+                        </div>
+
+                        <div style="background: var(--gray-100); padding: 25px; border-radius: 20px;">
+                            <h5 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;"><i class="fas fa-chart-line"></i> Temporal Analysis & Insights</h5>
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+                                <div style="text-align: center;">
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 8px;">First Prediction</div>
+                                    <div style="font-weight: 700; font-size: 1rem;">${timeRange.earliest.toLocaleDateString()}</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 8px;">Latest Prediction</div>
+                                    <div style="font-weight: 700; font-size: 1rem;">${timeRange.latest.toLocaleDateString()}</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 8px;">Time Span</div>
+                                    <div style="font-weight: 700; font-size: 1rem;">${Math.ceil((timeRange.latest - timeRange.earliest) / (1000 * 60 * 60 * 24))} days</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 8px;">Frequency</div>
+                                    <div style="font-weight: 700; font-size: 1rem;">${(data.length / Math.max(1, Math.ceil((timeRange.latest - timeRange.earliest) / (1000 * 60 * 60 * 24)))).toFixed(1)}/day</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            `;
+                `;
+            }
+            console.log(`✅ Pairplot analysis created successfully`);
         }
 
         function createFeatureImportance(data, diseaseType, color) {
+            console.log(`📊 Creating feature importance for ${data.length} records...`);
             const chartContainer = document.getElementById('featureImportanceChart');
             
-            // Calculate importance based on prediction patterns
-            const features = {
-                'Health Score': data.reduce((sum, p) => sum + (p.HealthScore || 0), 0) / data.length,
-                'Confidence Level': data.reduce((sum, p) => sum + (p.Confidence || 0), 0) / data.length,
-                'Risk Assessment': (data.filter(p => p.RiskLevel === 'High Risk').length / data.length) * 100,
-                'Prediction Consistency': data.length > 1 ? 100 - (Math.abs(data[data.length-1].HealthScore - data[0].HealthScore)) : 100
-            };
+            if (data.length === 1) {
+                // Single record - show individual factor analysis
+                const record = data[0];
+                const healthScore = record.HealthScore || 0;
+                const confidence = record.Confidence || 0;
+                const isHighRisk = record.RiskLevel === 'High Risk';
 
-            chartContainer.innerHTML = `
-                <div style="padding: 20px;">
-                    <h4 style="margin-bottom: 20px; color: var(--text-primary);">Key Health Factors</h4>
-                    <div style="space-y: 15px;">
-                        ${Object.entries(features).map(([feature, value]) => `
-                            <div style="margin-bottom: 15px;">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                                    <span style="font-weight: 600; font-size: 0.9rem;">${feature}</span>
-                                    <span style="font-weight: 700; color: ${color};">${value.toFixed(1)}${feature.includes('Level') || feature.includes('Assessment') ? '%' : ''}</span>
+                const factors = [
+                    { 
+                        name: 'Health Score Impact', 
+                        value: healthScore, 
+                        max: 100, 
+                        importance: healthScore > 70 ? 90 : healthScore > 50 ? 70 : 50,
+                        color: '#3b82f6',
+                        icon: '💪',
+                        description: `Health score of ${healthScore} indicates ${healthScore > 70 ? 'excellent' : healthScore > 50 ? 'good' : 'moderate'} overall health status`
+                    },
+                    { 
+                        name: 'Prediction Confidence', 
+                        value: confidence, 
+                        max: 100, 
+                        importance: confidence > 80 ? 95 : confidence > 60 ? 75 : 60,
+                        color: '#10b981',
+                        icon: '🎯',
+                        description: `${confidence.toFixed(1)}% confidence indicates ${confidence > 80 ? 'very reliable' : confidence > 60 ? 'reliable' : 'moderate'} prediction accuracy`
+                    },
+                    { 
+                        name: 'Risk Level Factor', 
+                        value: isHighRisk ? 85 : 20, 
+                        max: 100, 
+                        importance: isHighRisk ? 100 : 30,
+                        color: isHighRisk ? '#ef4444' : '#22c55e',
+                        icon: isHighRisk ? '⚠️' : '✅',
+                        description: `${record.RiskLevel || 'Low Risk'} classification ${isHighRisk ? 'requires immediate attention' : 'indicates good health management'}`
+                    },
+                    { 
+                        name: 'Data Recency', 
+                        value: 100 - Math.min(90, Math.floor((new Date() - new Date(record.CreatedAt)) / (1000 * 60 * 60 * 24)) * 2), 
+                        max: 100, 
+                        importance: 85,
+                        color: '#8b5cf6',
+                        icon: '📅',
+                        description: `Analysis from ${new Date(record.CreatedAt).toLocaleDateString()} provides current health snapshot`
+                    }
+                ];
+
+                chartContainer.innerHTML = `
+                    <div style="padding: 20px;">
+                        <h4 style="margin-bottom: 20px; color: var(--text-primary);">Individual Key Health Factors</h4>
+                        <div style="space-y: 25px;">
+                            ${factors.map((factor, index) => `
+                                <div style="margin-bottom: 25px; padding: 20px; background: linear-gradient(135deg, ${factor.color}15 0%, ${factor.color}05 100%); border-radius: 15px; border: 2px solid ${factor.color}25;">
+                                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                                        <div style="font-size: 1.5rem;">${factor.icon}</div>
+                                        <div style="flex: 1;">
+                                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                                <span style="font-weight: 700; font-size: 1rem; color: ${factor.color};">${factor.name}</span>
+                                                <span style="font-weight: 800; font-size: 1.3rem; color: ${factor.color};">${factor.value.toFixed(1)}${factor.name.includes('Score') || factor.name.includes('Confidence') ? '%' : ''}</span>
+                                            </div>
+                                            <div style="background: var(--gray-200); height: 12px; border-radius: 6px; overflow: hidden; margin-bottom: 10px;">
+                                                <div style="background: linear-gradient(135deg, ${factor.color}, ${factor.color}80); width: ${(factor.value/factor.max)*100}%; height: 100%; border-radius: 6px; transition: width 0.8s ease;"></div>
+                                            </div>
+                                            <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;">
+                                                ${factor.description}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: ${factor.color}10; border-radius: 8px;">
+                                        <span style="font-size: 0.8rem; color: var(--text-secondary);">Factor Importance</span>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 40px; height: 6px; background: var(--gray-200); border-radius: 3px; overflow: hidden;">
+                                                <div style="width: ${factor.importance}%; height: 100%; background: ${factor.color}; border-radius: 3px;"></div>
+                                            </div>
+                                            <span style="font-weight: 700; color: ${factor.color}; font-size: 0.9rem;">${factor.importance}%</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div style="background: var(--gray-200); height: 8px; border-radius: 4px; overflow: hidden;">
-                                    <div style="background: linear-gradient(135deg, ${color}, ${color}80); width: ${Math.min(100, value)}%; height: 100%; border-radius: 4px; transition: width 0.5s ease;"></div>
+                            `).join('')}
+                        </div>
+                        
+                        <div style="margin-top: 30px; padding: 20px; background: var(--gray-100); border-radius: 15px;">
+                            <h5 style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;"><i class="fas fa-lightbulb"></i> Individual Analysis Insights</h5>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Top Contributing Factor</div>
+                                    <div style="font-weight: 700; color: ${factors.reduce((prev, current) => (prev.importance > current.importance) ? prev : current).color};">
+                                        ${factors.reduce((prev, current) => (prev.importance > current.importance) ? prev : current).name}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Overall Health Status</div>
+                                    <div style="font-weight: 700; color: ${((healthScore + confidence)/2) > 70 ? '#10b981' : ((healthScore + confidence)/2) > 50 ? '#f59e0b' : '#ef4444'};">
+                                        ${((healthScore + confidence)/2) > 70 ? 'Strong Profile' : ((healthScore + confidence)/2) > 50 ? 'Moderate Profile' : 'Needs Attention'}
+                                    </div>
                                 </div>
                             </div>
-                        `).join('')}
+                        </div>
                     </div>
-                    <div style="margin-top: 20px; padding: 15px; background: rgba(102, 126, 234, 0.05); border-radius: 10px;">
-                        <h5 style="margin-bottom: 10px; color: var(--text-primary);">Key Insights:</h5>
-                        <ul style="margin: 0; padding-left: 20px; color: var(--text-secondary);">
-                            <li>Health scores show ${features['Health Score'] > 70 ? 'good' : features['Health Score'] > 50 ? 'moderate' : 'concerning'} levels</li>
-                            <li>Prediction confidence is ${features['Confidence Level'] > 80 ? 'very high' : features['Confidence Level'] > 60 ? 'good' : 'moderate'}</li>
-                            <li>Risk assessment indicates ${features['Risk Assessment'] > 50 ? 'high attention needed' : features['Risk Assessment'] > 25 ? 'moderate monitoring' : 'low risk profile'}</li>
-                        </ul>
+                `;
+            } else {
+                // Multiple records - show aggregated importance analysis
+                const features = {
+                    'Health Score Consistency': {
+                        value: 100 - (Math.max(...data.map(p => p.HealthScore || 0)) - Math.min(...data.map(p => p.HealthScore || 0))),
+                        importance: 90,
+                        color: '#3b82f6',
+                        icon: '💪'
+                    },
+                    'Average Confidence Level': {
+                        value: data.reduce((sum, p) => sum + (p.Confidence || 0), 0) / data.length,
+                        importance: 85,
+                        color: '#10b981',
+                        icon: '🎯'
+                    },
+                    'Risk Assessment Pattern': {
+                        value: (data.filter(p => p.RiskLevel === 'High Risk').length / data.length) * 100,
+                        importance: 95,
+                        color: '#ef4444',
+                        icon: '⚠️'
+                    },
+                    'Prediction Frequency': {
+                        value: Math.min(100, (data.length / Math.max(1, Math.ceil((new Date(Math.max(...data.map(p => new Date(p.CreatedAt)))) - new Date(Math.min(...data.map(p => new Date(p.CreatedAt))))) / (1000 * 60 * 60 * 24)))) * 30),
+                        importance: 70,
+                        color: '#8b5cf6',
+                        icon: '📊'
+                    },
+                    'Data Quality Score': {
+                        value: Math.min(100, (data.filter(p => (p.HealthScore || 0) > 0 && (p.Confidence || 0) > 50).length / data.length) * 100),
+                        importance: 80,
+                        color: '#f59e0b',
+                        icon: '✨'
+                    }
+                };
+
+                chartContainer.innerHTML = `
+                    <div style="padding: 20px;">
+                        <h4 style="margin-bottom: 20px; color: var(--text-primary);">Multi-Record Key Health Factors (${data.length} Records)</h4>
+                        <div style="space-y: 20px;">
+                            ${Object.entries(features).map(([featureName, feature], index) => `
+                                <div style="margin-bottom: 20px;">
+                                    <div style="display: flex; align-items: center; justify-content: between; margin-bottom: 12px;">
+                                        <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+                                            <span style="font-size: 1.2rem;">${feature.icon}</span>
+                                            <span style="font-weight: 700; font-size: 1rem;">${featureName}</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 15px;">
+                                            <span style="font-weight: 800; font-size: 1.2rem; color: ${feature.color};">${feature.value.toFixed(1)}${featureName.includes('Level') || featureName.includes('Pattern') || featureName.includes('Quality') ? '%' : ''}</span>
+                                            <div style="display: flex; align-items: center; gap: 5px;">
+                                                <span style="font-size: 0.8rem; color: var(--text-secondary);">Importance:</span>
+                                                <span style="font-weight: 700; color: ${feature.color}; font-size: 0.9rem;">${feature.importance}%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="background: var(--gray-200); height: 14px; border-radius: 7px; overflow: hidden; margin-bottom: 8px;">
+                                        <div style="background: linear-gradient(135deg, ${feature.color}, ${feature.color}80); width: ${Math.min(100, feature.value)}%; height: 100%; border-radius: 7px; transition: width 0.8s ease;"></div>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary);">
+                                        <span>0</span>
+                                        <span style="color: ${feature.color}; font-weight: 600;">
+                                            ${feature.value > 80 ? 'Excellent' : feature.value > 60 ? 'Good' : feature.value > 40 ? 'Moderate' : 'Needs Improvement'}
+                                        </span>
+                                        <span>100</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div style="margin-top: 30px; padding: 25px; background: var(--gray-100); border-radius: 15px;">
+                            <h5 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;"><i class="fas fa-chart-pie"></i> Multi-Record Analysis Insights</h5>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Health Consistency</div>
+                                    <div style="font-weight: 700; color: ${features['Health Score Consistency'].value > 80 ? '#10b981' : features['Health Score Consistency'].value > 60 ? '#f59e0b' : '#ef4444'};">
+                                        ${features['Health Score Consistency'].value > 80 ? 'Very Stable' : features['Health Score Consistency'].value > 60 ? 'Moderately Stable' : 'Variable'}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Overall Confidence</div>
+                                    <div style="font-weight: 700; color: ${features['Average Confidence Level'].value > 80 ? '#10b981' : features['Average Confidence Level'].value > 60 ? '#f59e0b' : '#ef4444'};">
+                                        ${features['Average Confidence Level'].value > 80 ? 'High Reliability' : features['Average Confidence Level'].value > 60 ? 'Good Reliability' : 'Moderate Reliability'}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Risk Profile</div>
+                                    <div style="font-weight: 700; color: ${features['Risk Assessment Pattern'].value < 30 ? '#10b981' : features['Risk Assessment Pattern'].value > 70 ? '#ef4444' : '#f59e0b'};">
+                                        ${features['Risk Assessment Pattern'].value < 30 ? 'Low Risk Dominant' : features['Risk Assessment Pattern'].value > 70 ? 'High Risk Dominant' : 'Mixed Profile'}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+            }
+            console.log(`✅ Feature importance created successfully`);
+        }
+
+        // Helper function to calculate correlation between two arrays
+        function calculateCorrelation(arr1, arr2) {
+            if (arr1.length !== arr2.length || arr1.length === 0) {
+                return 0;
+            }
+
+            const mean1 = arr1.reduce((sum, val) => sum + val, 0) / arr1.length;
+            const mean2 = arr2.reduce((sum, val) => sum + val, 0) / arr2.length;
+            
+            const numerator = arr1.reduce((sum, val, i) => sum + (val - mean1) * (arr2[i] - mean2), 0);
+            const denominator1 = Math.sqrt(arr1.reduce((sum, val) => sum + Math.pow(val - mean1, 2), 0));
+            const denominator2 = Math.sqrt(arr2.reduce((sum, val) => sum + Math.pow(val - mean2, 2), 0));
+            
+            if (denominator1 === 0 || denominator2 === 0) {
+                return 0;
+            }
+            
+            return numerator / (denominator1 * denominator2);
         }
 
         // Helper function to calculate correlation between two features (for future use with real data)
