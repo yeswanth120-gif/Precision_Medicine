@@ -1200,11 +1200,6 @@
                     <div class="summary-title">🫘 Kidney Disease</div>
                     <div class="summary-value">${stats.kidney}</div>
                 </div>
-                <div class="summary-card summary-user" style="min-width: 280px;">
-                    <div class="summary-title">Current User</div>
-                    <div class="summary-value" style="font-size: 1.2rem;">${currentUser}</div>
-                    <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:5px;">${currentUserEmail}</div>
-                </div>
             `;
         }
 
@@ -1245,10 +1240,6 @@
                         <div class="metric-item">
                             <div class="metric-label">Prediction ID</div>
                             <div class="metric-value">#${report.PredictionID}</div>
-                        </div>
-                        <div class="metric-item">
-                            <div class="metric-label">User</div>
-                            <div class="metric-value">${report.Username || currentUser}</div>
                         </div>
                     </div>
                     <div class="report-actions">
