@@ -1062,6 +1062,26 @@
                     </div>
                 </div>
 
+                <!-- View All Data Button -->
+                <div style="text-align: center; margin: 30px 0;">
+                    <button onclick="viewAllData()" style="
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        color: white;
+                        border: none;
+                        padding: 15px 30px;
+                        border-radius: 25px;
+                        font-size: 1.1rem;
+                        font-weight: 600;
+                        cursor: pointer;
+                        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+                        transition: all 0.3s ease;
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 10px;">
+                        <i class="fas fa-database"></i> View All Complete Data
+                    </button>
+                </div>
+
                 <!-- No Data Message (Hidden initially) -->
                 <div class="no-data-message" id="noDataMessage" style="display: none;">
                     <div class="no-data-icon">📊</div>
@@ -1488,58 +1508,211 @@
             };
         }
 
-        // Generate detailed prediction history
+        // Generate detailed prediction history with complete inputs and outputs
         function generateDetailedPredictionHistory(data, diseaseType) {
-            const recentPredictions = data.slice(-5).reverse(); // Show last 5 predictions
+            const recentPredictions = data.slice(-10).reverse(); // Show last 10 predictions for complete data view
             
             return `
                 <div class="analysis-section">
-                    <h4>📝 Detailed Prediction History</h4>
-                    <div style="display: grid; gap: 15px;">
-                        ${recentPredictions.map((prediction, index) => `
-                            <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid rgba(102, 126, 234, 0.1); box-shadow: var(--shadow-sm);">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                                    <h5 style="margin: 0; color: var(--text-primary);">
-                                        Prediction #${prediction.PredictionID} - ${new Date(prediction.CreatedAt).toLocaleDateString()}
+                    <h4>📝 Complete Prediction Data & History</h4>
+                    <p style="color: #666; margin-bottom: 20px;">Showing complete input parameters and prediction outputs from database (${recentPredictions.length} recent records)</p>
+                    <div style="display: grid; gap: 20px;">
+                        ${recentPredictions.map((prediction, index) => {
+                            let inputData = {};
+                            let outputData = {};
+                            
+                            // Parse input and output data from database
+                            try {
+                                inputData = prediction.InputData ? JSON.parse(prediction.InputData) : {};
+                                outputData = prediction.OutputData ? JSON.parse(prediction.OutputData) : {};
+                            } catch (e) {
+                                console.warn('Error parsing prediction data:', e);
+                            }
+                            
+                            return `
+                            <div style="background: white; padding: 25px; border-radius: 15px; border: 1px solid rgba(102, 126, 234, 0.1); box-shadow: var(--shadow-sm);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                    <h5 style="margin: 0; color: var(--text-primary); font-size: 1.1rem;">
+                                        🔬 Prediction #${prediction.PredictionID} - ${new Date(prediction.CreatedAt).toLocaleDateString()} ${new Date(prediction.CreatedAt).toLocaleTimeString()}
                                     </h5>
-                                    <span style="padding: 6px 12px; border-radius: 15px; font-size: 0.8rem; font-weight: 600; 
+                                    <span style="padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; 
                                         background: ${prediction.RiskLevel === 'High Risk' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)'};
                                         color: ${prediction.RiskLevel === 'High Risk' ? '#ef4444' : '#10b981'};">
                                         ${prediction.RiskLevel || 'Low Risk'}
                                     </span>
                                 </div>
                                 
-                                <div class="comparison-grid">
-                                    <div class="comparison-item">
-                                        <div class="comparison-title">Health Score</div>
-                                        <div class="comparison-value">${prediction.HealthScore || 'N/A'}</div>
-                                        <div class="comparison-description">
-                                            ${prediction.HealthScore ? getHealthScoreCategory(prediction.HealthScore) : 'No data'}
+                                <!-- Prediction Outputs Summary -->
+                                <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                                    <h6 style="margin: 0 0 15px 0; color: var(--text-primary); font-size: 1rem;">📊 Prediction Results</h6>
+                                    <div class="comparison-grid">
+                                        <div class="comparison-item">
+                                            <div class="comparison-title">Health Score</div>
+                                            <div class="comparison-value">${prediction.HealthScore || 'N/A'}</div>
+                                            <div class="comparison-description">
+                                                ${prediction.HealthScore ? getHealthScoreCategory(prediction.HealthScore) : 'No data'}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="comparison-item">
-                                        <div class="comparison-title">Confidence</div>
-                                        <div class="comparison-value">${prediction.Confidence ? Math.round(prediction.Confidence) + '%' : 'N/A'}</div>
-                                        <div class="comparison-description">
-                                            ${prediction.Confidence ? getConfidenceCategory(prediction.Confidence) : 'No data'}
+                                        <div class="comparison-item">
+                                            <div class="comparison-title">Confidence</div>
+                                            <div class="comparison-value">${prediction.Confidence ? Math.round(prediction.Confidence) + '%' : 'N/A'}</div>
+                                            <div class="comparison-description">
+                                                ${prediction.Confidence ? getConfidenceCategory(prediction.Confidence) : 'No data'}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="comparison-item">
-                                        <div class="comparison-title">Date & Time</div>
-                                        <div class="comparison-value">${new Date(prediction.CreatedAt).toLocaleTimeString()}</div>
-                                        <div class="comparison-description">
-                                            ${calculateDaysAgo(prediction.CreatedAt)} ago
+                                        <div class="comparison-item">
+                                            <div class="comparison-title">Probability</div>
+                                            <div class="comparison-value">${prediction.Probability ? (Math.round(prediction.Probability * 100)) + '%' : 'N/A'}</div>
+                                            <div class="comparison-description">Risk probability score</div>
                                         </div>
-                                    </div>
-                                    <div class="comparison-item">
-                                        <div class="comparison-title">User</div>
-                                        <div class="comparison-value">${prediction.Username || currentUser}</div>
-                                        <div class="comparison-description">Database record</div>
+                                        <div class="comparison-item">
+                                            <div class="comparison-title">Prediction Type</div>
+                                            <div class="comparison-value">${prediction.PredictionType}</div>
+                                            <div class="comparison-description">Disease category analyzed</div>
+                                        </div>
                                     </div>
                                 </div>
+                                
+                                <!-- Complete Input Data -->
+                                <div style="background: rgba(34, 197, 94, 0.05); padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+                                    <h6 style="margin: 0 0 15px 0; color: var(--text-primary); font-size: 1rem;">📝 Complete Input Parameters</h6>
+                                    ${generateInputDataTable(inputData, diseaseType)}
+                                </div>
+                                
+                                <!-- Additional Output Data -->
+                                ${Object.keys(outputData).length > 0 ? `
+                                <div style="background: rgba(59, 130, 246, 0.05); padding: 20px; border-radius: 12px;">
+                                    <h6 style="margin: 0 0 15px 0; color: var(--text-primary); font-size: 1rem;">🎯 Detailed Output Analysis</h6>
+                                    ${generateOutputDataTable(outputData)}
+                                </div>
+                                ` : ''}
+                                
+                                <!-- Database Metadata -->
+                                <div style="background: rgba(107, 114, 128, 0.05); padding: 15px; border-radius: 8px; margin-top: 15px; font-size: 0.85rem; color: #666;">
+                                    <strong>Database Record:</strong> Created on ${new Date(prediction.CreatedAt).toLocaleString()} | 
+                                    User: ${prediction.UserID || currentUser} | 
+                                    Record ID: ${prediction.PredictionID}
+                                </div>
                             </div>
-                        `).join('')}
+                        `}).join('')}
                     </div>
+                </div>
+            `;
+        }
+
+        // Generate input data table based on disease type
+        function generateInputDataTable(inputData, diseaseType) {
+            if (!inputData || Object.keys(inputData).length === 0) {
+                return '<p style="color: #666; font-style: italic;">No input data available in database record.</p>';
+            }
+            
+            // Define field mappings for different disease types
+            const fieldMappings = {
+                'heart_disease': {
+                    'age': 'Age (years)',
+                    'sex': 'Sex (0=Female, 1=Male)',
+                    'cp': 'Chest Pain Type',
+                    'trestbps': 'Resting Blood Pressure',
+                    'chol': 'Cholesterol Level',
+                    'fbs': 'Fasting Blood Sugar',
+                    'restecg': 'Rest ECG Results',
+                    'thalach': 'Max Heart Rate',
+                    'exang': 'Exercise Angina',
+                    'oldpeak': 'ST Depression',
+                    'slope': 'Slope Peak Exercise',
+                    'ca': 'Vessels Colored',
+                    'thal': 'Thalassemia'
+                },
+                'diabetes': {
+                    'pregnancies': 'Number of Pregnancies',
+                    'glucose': 'Glucose Level',
+                    'bloodpressure': 'Blood Pressure',
+                    'skinthickness': 'Skin Thickness',
+                    'insulin': 'Insulin Level',
+                    'bmi': 'BMI',
+                    'diabetespedigreefunction': 'Diabetes Pedigree Function',
+                    'age': 'Age (years)'
+                },
+                'lung_cancer': {
+                    'age': 'Age (years)',
+                    'smoking': 'Smoking Status',
+                    'yellow_fingers': 'Yellow Fingers',
+                    'anxiety': 'Anxiety Level',
+                    'peer_pressure': 'Peer Pressure',
+                    'chronic_disease': 'Chronic Disease',
+                    'fatigue': 'Fatigue Level',
+                    'allergy': 'Allergy Status',
+                    'wheezing': 'Wheezing',
+                    'alcohol_consuming': 'Alcohol Consumption',
+                    'coughing': 'Coughing',
+                    'shortness_of_breath': 'Shortness of Breath',
+                    'swallowing_difficulty': 'Swallowing Difficulty',
+                    'chest_pain': 'Chest Pain'
+                },
+                'kidney_disease': {
+                    'age': 'Age (years)',
+                    'blood_pressure': 'Blood Pressure',
+                    'specific_gravity': 'Specific Gravity',
+                    'albumin': 'Albumin Level',
+                    'sugar': 'Sugar Level',
+                    'red_blood_cells': 'Red Blood Cells',
+                    'pus_cell': 'Pus Cell',
+                    'pus_cell_clumps': 'Pus Cell Clumps',
+                    'bacteria': 'Bacteria',
+                    'blood_glucose_random': 'Random Blood Glucose',
+                    'blood_urea': 'Blood Urea',
+                    'serum_creatinine': 'Serum Creatinine',
+                    'sodium': 'Sodium Level',
+                    'potassium': 'Potassium Level',
+                    'haemoglobin': 'Haemoglobin',
+                    'packed_cell_volume': 'Packed Cell Volume',
+                    'white_blood_cell_count': 'White Blood Cell Count',
+                    'red_blood_cell_count': 'Red Blood Cell Count',
+                    'hypertension': 'Hypertension',
+                    'diabetes_mellitus': 'Diabetes Mellitus',
+                    'coronary_artery_disease': 'Coronary Artery Disease',
+                    'appetite': 'Appetite',
+                    'peda_edema': 'Pedal Edema',
+                    'aanemia': 'Anemia'
+                }
+            };
+            
+            const mapping = fieldMappings[diseaseType] || {};
+            
+            return `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px;">
+                    ${Object.entries(inputData).map(([key, value]) => `
+                        <div style="background: white; padding: 12px; border-radius: 8px; border-left: 4px solid #22c55e;">
+                            <div style="font-weight: 600; color: var(--text-primary); font-size: 0.9rem; margin-bottom: 4px;">
+                                ${mapping[key] || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                            </div>
+                            <div style="font-size: 1.1rem; color: #059669; font-weight: 700;">
+                                ${value}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Generate output data table  
+        function generateOutputDataTable(outputData) {
+            if (!outputData || Object.keys(outputData).length === 0) {
+                return '<p style="color: #666; font-style: italic;">No additional output data available.</p>';
+            }
+            
+            return `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                    ${Object.entries(outputData).map(([key, value]) => `
+                        <div style="background: white; padding: 12px; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                            <div style="font-weight: 600; color: var(--text-primary); font-size: 0.9rem; margin-bottom: 4px;">
+                                ${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                            </div>
+                            <div style="font-size: 1.1rem; color: #2563eb; font-weight: 700;">
+                                ${typeof value === 'object' ? JSON.stringify(value) : value}
+                            </div>
+                        </div>
+                    `).join('')}
                 </div>
             `;
         }
@@ -2117,35 +2290,253 @@
             }, 5000);
         }
 
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            updateUserInterface();
-            testBackendConnection();
-            loadUserAnalyticsData();
-        });
+        // View all data from all disease types
+        function viewAllData() {
+            console.log('📊 viewAllData() called');
+            console.log('📊 Total predictions:', userPredictions ? userPredictions.length : 'undefined');
+            
+            try {
+                // Validate we have data
+                if (!userPredictions || userPredictions.length === 0) {
+                    console.warn('⚠️ No predictions data available');
+                    showErrorMessage('No prediction data available to display. Please make some predictions first.');
+                    return;
+                }
+                
+                console.log('🎯 Opening view all data modal...');
+                
+                // Show modal
+                const modal = document.getElementById('viewDataModal');
+                if (modal) {
+                    modal.style.display = 'block';
+                    console.log('✅ Modal display set to block');
+                    
+                    // Update modal title
+                    document.getElementById('viewModalTitle').textContent = '🗄️ Complete Database - All Prediction Data';
+                    
+                    // Show loading state
+                    const modalContent = document.getElementById('viewDataContent');
+                    if (modalContent) {
+                        console.log('🔄 Showing loading state...');
+                        modalContent.innerHTML = `
+                            <div class="loading-spinner" style="text-align: center; padding: 40px;">
+                                <div class="spinner" style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+                                <p style="color: #666; font-size: 16px;">Loading complete database records...</p>
+                                <p style="color: #999; font-size: 14px;">Processing ${userPredictions.length} total predictions from all categories...</p>
+                            </div>
+                            <style>
+                                @keyframes spin {
+                                    0% { transform: rotate(0deg); }
+                                    100% { transform: rotate(360deg); }
+                                }
+                            </style>
+                        `;
+                        
+                        // Generate comprehensive analysis with a small delay to show loading
+                        setTimeout(() => {
+                            try {
+                                console.log('🚀 Generating comprehensive all-data analysis...');
+                                const analysisHtml = generateAllDataAnalysis();
+                                console.log('📄 All-data analysis HTML generated:', analysisHtml ? 'success' : 'failed');
+                                
+                                if (analysisHtml) {
+                                    modalContent.innerHTML = analysisHtml;
+                                    console.log('✅ All-data analysis content loaded successfully');
+                                } else {
+                                    throw new Error('Failed to generate all-data analysis content');
+                                }
+                            } catch (analysisError) {
+                                console.error('💥 Error generating all-data analysis:', analysisError);
+                                modalContent.innerHTML = `
+                                    <div style="text-align: center; padding: 40px; color: #dc3545;">
+                                        <h3>❌ Error Loading All Data</h3>
+                                        <p>Unable to generate comprehensive analysis of all prediction data.</p>
+                                        <p><strong>Error:</strong> ${analysisError.message}</p>
+                                        <button onclick="viewAllData()" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 15px;">
+                                            🔄 Try Again
+                                        </button>
+                                    </div>
+                                `;
+                            }
+                        }, 800);
+                    } else {
+                        console.error('❌ viewDataContent element not found');
+                        showErrorMessage('Modal content container not found');
+                    }
+                } else {
+                    console.error('❌ viewDataModal element not found');
+                    showErrorMessage('Data view modal not found');
+                }
+            } catch (error) {
+                console.error('💥 Error in viewAllData():', error);
+                showErrorMessage(`Error displaying all data: ${error.message}`);
+            }
+        }
 
-        // Global API for external access
-        window.analyticsAPI = {
-            getCurrentUser: () => ({ 
-                username: currentUser, 
-                email: currentUserEmail, 
-                userId: currentUserId,
-                loginTime: '2025-07-14 15:02:00 UTC',
-                currentLogin: 'SKY035'
-            }),
-            getUserPredictions: () => userPredictions,
-            getDatabaseStats: () => ({
-                totalRecords: userPredictions.length,
-                heartDisease: userPredictions.filter(p => p.PredictionType === 'heart_disease').length,
-                diabetes: userPredictions.filter(p => p.PredictionType === 'diabetes').length,
-                lungCancer: userPredictions.filter(p => p.PredictionType === 'lung_cancer').length,
-                kidneyDisease: userPredictions.filter(p => p.PredictionType === 'kidney_disease').length,
-                highRisk: userPredictions.filter(p => p.RiskLevel === 'High Risk').length,
-                lowRisk: userPredictions.filter(p => p.RiskLevel === 'Low Risk').length,
-                currentUser: 'SKY035',
-                sessionTime: '2025-07-14 15:02:00 UTC'
-            })
-        };
+        // Generate comprehensive analysis of all data
+        function generateAllDataAnalysis() {
+            console.log('📊 Generating comprehensive analysis of all data...');
+            
+            // Group data by disease type
+            const dataByType = {
+                heart_disease: userPredictions.filter(p => p.PredictionType === 'heart_disease'),
+                diabetes: userPredictions.filter(p => p.PredictionType === 'diabetes'),
+                lung_cancer: userPredictions.filter(p => p.PredictionType === 'lung_cancer'),
+                kidney_disease: userPredictions.filter(p => p.PredictionType === 'kidney_disease')
+            };
+            
+            // Calculate overall statistics
+            const totalPredictions = userPredictions.length;
+            const highRiskCount = userPredictions.filter(p => p.RiskLevel === 'High Risk').length;
+            const avgHealthScore = Math.round(userPredictions.reduce((sum, p) => sum + (p.HealthScore || 0), 0) / totalPredictions);
+            const avgConfidence = Math.round(userPredictions.reduce((sum, p) => sum + (p.Confidence || 0), 0) / totalPredictions);
+            
+            return `
+                <div class="analysis-section">
+                    <h4>🗄️ Complete Database Analysis - All Prediction Records</h4>
+                    <p style="color: #666; margin-bottom: 25px;">
+                        Comprehensive view of all ${totalPredictions} prediction records across all disease categories, 
+                        including complete input parameters and prediction outputs from the database.
+                    </p>
+                    
+                    <!-- Overall Statistics -->
+                    <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); padding: 25px; border-radius: 15px; margin-bottom: 30px;">
+                        <h5 style="margin: 0 0 20px 0; color: var(--text-primary);">📈 Overall Database Statistics</h5>
+                        <div class="comparison-grid">
+                            <div class="comparison-item">
+                                <div class="comparison-title">Total Records</div>
+                                <div class="comparison-value">${totalPredictions}</div>
+                                <div class="comparison-description">Complete database history</div>
+                            </div>
+                            <div class="comparison-item">
+                                <div class="comparison-title">High Risk Cases</div>
+                                <div class="comparison-value">${highRiskCount}</div>
+                                <div class="comparison-description">${Math.round((highRiskCount / totalPredictions) * 100)}% of all predictions</div>
+                            </div>
+                            <div class="comparison-item">
+                                <div class="comparison-title">Avg Health Score</div>
+                                <div class="comparison-value">${avgHealthScore}</div>
+                                <div class="comparison-description">${getHealthScoreCategory(avgHealthScore)} overall health</div>
+                            </div>
+                            <div class="comparison-item">
+                                <div class="comparison-title">Avg Confidence</div>
+                                <div class="comparison-value">${avgConfidence}%</div>
+                                <div class="comparison-description">${getConfidenceCategory(avgConfidence)} reliability</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Disease Type Breakdown -->
+                    <div style="background: rgba(34, 197, 94, 0.05); padding: 25px; border-radius: 15px; margin-bottom: 30px;">
+                        <h5 style="margin: 0 0 20px 0; color: var(--text-primary);">🏥 Breakdown by Disease Category</h5>
+                        <div class="comparison-grid">
+                            ${Object.entries(dataByType).map(([type, data]) => {
+                                const diseaseInfo = diseaseMapping[type];
+                                return `
+                                    <div class="comparison-item">
+                                        <div class="comparison-title">${diseaseInfo ? diseaseInfo.icon + ' ' + diseaseInfo.name : type}</div>
+                                        <div class="comparison-value">${data.length}</div>
+                                        <div class="comparison-description">${Math.round((data.length / totalPredictions) * 100)}% of total</div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                    
+                    <!-- All Prediction Records -->
+                    <div style="background: white; padding: 25px; border-radius: 15px; border: 1px solid rgba(102, 126, 234, 0.1);">
+                        <h5 style="margin: 0 0 20px 0; color: var(--text-primary);">📝 All Prediction Records (Recent First)</h5>
+                        ${generateAllPredictionsTable()}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Generate table of all predictions
+        function generateAllPredictionsTable() {
+            const sortedPredictions = [...userPredictions].sort((a, b) => new Date(b.CreatedAt) - new Date(a.CreatedAt));
+            
+            return `
+                <div style="display: grid; gap: 15px; max-height: 600px; overflow-y: auto;">
+                    ${sortedPredictions.map((prediction, index) => {
+                        let inputData = {};
+                        let outputData = {};
+                        
+                        // Parse input and output data from database
+                        try {
+                            inputData = prediction.InputData ? JSON.parse(prediction.InputData) : {};
+                            outputData = prediction.OutputData ? JSON.parse(prediction.OutputData) : {};
+                        } catch (e) {
+                            console.warn('Error parsing prediction data:', e);
+                        }
+                        
+                        const diseaseInfo = diseaseMapping[prediction.PredictionType] || { icon: '🔬', name: prediction.PredictionType };
+                        
+                        return `
+                        <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border-left: 5px solid ${prediction.RiskLevel === 'High Risk' ? '#ef4444' : '#10b981'};">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <div>
+                                    <h6 style="margin: 0; color: var(--text-primary); font-size: 1rem;">
+                                        ${diseaseInfo.icon} ${diseaseInfo.name} - Record #${prediction.PredictionID}
+                                    </h6>
+                                    <p style="margin: 5px 0 0 0; color: #666; font-size: 0.9rem;">
+                                        ${new Date(prediction.CreatedAt).toLocaleDateString()} at ${new Date(prediction.CreatedAt).toLocaleTimeString()}
+                                    </p>
+                                </div>
+                                <div style="text-align: right;">
+                                    <span style="padding: 6px 12px; border-radius: 15px; font-size: 0.8rem; font-weight: 600; 
+                                        background: ${prediction.RiskLevel === 'High Risk' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)'};
+                                        color: ${prediction.RiskLevel === 'High Risk' ? '#ef4444' : '#10b981'};">
+                                        ${prediction.RiskLevel || 'Low Risk'}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Quick Stats -->
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                                <div style="text-align: center; padding: 8px; background: white; border-radius: 8px;">
+                                    <div style="font-size: 0.8rem; color: #666;">Health Score</div>
+                                    <div style="font-weight: 700; color: #059669;">${prediction.HealthScore || 'N/A'}</div>
+                                </div>
+                                <div style="text-align: center; padding: 8px; background: white; border-radius: 8px;">
+                                    <div style="font-size: 0.8rem; color: #666;">Confidence</div>
+                                    <div style="font-weight: 700; color: #2563eb;">${prediction.Confidence ? Math.round(prediction.Confidence) + '%' : 'N/A'}</div>
+                                </div>
+                                <div style="text-align: center; padding: 8px; background: white; border-radius: 8px;">
+                                    <div style="font-size: 0.8rem; color: #666;">Probability</div>
+                                    <div style="font-weight: 700; color: #dc2626;">${prediction.Probability ? (Math.round(prediction.Probability * 100)) + '%' : 'N/A'}</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Expandable Details -->
+                            <button onclick="toggleRecordDetails('record_${prediction.PredictionID}')" 
+                                style="background: #667eea; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; cursor: pointer;">
+                                <i class="fas fa-eye"></i> View Complete Input/Output Data
+                            </button>
+                            
+                            <div id="record_${prediction.PredictionID}" style="display: none; margin-top: 15px; padding: 15px; background: white; border-radius: 8px;">
+                                ${generateInputDataTable(inputData, prediction.PredictionType)}
+                                ${Object.keys(outputData).length > 0 ? `
+                                <div style="margin-top: 15px;">
+                                    <h6 style="margin: 0 0 10px 0; color: var(--text-primary);">🎯 Output Data</h6>
+                                    ${generateOutputDataTable(outputData)}
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        // Toggle record details visibility
+        function toggleRecordDetails(recordId) {
+            const element = document.getElementById(recordId);
+            if (element) {
+                element.style.display = element.style.display === 'none' ? 'block' : 'none';
+            }
+        }
     </script>
 </body>
 </html>
