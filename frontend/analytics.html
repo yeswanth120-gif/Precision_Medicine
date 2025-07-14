@@ -715,6 +715,64 @@
             border-radius: 6px;
         }
 
+        /* Loading Spinner Animation */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-spinner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .loading-spinner::before {
+            content: '';
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .loading-spinner::after {
+            content: 'Generating comprehensive analysis...';
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Analysis Grid Styles */
+        .advanced-analysis-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+
+        .analysis-chart-large {
+            grid-column: span 2;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .analysis-chart {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
         /* Enhanced Recommendations Section */
         .recommendations-section {
             background: rgba(139, 92, 246, 0.05);
@@ -1743,11 +1801,16 @@
 
         // Enhanced analyzeData function with detailed analysis
         async function analyzeData(diseaseType) {
+            console.log(`🔍 Starting detailed analysis for ${diseaseType}...`);
             const diseaseInfo = diseaseMapping[diseaseType];
-            if (!diseaseInfo) return;
+            if (!diseaseInfo) {
+                console.error(`❌ No disease info found for ${diseaseType}`);
+                return;
+            }
 
             // Filter REAL predictions for this disease type from database
             const diseaseData = userPredictions.filter(p => p.PredictionType === diseaseType);
+            console.log(`📊 Found ${diseaseData.length} predictions for ${diseaseType}:`, diseaseData);
             
             if (diseaseData.length === 0) {
                 alert(`No ${diseaseInfo.name} prediction data found in database for detailed analysis`);
@@ -1759,17 +1822,20 @@
             
             // Show modal with loading
             document.getElementById('analysisModal').style.display = 'block';
-            document.getElementById('analysisContent').innerHTML = '<div class="loading-spinner"></div>';
+            document.getElementById('analysisContent').innerHTML = '<div class="loading-spinner" style="text-align: center; padding: 40px;"><div style="border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 2s linear infinite; margin: 0 auto;"></div><p style="margin-top: 20px;">Generating comprehensive analysis...</p></div>';
 
             try {
+                console.log(`✅ Generating analysis for ${diseaseData.length} records...`);
                 // Generate comprehensive analysis from REAL database data with enhanced details
                 await generateEnhancedComprehensiveAnalysis(diseaseType, diseaseData);
+                console.log(`✅ Analysis generation completed for ${diseaseType}`);
             } catch (error) {
-                console.error('Error generating detailed analysis:', error);
+                console.error('❌ Error generating detailed analysis:', error);
                 document.getElementById('analysisContent').innerHTML = `
                     <div style="text-align: center; padding: 40px; color: var(--danger-red);">
                         <h3>❌ Analysis Error</h3>
                         <p>Unable to generate detailed analysis from database data. Please try again later.</p>
+                        <p><small>Error: ${error.message}</small></p>
                     </div>
                 `;
             }
@@ -1777,6 +1843,7 @@
 
         // Enhanced comprehensive analysis with detailed explanations
         async function generateEnhancedComprehensiveAnalysis(diseaseType, data) {
+            console.log(`🔍 Generating comprehensive analysis for ${diseaseType} with ${data.length} records...`);
             const diseaseInfo = diseaseMapping[diseaseType];
             
             // Prepare enhanced analysis data from REAL database records
@@ -1794,7 +1861,7 @@
                 healthScoreTrend: calculateHealthScoreTrend(data)
             };
 
-            console.log(`📊 Enhanced analysis data for ${currentUser}:`, analysisData);
+            console.log(`📊 Analysis data prepared:`, analysisData);
 
             // Generate comprehensive HTML with detailed analysis
             const analysisHTML = `
@@ -1873,24 +1940,37 @@
                         <div><strong>Disease Type:</strong> ${diseaseInfo.name}</div>
                         <div><strong>Records Analyzed:</strong> ${analysisData.totalPredictions}</div>
                         <div><strong>Data Source:</strong> PostgreSQL Database</div>
-                        <div><strong>Analysis Date:</strong> 2025-07-12</div>
+                        <div><strong>Analysis Date:</strong> ${new Date().toLocaleDateString()}</div>
                         <div><strong>Period:</strong> ${analysisData.dateRange.earliest} to ${analysisData.dateRange.latest}</div>
                         <div><strong>Risk Trend:</strong> ${analysisData.riskTrend}</div>
-                        <div><strong>Current Login:</strong> SKY035</div>
-                        <div><strong>Session Time:</strong> 18:38:34 UTC</div>
+                        <div><strong>Health Score Trend:</strong> ${analysisData.healthScoreTrend}</div>
+                        <div><strong>Session Time:</strong> ${new Date().toLocaleTimeString()}</div>
                     </div>
                 </div>
             `;
 
+            console.log(`📝 Setting analysis HTML content...`);
             document.getElementById('analysisContent').innerHTML = analysisHTML;
+            console.log(`✅ Analysis HTML content set successfully`);
 
             // Generate advanced visualizations from REAL database data
+            console.log(`🎨 Creating visualizations...`);
             setTimeout(() => {
-                createCorrelationHeatmap(data, diseaseType, diseaseInfo.color);
-                createFeatureBoxplots(data, diseaseType, diseaseInfo.color);
-                createStripPlots(data, diseaseType, diseaseInfo.color);
-                createPairplotAnalysis(data, diseaseType, diseaseInfo.color);
-                createFeatureImportance(data, diseaseType, diseaseInfo.color);
+                try {
+                    console.log(`📊 Creating correlation heatmap...`);
+                    createCorrelationHeatmap(data, diseaseType, diseaseInfo.color);
+                    console.log(`📊 Creating feature boxplots...`);
+                    createFeatureBoxplots(data, diseaseType, diseaseInfo.color);
+                    console.log(`📊 Creating strip plots...`);
+                    createStripPlots(data, diseaseType, diseaseInfo.color);
+                    console.log(`📊 Creating pairplot analysis...`);
+                    createPairplotAnalysis(data, diseaseType, diseaseInfo.color);
+                    console.log(`📊 Creating feature importance...`);
+                    createFeatureImportance(data, diseaseType, diseaseInfo.color);
+                    console.log(`✅ All visualizations created successfully`);
+                } catch (vizError) {
+                    console.error(`❌ Error creating visualizations:`, vizError);
+                }
             }, 100);
         }
 
