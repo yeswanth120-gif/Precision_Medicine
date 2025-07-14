@@ -1362,9 +1362,6 @@
                     <h4><i class="fas fa-user"></i> Patient Information</h4>
                     <p><strong>User Name:</strong> ${report.Username || currentUser}</p>
                     <p><strong>Email:</strong> ${report.Email || currentUserEmail}</p>
-                    <p><strong>Prediction ID:</strong> #${report.PredictionID}</p>
-                    <p><strong>Report Date:</strong> ${new Date(report.CreatedAt).toLocaleDateString()}</p>
-                    <p><strong>Report Time:</strong> ${new Date(report.CreatedAt).toLocaleTimeString()}</p>
                 </div>
 
                 <div class="health-score-section">
@@ -1806,10 +1803,7 @@
             doc.setFont("helvetica", "normal");
             doc.setFontSize(12);
             doc.text(`User Name: ${report.Username || currentUser}`, 25, y); y += 8;
-            doc.text(`Email: ${report.Email || currentUserEmail}`, 25, y); y += 8;
-            doc.text(`Prediction ID: #${report.PredictionID}`, 25, y); y += 8;
-            doc.text(`Report Date: ${new Date(report.CreatedAt).toLocaleDateString()}`, 25, y); y += 8;
-            doc.text(`Report Time: ${new Date(report.CreatedAt).toLocaleTimeString()}`, 25, y); y += 15;
+            doc.text(`Email: ${report.Email || currentUserEmail}`, 25, y); y += 15;
 
             // Prediction Results
             doc.setFont("helvetica", "bold");
@@ -1938,9 +1932,6 @@
                     <h4><i class="fas fa-user"></i> User Information</h4>
                     <p><strong>User Name:</strong> ${currentUser}</p>
                     <p><strong>Email:</strong> ${currentUserEmail}</p>
-                    <p><strong>Total Predictions:</strong> ${analyticsStats.total}</p>
-                    <p><strong>Report Generated:</strong> ${new Date().toLocaleString()}</p>
-                    <p><strong>Data Source:</strong> PostgreSQL Database</p>
                 </div>
             `;
 
@@ -2076,10 +2067,7 @@
             doc.setFont("helvetica", "normal");
             doc.setFontSize(12);
             doc.text(`User Name: ${currentUser}`, 50, y); y += 16;
-            doc.text(`Email: ${currentUserEmail}`, 50, y); y += 16;
-            doc.text(`Total Predictions: ${analyticsStats.total}`, 50, y); y += 16;
-            doc.text(`Report Generated: ${new Date().toLocaleString()}`, 50, y); y += 16;
-            doc.text(`Data Source: PostgreSQL Database`, 50, y); y += 25;
+            doc.text(`Email: ${currentUserEmail}`, 50, y); y += 25;
 
             if (!selectedPredictionId) {
                 // Analytics Summary
