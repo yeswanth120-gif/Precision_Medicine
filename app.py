@@ -11,8 +11,8 @@ import random
 import sys
 
 app = Flask(__name__, 
-            static_folder='frontend',
-            template_folder='frontend')
+            static_folder='../frontend',
+            template_folder='../frontend')
 
 # Enable CORS for all domains on all routes (for development)
 CORS(app)
@@ -2124,114 +2124,139 @@ def get_prediction_input_data():
     if request.method == 'OPTIONS':
         # CORS preflight
         return ('', 204)
-    data = request.get_json()
-    prediction_id = data.get('predictionId')
-    disease_type = data.get('diseaseType')
-    if not prediction_id or not disease_type:
-        return jsonify({'success': False, 'error': 'Missing predictionId or diseaseType'}), 400
+    
+    try:
+        data = request.get_json()
+        prediction_id = data.get('predictionId')
+        disease_type = data.get('diseaseType')
+        
+        print(f"📋 Fetching input data for prediction {prediction_id} (type: {disease_type})")
+        
+        if not prediction_id or not disease_type:
+            print(f"❌ Missing required parameters: predictionId={prediction_id}, diseaseType={disease_type}")
+            return jsonify({'success': False, 'error': 'Missing predictionId or diseaseType'}), 400
 
-    engine = get_db_connection()
-    if not engine:
-        return jsonify({'success': False, 'error': 'Database connection failed'}), 500
+        engine = get_db_connection()
+        if not engine:
+            print("❌ Database connection failed")
+            return jsonify({'success': False, 'error': 'Database connection failed'}), 500
 
-    # Map disease type to table and columns
-    table_map = {
-        'heart_disease': {
-            'table': 'heart_disease_inputs',
-            'columns': [
-                'age', 'sex', 'anaemia', 'creatininephosphokinase', 'diabetes',
-                'ejectionfraction', 'highbloodpressure', 'platelets', 'serumcreatinine',
-                'serumsodium', 'smoking', 'time'
-            ]
-        },
-        'diabetes': {
-            'table': 'diabetes_inputs',
-            'columns': [
-                'pregnancies', 'glucose', 'bloodpressure', 'skinthickness', 'insulin',
-                'bmi', 'diabetespedigreefunction', 'age'
-            ]
-        },
-        'lung_cancer': {
-            'table': 'lung_cancer_inputs',
-            'columns': [
-                'age', 'gender', 'smoking', 'yellowfingers', 'anxiety', 'peerpressure',
-                'chronicdisease', 'fatigue', 'allergy', 'wheezing', 'alcoholconsuming',
-                'coughing', 'shortnessofbreath', 'swallowingdifficulty', 'chestpain'
-            ]
-        },
-        'kidney_disease': {
-            'table': 'kidney_disease_inputs',
-            'columns': [
-                'age', 'bloodpressure', 'bloodglucoserandom', 'bloodurea', 'serumsodium',
-                'potassium', 'whitebloodcells', 'hypertension', 'diabetesmellitus',
-                'coronaryarterydisease', 'appetite', 'pedaledema', 'anemia'
-            ]
-        }
-    }
-
-    disease_info = table_map.get(disease_type)
-    if not disease_info:
-        return jsonify({'success': False, 'error': 'Invalid diseaseType'}), 400
-
-    table = disease_info['table']
-    columns = disease_info['columns']
-    col_str = ', '.join(columns)
-    query = f"SELECT {col_str} FROM {table} WHERE predictionid = :prediction_id"
-
-    with engine.connect() as conn:
-        result = conn.execute(text(query), {'prediction_id': int(prediction_id)}).fetchone()
-        if not result:
-            return jsonify({'success': False, 'inputData': None}), 404
-        # Map DB columns to frontend keys (convert snake_case to camelCase or JS keys as needed)
-        input_data = {}
-        for idx, col in enumerate(columns):
-            # Map DB column names to frontend keys (try to match JS keys)
-            key_map = {
-                # Heart disease
-                'creatininephosphokinase': 'creatinine_phosphokinase',
-                'ejectionfraction': 'ejection_fraction',
-                'highbloodpressure': 'high_blood_pressure',
-                'serumcreatinine': 'serum_creatinine',
-                'serumsodium': 'serum_sodium',
-                # Diabetes
-                'bloodpressure': 'blood_pressure',
-                'skinthickness': 'skin_thickness',
-                'diabetespedigreefunction': 'diabetes_pedigree_function',
-                # Lung cancer
-                'yellowfingers': 'yellow_fingers',
-                'peerpressure': 'peer_pressure',
-                'chronicdisease': 'chronic_disease',
-                'alcoholconsuming': 'alcohol_consuming',
-                'shortnessofbreath': 'shortness_of_breath',
-                'swallowingdifficulty': 'swallowing_difficulty',
-                'chestpain': 'chest_pain',
-                # Kidney
-                'bloodglucoserandom': 'blood_glucose_random',
-                'bloodurea': 'blood_urea',
-                'serumsodium': 'serum_sodium',
-                'whitebloodcells': 'white_blood_cells',
-                'diabetesmellitus': 'diabetes_mellitus',
-                'coronaryarterydisease': 'coronary_artery_disease',
-                'pedaledema': 'pedal_edema',
+        # Map disease type to table and columns based on your schema
+        table_map = {
+            'heart_disease': {
+                'table': 'heart_disease_inputs',
+                'columns': [
+                    'age', 'sex', 'anaemia', 'creatininephosphokinase', 'diabetes',
+                    'ejectionfraction', 'highbloodpressure', 'platelets', 'serumcreatinine',
+                    'serumsodium', 'smoking', 'time'
+                ]
+            },
+            'diabetes': {
+                'table': 'diabetes_inputs',
+                'columns': [
+                    'pregnancies', 'glucose', 'bloodpressure', 'skinthickness', 'insulin',
+                    'bmi', 'diabetespedigreefunction', 'age'
+                ]
+            },
+            'lung_cancer': {
+                'table': 'lung_cancer_inputs',
+                'columns': [
+                    'gender', 'age', 'smoking', 'yellowfingers', 'anxiety', 'peerpressure',
+                    'chronicdisease', 'fatigue', 'allergy', 'wheezing', 'alcoholconsuming',
+                    'coughing', 'shortnessofbreath', 'swallowingdifficulty', 'chestpain'
+                ]
+            },
+            'kidney_disease': {
+                'table': 'kidney_disease_inputs',
+                'columns': [
+                    'age', 'bloodpressure', 'bloodglucoserandom', 'bloodurea', 'serumsodium',
+                    'potassium', 'whitebloodcells', 'hypertension', 'diabetesmellitus',
+                    'coronaryarterydisease', 'appetite', 'pedaledema', 'anemia'
+                ]
             }
-            frontend_key = key_map.get(col, col)
-            val = result[idx]
-            # Convert integer booleans to Yes/No for categorical fields
-            if disease_type == 'heart_disease' and frontend_key in ['anaemia', 'diabetes', 'high_blood_pressure', 'smoking']:
-                val = 'Yes' if val == 1 else 'No'
-            if disease_type == 'lung_cancer' and frontend_key in [
-                'smoking', 'yellow_fingers', 'anxiety', 'peer_pressure', 'chronic_disease', 'fatigue', 'allergy', 'wheezing', 'alcohol_consuming', 'coughing', 'shortness_of_breath', 'swallowing_difficulty', 'chest_pain']:
-                val = 'Yes' if val == 1 else 'No'
-            if disease_type == 'kidney_disease' and frontend_key in [
-                'hypertension', 'diabetes_mellitus', 'coronary_artery_disease', 'pedal_edema', 'anemia']:
-                val = 'Yes' if val == 1 else 'No'
-            if disease_type == 'kidney_disease' and frontend_key == 'appetite':
-                val = 'Good' if val == 1 else 'Poor'
-            if disease_type == 'lung_cancer' and frontend_key == 'gender':
-                frontend_key = 'sex'
-                val = 'Male' if val == 1 else 'Female'
-            input_data[frontend_key] = val
-        return jsonify({'success': True, 'inputData': input_data})
+        }
+
+        disease_info = table_map.get(disease_type)
+        if not disease_info:
+            print(f"❌ Invalid disease type: {disease_type}")
+            return jsonify({'success': False, 'error': 'Invalid diseaseType'}), 400
+
+        table = disease_info['table']
+        columns = disease_info['columns']
+        col_str = ', '.join(columns)
+        query = f"SELECT {col_str} FROM {table} WHERE predictionid = :prediction_id"
+
+        with engine.connect() as conn:
+            result = conn.execute(text(query), {'prediction_id': int(prediction_id)}).fetchone()
+            if not result:
+                print(f"⚠️ No input data found for prediction {prediction_id} in table {table}")
+                return jsonify({'success': False, 'inputData': None, 'error': 'Input data not found'}), 404
+            
+            # Map DB columns to frontend keys (convert snake_case to camelCase or JS keys as needed)
+            input_data = {}
+            for idx, col in enumerate(columns):
+                # Map DB column names to frontend keys
+                key_map = {
+                    # Heart disease
+                    'creatininephosphokinase': 'creatinine_phosphokinase',
+                    'ejectionfraction': 'ejection_fraction',
+                    'highbloodpressure': 'high_blood_pressure',
+                    'serumcreatinine': 'serum_creatinine',
+                    'serumsodium': 'serum_sodium',
+                    # Diabetes
+                    'bloodpressure': 'blood_pressure',
+                    'skinthickness': 'skin_thickness',
+                    'diabetespedigreefunction': 'diabetes_pedigree_function',
+                    # Lung cancer
+                    'yellowfingers': 'yellow_fingers',
+                    'peerpressure': 'peer_pressure',
+                    'chronicdisease': 'chronic_disease',
+                    'alcoholconsuming': 'alcohol_consuming',
+                    'shortnessofbreath': 'shortness_of_breath',
+                    'swallowingdifficulty': 'swallowing_difficulty',
+                    'chestpain': 'chest_pain',
+                    # Kidney
+                    'bloodglucoserandom': 'blood_glucose_random',
+                    'bloodurea': 'blood_urea',
+                    'serumsodium': 'serum_sodium',
+                    'whitebloodcells': 'white_blood_cells',
+                    'diabetesmellitus': 'diabetes_mellitus',
+                    'coronaryarterydisease': 'coronary_artery_disease',
+                    'pedaledema': 'pedal_edema',
+                }
+                
+                frontend_key = key_map.get(col, col)
+                val = result[idx]
+                
+                # Convert integer booleans to Yes/No for categorical fields
+                if disease_type == 'heart_disease' and frontend_key in ['anaemia', 'diabetes', 'high_blood_pressure', 'smoking']:
+                    val = 'Yes' if val == 1 else 'No'
+                elif disease_type == 'lung_cancer' and frontend_key in [
+                    'smoking', 'yellow_fingers', 'anxiety', 'peer_pressure', 'chronic_disease', 
+                    'fatigue', 'allergy', 'wheezing', 'alcohol_consuming', 'coughing', 
+                    'shortness_of_breath', 'swallowing_difficulty', 'chest_pain']:
+                    val = 'Yes' if val == 1 else 'No'
+                elif disease_type == 'kidney_disease' and frontend_key in [
+                    'hypertension', 'diabetes_mellitus', 'coronary_artery_disease', 'pedal_edema', 'anemia']:
+                    val = 'Yes' if val == 1 else 'No'
+                elif disease_type == 'kidney_disease' and frontend_key == 'appetite':
+                    val = 'Good' if val == 1 else 'Poor'
+                elif disease_type == 'lung_cancer' and frontend_key == 'gender':
+                    frontend_key = 'sex'
+                    val = 'Male' if val == 1 else 'Female'
+                elif disease_type == 'heart_disease' and frontend_key == 'sex':
+                    val = 'Male' if val == 1 else 'Female'
+                
+                input_data[frontend_key] = val
+            
+            print(f"✅ Successfully retrieved input data for prediction {prediction_id}: {len(input_data)} fields")
+            return jsonify({'success': True, 'inputData': input_data})
+            
+    except Exception as e:
+        print(f"❌ Error in get_prediction_input_data: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'success': False, 'error': f'Server error: {str(e)}'}), 500
 
 # =============================================================================
 # UTILITY ENDPOINTS
@@ -2479,16 +2504,15 @@ if __name__ == '__main__':
     print("  🔧 Firebase Test:    http://localhost:5000/test-firebase")
     print("=" * 60)
     print("💾 Database Configuration:")
-    print(f"  Database: Railway PostgreSQL")
-    print(f"  Connection: Railway Cloud Database")
-    print(f"  Status: Connected ✅")
+    print("  Database: Railway PostgreSQL")
+    print("  Connection: Railway Cloud Database")
+    print("  Status: Connected ✅")
     print("=" * 60)
     print("🚀 Starting Flask application...")
     print("=" * 60)
 
     # Start the Flask application
     # Only run the development server if not in production
-    import os
     if os.environ.get('RAILWAY_ENVIRONMENT') != 'production':
         app.run(debug=True, host='0.0.0.0', port=PORT)
     # In production (Railway), use Gunicorn as WSGI server
