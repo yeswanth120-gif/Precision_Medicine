@@ -11,8 +11,8 @@ import random
 import sys
 
 app = Flask(__name__, 
-            static_folder='frontend',
-            template_folder='frontend')
+            static_folder='../frontend',
+            template_folder='../frontend')
 
 # Enable CORS for all domains on all routes (for development)
 CORS(app)
@@ -1919,10 +1919,8 @@ def get_user_predictions_by_username_email():
                     'HealthScore': row[5],
                     'Confidence': row[6],
                     'CreatedAt': row[7].isoformat() if row[7] else None,
-                    'InputData': row[8],  # Complete input parameters
-                    'OutputData': row[9],  # Complete output data
-                    'Username': row[10],
-                    'Email': row[11]
+                    'Username': row[8],
+                    'Email': row[9]
                 }
                 predictions.append(prediction)
             
@@ -2515,7 +2513,7 @@ if __name__ == '__main__':
     print("🚀 Starting Flask application...")
     print("=" * 60)
 
-    # Start the Flask application
+     # Start the Flask application
     # Only run the development server if not in production
     if os.environ.get('RAILWAY_ENVIRONMENT') != 'production':
         app.run(debug=True, host='0.0.0.0', port=PORT)
