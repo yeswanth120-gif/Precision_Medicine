@@ -1383,39 +1383,57 @@
 
         // View complete data with detailed analysis
         async function viewData(diseaseType) {
+            console.log(`👁️ Starting viewData for ${diseaseType}...`);
             const diseaseInfo = diseaseMapping[diseaseType];
-            if (!diseaseInfo) return;
+            if (!diseaseInfo) {
+                console.error(`❌ Disease info not found for: ${diseaseType}`);
+                return;
+            }
 
+            console.log(`🔍 Filtering predictions for ${diseaseType}...`);
             const diseaseData = userPredictions.filter(p => p.PredictionType === diseaseType);
+            console.log(`📊 Found ${diseaseData.length} records for ${diseaseType}`);
             
             if (diseaseData.length === 0) {
+                console.warn(`⚠️ No data found for ${diseaseInfo.name}`);
                 alert(`No ${diseaseInfo.name} prediction data found for ${currentUser}`);
                 return;
             }
 
+            console.log(`🎯 Opening modal for ${diseaseInfo.name}...`);
             document.getElementById('viewModalTitle').textContent = `${diseaseInfo.icon} Complete ${diseaseInfo.name} Data Analysis`;
             document.getElementById('viewDataModal').style.display = 'block';
             
-            // Generate comprehensive data analysis
-            const analysisHTML = await generateComprehensiveDataAnalysis(diseaseData, diseaseType);
-            document.getElementById('viewDataContent').innerHTML = analysisHTML;
+            // Show loading spinner
+            document.getElementById('viewDataContent').innerHTML = '<div class="loading-spinner"></div>';
+            
+            try {
+                console.log(`🔨 Generating comprehensive data analysis...`);
+                // Generate comprehensive data analysis
+                const analysisHTML = await generateComprehensiveDataAnalysis(diseaseData, diseaseType);
+                console.log(`✅ Analysis generated successfully`);
+                document.getElementById('viewDataContent').innerHTML = analysisHTML;
+            } catch (error) {
+                console.error(`❌ Error generating analysis:`, error);
+                document.getElementById('viewDataContent').innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--danger-red);">
+                        <h3>❌ Error Loading Data</h3>
+                        <p>Unable to generate comprehensive analysis: ${error.message}</p>
+                        <button onclick="viewData('${diseaseType}')" style="margin-top: 15px; padding: 10px 20px; background: var(--primary-blue); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                            Try Again
+                        </button>
+                    </div>
+                `;
+            }
         }
 
         // Generate comprehensive data analysis
         async function generateComprehensiveDataAnalysis(data, diseaseType) {
+            console.log(`📊 Generating comprehensive data analysis for ${diseaseType} with ${data.length} records...`);
             const diseaseInfo = diseaseMapping[diseaseType];
             
             // Calculate comprehensive statistics
             const stats = calculateComprehensiveStats(data);
-            
-            // Generate detailed comparisons
-            const comparisons = generateDetailedComparisons(data, diseaseType);
-            
-            // Generate trend analysis
-            const trends = generateTrendAnalysis(data);
-            
-            // Generate risk patterns
-            const riskPatterns = generateRiskPatterns(data);
             
             return `
                 <div class="analysis-section">
