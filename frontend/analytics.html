@@ -1860,81 +1860,39 @@
                 healthScoreTrend: calculateHealthScoreTrend(data)
             };
 
-            console.log(`📊 Enhanced analysis data for ${currentUser}:`, analysisData);
+            console.log('Enhanced analysis data:', analysisData);
 
             // Generate comprehensive HTML with detailed analysis
             const analysisHTML = `
                 <div class="analysis-summary" style="margin-bottom: 35px;">
-                    <h3 style="color: var(--text-primary); margin-bottom: 25px; font-size: 1.6rem;">📊 Comprehensive ${diseaseInfo.name} Analysis for ${currentUser}</h3>
-                    <p style="color: var(--text-secondary); margin-bottom: 25px; font-size: 1.1rem;"><strong>Data Source:</strong> Real predictions from PostgreSQL database for ${currentUserEmail}</p>
+                    <h3 style="color: #1a202c; margin-bottom: 25px; font-size: 1.6rem;">📊 Comprehensive Analysis Report</h3>
+                    <p style="color: #4a5568; margin-bottom: 25px; font-size: 1.1rem;"><strong>Data Source:</strong> Real predictions from database</p>
                     
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px;">
-                        <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%); padding: 25px; border-radius: 18px; border-left: 5px solid #3b82f6; text-align: center;">
+                        <div style="background: rgba(59, 130, 246, 0.1); padding: 25px; border-radius: 18px; border-left: 5px solid #3b82f6; text-align: center;">
                             <h4 style="margin-bottom: 12px; color: #3b82f6; font-size: 1rem;">Total Predictions</h4>
                             <div style="font-size: 2.2rem; font-weight: 800; color: #3b82f6; margin-bottom: 8px;">${analysisData.totalPredictions}</div>
-                            <div style="font-size: 0.9rem; color: var(--text-secondary);">Database Records</div>
+                            <div style="font-size: 0.9rem; color: #4a5568;">Database Records</div>
                         </div>
-                        <div style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%); padding: 25px; border-radius: 18px; border-left: 5px solid #ef4444; text-align: center;">
+                        <div style="background: rgba(239, 68, 68, 0.1); padding: 25px; border-radius: 18px; border-left: 5px solid #ef4444; text-align: center;">
                             <h4 style="margin-bottom: 12px; color: #ef4444; font-size: 1rem;">High Risk Cases</h4>
                             <div style="font-size: 2.2rem; font-weight: 800; color: #ef4444; margin-bottom: 8px;">${analysisData.highRiskCount}</div>
-                            <div style="font-size: 0.9rem; color: var(--text-secondary);">${Math.round((analysisData.highRiskCount / analysisData.totalPredictions) * 100)}% of Total</div>
+                            <div style="font-size: 0.9rem; color: #4a5568;">${Math.round((analysisData.highRiskCount / analysisData.totalPredictions) * 100)}% of Total</div>
                         </div>
-                        <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%); padding: 25px; border-radius: 18px; border-left: 5px solid #10b981; text-align: center;">
+                        <div style="background: rgba(16, 185, 129, 0.1); padding: 25px; border-radius: 18px; border-left: 5px solid #10b981; text-align: center;">
                             <h4 style="margin-bottom: 12px; color: #10b981; font-size: 1rem;">Low Risk Cases</h4>
                             <div style="font-size: 2.2rem; font-weight: 800; color: #10b981; margin-bottom: 8px;">${analysisData.lowRiskCount}</div>
-                            <div style="font-size: 0.9rem; color: var(--text-secondary);">${Math.round((analysisData.lowRiskCount / analysisData.totalPredictions) * 100)}% of Total</div>
+                            <div style="font-size: 0.9rem; color: #4a5568;">${Math.round((analysisData.lowRiskCount / analysisData.totalPredictions) * 100)}% of Total</div>
                         </div>
-                        <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%); padding: 25px; border-radius: 18px; border-left: 5px solid #8b5cf6; text-align: center;">
+                        <div style="background: rgba(139, 92, 246, 0.1); padding: 25px; border-radius: 18px; border-left: 5px solid #8b5cf6; text-align: center;">
                             <h4 style="margin-bottom: 12px; color: #8b5cf6; font-size: 1rem;">Avg Health Score</h4>
                             <div style="font-size: 2.2rem; font-weight: 800; color: #8b5cf6; margin-bottom: 8px;">${analysisData.avgHealthScore}</div>
-                            <div style="font-size: 0.9rem; color: var(--text-secondary);">${getHealthScoreCategory(analysisData.avgHealthScore)}</div>
+                            <div style="font-size: 0.9rem; color: #4a5568;">${analysisData.avgHealthScore >= 80 ? 'Excellent' : analysisData.avgHealthScore >= 60 ? 'Good' : 'Needs Attention'}</div>
                         </div>
-                        <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%); padding: 25px; border-radius: 18px; border-left: 5px solid #f59e0b; text-align: center;">
+                        <div style="background: rgba(245, 158, 11, 0.1); padding: 25px; border-radius: 18px; border-left: 5px solid #f59e0b; text-align: center;">
                             <h4 style="margin-bottom: 12px; color: #f59e0b; font-size: 1rem;">Avg Confidence</h4>
                             <div style="font-size: 2.2rem; font-weight: 800; color: #f59e0b; margin-bottom: 8px;">${analysisData.avgConfidence}%</div>
-                            <div style="font-size: 0.9rem; color: var(--text-secondary);">${getConfidenceCategory(analysisData.avgConfidence)}</div>
-                        </div>
-                        <div style="background: linear-gradient(135deg, rgba(107, 114, 128, 0.1) 0%, rgba(75, 85, 99, 0.1) 100%); padding: 25px; border-radius: 18px; border-left: 5px solid #6b7280; text-align: center;">
-                            <h4 style="margin-bottom: 12px; color: #6b7280; font-size: 1rem;">Analysis Period</h4>
-                            <div style="font-size: 1.2rem; font-weight: 700; color: #6b7280; margin-bottom: 8px;">${analysisData.dateRange.earliest}</div>
-                            <div style="font-size: 1rem; color: var(--text-secondary);">to ${analysisData.dateRange.latest}</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Textual Analysis Section -->
-                <div style="margin-bottom: 35px;">
-                    <h4 style="margin-bottom: 25px; color: var(--text-primary); font-size: 1.4rem;">📊 Comprehensive Data Analysis</h4>
-                    
-                    <!-- Risk Pattern Analysis -->
-                    <div style="background: white; padding: 25px; border-radius: 15px; margin-bottom: 20px; border-left: 5px solid #3b82f6;">
-                        <h5 style="color: #3b82f6; margin-bottom: 15px;">🎯 Risk Pattern Analysis</h5>
-                        <div style="color: var(--text-secondary); line-height: 1.6;">
-                            ${generateRiskPatternAnalysis(analysisData, diseaseType)}
-                        </div>
-                    </div>
-                    
-                    <!-- Health Score Trends -->
-                    <div style="background: white; padding: 25px; border-radius: 15px; margin-bottom: 20px; border-left: 5px solid #10b981;">
-                        <h5 style="color: #10b981; margin-bottom: 15px;">📈 Health Score Trends</h5>
-                        <div style="color: var(--text-secondary); line-height: 1.6;">
-                            ${generateHealthScoreTrendsAnalysis(analysisData, diseaseType)}
-                        </div>
-                    </div>
-                    
-                    <!-- Comparative Analysis -->
-                    <div style="background: white; padding: 25px; border-radius: 15px; margin-bottom: 20px; border-left: 5px solid #8b5cf6;">
-                        <h5 style="color: #8b5cf6; margin-bottom: 15px;">🔍 Comparative Analysis</h5>
-                        <div style="color: var(--text-secondary); line-height: 1.6;">
-                            ${generateComparativeAnalysis(analysisData, diseaseType)}
-                        </div>
-                    </div>
-                    
-                    <!-- Common Trends -->
-                    <div style="background: white; padding: 25px; border-radius: 15px; margin-bottom: 20px; border-left: 5px solid #f59e0b;">
-                        <h5 style="color: #f59e0b; margin-bottom: 15px;">📊 Common Trends & Patterns</h5>
-                        <div style="color: var(--text-secondary); line-height: 1.6;">
-                            ${generateCommonTrendsAnalysis(analysisData, diseaseType)}
+                            <div style="font-size: 0.9rem; color: #4a5568;">${analysisData.avgConfidence >= 85 ? 'Very High' : analysisData.avgConfidence >= 70 ? 'High' : 'Moderate'}</div>
                         </div>
                     </div>
                 </div>
@@ -1942,35 +1900,20 @@
                 ${generateDetailedInsightsSection(analysisData, diseaseType)}
                 ${generateRecommendationsSection(analysisData, diseaseType)}
 
-                <div style="margin-top: 35px; padding: 30px; background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%); border-radius: 20px; border: 1px solid rgba(139, 92, 246, 0.2);">
-                    <h4 style="margin-bottom: 20px; color: var(--text-primary); display: flex; align-items: center; gap: 10px;">
-                        <i class="fas fa-database"></i> Database Analysis Summary for ${currentUser}
-                    </h4>
+                <div style="margin-top: 35px; padding: 30px; background: rgba(139, 92, 246, 0.1); border-radius: 20px; border: 1px solid rgba(139, 92, 246, 0.2);">
+                    <h4 style="margin-bottom: 20px; color: #1a202c;">📊 Analysis Summary</h4>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                        <div><strong>User:</strong> ${currentUser}</div>
-                        <div><strong>Email:</strong> ${currentUserEmail}</div>
                         <div><strong>Disease Type:</strong> ${diseaseInfo.name}</div>
                         <div><strong>Records Analyzed:</strong> ${analysisData.totalPredictions}</div>
-                        <div><strong>Data Source:</strong> PostgreSQL Database</div>
-                        <div><strong>Analysis Date:</strong> 2025-07-12</div>
                         <div><strong>Period:</strong> ${analysisData.dateRange.earliest} to ${analysisData.dateRange.latest}</div>
                         <div><strong>Risk Trend:</strong> ${analysisData.riskTrend}</div>
-                        <div><strong>Current Login:</strong> SKY035</div>
-                        <div><strong>Session Time:</strong> 18:38:34 UTC</div>
+                        <div><strong>Health Trend:</strong> ${analysisData.healthScoreTrend}</div>
+                        <div><strong>Analysis Date:</strong> ${new Date().toLocaleDateString()}</div>
                     </div>
                 </div>
             `;
 
             document.getElementById('analysisContent').innerHTML = analysisHTML;
-
-            // Generate advanced visualizations from REAL database data
-            setTimeout(() => {
-                createCorrelationHeatmap(data, diseaseType, diseaseInfo.color);
-                createFeatureBoxplots(data, diseaseType, diseaseInfo.color);
-                createStripPlots(data, diseaseType, diseaseInfo.color);
-                createPairplotAnalysis(data, diseaseType, diseaseInfo.color);
-                createFeatureImportance(data, diseaseType, diseaseInfo.color);
-            }, 100);
         }
 
         // Calculate risk trend
