@@ -1,0 +1,2596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard - Precision Medicine</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist@2.26.0/plotly.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --modern-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --card-shadow: 0 25px 60px rgba(0, 0, 0, 0.1);
+            --card-shadow-hover: 0 35px 80px rgba(0, 0, 0, 0.18);
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --white-transparent: rgba(255, 255, 255, 0.95);
+            --border-radius: 20px;
+            --border-radius-lg: 24px;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            
+            /* Enhanced color palette */
+            --primary-blue: #3b82f6;
+            --secondary-blue: #1e40af;
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --danger-red: #ef4444;
+            --purple-gradient: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            --blue-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --green-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --red-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --orange-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            
+            /* Neutral Colors */
+            --white: #ffffff;
+            --gray-100: #f8fafc;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e0;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            
+            /* Shadows */
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --shadow-xl: 0 30px 60px rgba(0, 0, 0, 0.2);
+            
+            /* Spacing */
+            --space-xs: 0.5rem;
+            --space-sm: 0.75rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Enhanced Background with animated gradient */
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, 
+                #fef3c7 0%,     /* Light amber */
+                #fed7aa 15%,    /* Light orange */
+                #fbb6ce 30%,    /* Light pink */
+                #c7d2fe 45%,    /* Light indigo */
+                #a5f3fc 60%,    /* Light cyan */
+                #bbf7d0 75%,    /* Light emerald */
+                #fde68a 90%,    /* Light yellow */
+                #fef3c7 100%);  /* Back to light amber */
+            background-size: 400% 400%;
+            animation: gradientShift 25s ease infinite;
+            position: relative;
+            overflow-x: hidden;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 100% 25%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 75%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Add subtle floating particles */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.4) 1px, transparent 1px),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+                radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
+                radial-gradient(circle at 60% 90%, rgba(255, 255, 255, 0.4) 1px, transparent 1px);
+            background-size: 120px 120px, 140px 140px, 90px 90px, 160px 160px;
+            animation: floatParticles 30s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes floatParticles {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-120px) rotate(360deg); }
+        }
+        
+        /* Enhanced Navigation Bar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(25px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .nav-brand {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: var(--modern-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.8px;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .nav-brand::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--modern-gradient);
+            border-radius: 2px;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-brand:hover::after {
+            transform: scaleX(1);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            padding: 0.75rem 1.5rem;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-link:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            color: white;
+            background: var(--primary-gradient);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: var(--space-sm) var(--space-lg);
+            background: var(--modern-gradient);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 15px;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        /* Enhanced Main Content Section */
+        .main-section {
+            position: relative;
+            z-index: 10;
+            margin: 140px 50px 50px;
+            padding: 80px 50px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(30px);
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: var(--shadow-xl);
+        }
+
+        /* Enhanced Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding-top: 10px;
+        }
+
+        .page-header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 3.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 30%, #4a5568 70%, #667eea 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Container with single column layout */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2xl);
+        }
+
+        /* Enhanced Prediction Cards Grid */
+        .prediction-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .prediction-card {
+            background: linear-gradient(145deg, 
+                rgba(255, 255, 255, 0.98) 0%, 
+                rgba(255, 255, 255, 0.92) 50%, 
+                rgba(255, 255, 255, 0.96) 100%);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: var(--border-radius-lg);
+            padding: 50px 40px;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .prediction-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: var(--modern-gradient);
+            border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+        }
+
+        .prediction-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.05) 0%, transparent 70%);
+            transition: var(--transition);
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .prediction-card:hover {
+            transform: translateY(-12px) scale(1.03);
+            box-shadow: var(--shadow-xl);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .prediction-card:hover::after {
+            opacity: 1;
+        }
+
+        .prediction-card h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 35px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            line-height: 1.3;
+        }
+
+        .prediction-card .count {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #667eea;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+        }
+
+        .prediction-card .label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .view-btn, .analyze-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .view-btn {
+            background: var(--blue-gradient);
+            color: white;
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .view-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.6);
+        }
+
+        .analyze-btn {
+            background: var(--purple-gradient);
+            color: white;
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.6);
+        }
+
+        /* Enhanced Loading spinner */
+        .loading-spinner {
+            border: 4px solid var(--gray-200);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 30px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Enhanced No Data Message */
+        .no-data-message {
+            text-align: center;
+            padding: 80px 50px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--border-radius-lg);
+            border: 2px dashed rgba(102, 126, 234, 0.3);
+            margin: 30px 0;
+            backdrop-filter: blur(20px);
+        }
+
+        .no-data-icon {
+            font-size: 5rem;
+            color: rgba(102, 126, 234, 0.5);
+            margin-bottom: 30px;
+        }
+
+        .no-data-text {
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .no-data-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 35px;
+        }
+
+        .prediction-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .prediction-link {
+            padding: 15px 25px;
+            background: var(--modern-gradient);
+            color: white;
+            text-decoration: none;
+            border-radius: 15px;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .prediction-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+        }
+
+        /* Enhanced Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            max-width: 95%;
+            max-height: 90%;
+            margin: 2% auto;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .modal-header {
+            padding: 30px 35px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--modern-gradient);
+            color: white;
+        }
+
+        .modal-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: white;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            padding: 35px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        /* Enhanced Data Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 15px 12px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            font-size: 0.9rem;
+        }
+
+        .data-table th {
+            background: var(--modern-gradient);
+            color: white;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .data-table tr:hover {
+            background: rgba(102, 126, 234, 0.08);
+        }
+
+        .data-table tr:nth-child(even) {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        /* Enhanced Input Details Section */
+        .input-details-section {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .input-details-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .input-detail-item {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .input-detail-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .input-detail-value {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        .input-detail-unit {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-left: 5px;
+        }
+
+        .input-detail-status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .input-detail-status.normal {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-green);
+        }
+
+        .input-detail-status.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-orange);
+        }
+
+        .input-detail-status.critical {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-red);
+        }
+
+        /* Enhanced Health Score Section */
+        .health-score-section {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .health-score-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        .health-score-value {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: var(--modern-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .health-score-description {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .health-score-bar {
+            width: 100%;
+            height: 12px;
+            background: var(--gray-200);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .health-score-fill {
+            height: 100%;
+            background: var(--green-gradient);
+            transition: width 0.8s ease;
+            border-radius: 6px;
+        }
+
+        /* Enhanced Recommendations Section */
+        .recommendations-section {
+            background: rgba(139, 92, 246, 0.05);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid var(--purple-gradient);
+        }
+
+        .recommendations-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .recommendation-item {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(139, 92, 246, 0.1);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .recommendation-icon {
+            color: var(--primary-blue);
+            font-size: 1.2rem;
+            margin-top: 2px;
+        }
+
+        .recommendation-text {
+            flex: 1;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Analysis Grid */
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin: 25px 0;
+        }
+
+        /* Advanced Analysis Grid for new visualizations */
+        .advanced-analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin: 25px 0;
+        }
+
+        .analysis-chart {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow-md);
+            min-height: 400px;
+        }
+
+        .analysis-chart-large {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow-md);
+            min-height: 500px;
+            grid-column: 1 / -1;
+        }
+
+        .analysis-chart h4 {
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        /* Success message */
+        .success-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--success-green);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-weight: 600;
+            z-index: 3000;
+            box-shadow: 0 15px 40px rgba(16, 185, 129, 0.4);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .success-message.show {
+            opacity: 1;
+        }
+
+        /* Connection Status */
+        .connection-status {
+            position: fixed;
+            bottom: 120px;
+            right: 30px;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .connection-status.connected {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .connection-status.disconnected {
+            background: var(--danger-red);
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-section {
+                margin: 140px 30px 30px;
+                padding: 60px 30px;
+            }
+
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .advanced-analysis-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .analysis-chart-large {
+                grid-column: 1;
+            }
+
+            .input-details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-left {
+                gap: 1.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .main-section {
+                margin: 120px 20px 25px;
+                padding: 50px 25px;
+            }
+            
+            .prediction-cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .prediction-links {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .advanced-analysis-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .analysis-chart-large {
+                grid-column: 1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .main-section {
+                margin: 100px 15px 20px;
+                padding: 40px 20px;
+            }
+            
+            .prediction-card {
+                padding: 40px 30px;
+            }
+
+            .modal-content {
+                max-width: 98%;
+                margin: 5% auto;
+            }
+
+            .input-details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Connection Status -->
+    <div class="connection-status" id="connectionStatus" style="display: none;">
+        🔗 Connecting...
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="/dashboard" class="nav-brand"> 🔬 PRED.AI </a>
+            <div class="nav-links">
+                <a href="/analytics" class="nav-link active">Analytics</a>
+            </div>
+        </div>
+        <div class="nav-profile">
+            <a href="/dashboard" class="back-btn">
+                <span>←</span>
+                <span>Back to Dashboard</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-section">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>📊 Analytics Dashboard</h1>
+                <p>Your personal health analytics based on actual prediction data with detailed insights</p>
+            </div>
+
+            <!-- User-Specific Data Display -->
+            <div id="userDataSection">
+                <!-- Prediction Cards Grid -->
+                <div class="prediction-cards-grid" id="predictionCardsGrid">
+                    <div class="prediction-card" data-disease="heart_disease">
+                        <h3>❤️ Heart Disease</h3>
+                        <div class="count" id="heart-count">0</div>
+                        <div class="label">Predictions</div>
+                        <div class="action-buttons">
+                            <button class="view-btn" onclick="viewData('heart_disease')">
+                                <i class="fas fa-eye"></i> View Complete Data
+                            </button>
+                            <button class="analyze-btn" onclick="analyzeData('heart_disease')">
+                                <i class="fas fa-chart-line"></i> Detailed Analysis
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="prediction-card" data-disease="diabetes">
+                        <h3>🩺 Diabetes</h3>
+                        <div class="count" id="diabetes-count">0</div>
+                        <div class="label">Predictions</div>
+                        <div class="action-buttons">
+                            <button class="view-btn" onclick="viewData('diabetes')">
+                                <i class="fas fa-eye"></i> View Complete Data
+                            </button>
+                            <button class="analyze-btn" onclick="analyzeData('diabetes')">
+                                <i class="fas fa-chart-line"></i> Detailed Analysis
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="prediction-card" data-disease="lung_cancer">
+                        <h3>🫁 Lung Cancer</h3>
+                        <div class="count" id="lung-count">0</div>
+                        <div class="label">Predictions</div>
+                        <div class="action-buttons">
+                            <button class="view-btn" onclick="viewData('lung_cancer')">
+                                <i class="fas fa-eye"></i> View Complete Data
+                            </button>
+                            <button class="analyze-btn" onclick="analyzeData('lung_cancer')">
+                                <i class="fas fa-chart-line"></i> Detailed Analysis
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="prediction-card" data-disease="kidney_disease">
+                        <h3>🫘 Kidney Disease</h3>
+                        <div class="count" id="kidney-count">0</div>
+                        <div class="label">Predictions</div>
+                        <div class="action-buttons">
+                            <button class="view-btn" onclick="viewData('kidney_disease')">
+                                <i class="fas fa-eye"></i> View Complete Data
+                            </button>
+                            <button class="analyze-btn" onclick="analyzeData('kidney_disease')">
+                                <i class="fas fa-chart-line"></i> Detailed Analysis
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="prediction-card">
+                        <h3>📈 Total Predictions</h3>
+                        <div class="count" id="total-count">0</div>
+                        <div class="label">All Time</div>
+                    </div>
+                    
+                    <div class="prediction-card">
+                        <h3>📅 Recent Activity</h3>
+                        <div class="count" id="recent-count">0</div>
+                        <div class="label">Last 7 Days</div>
+                    </div>
+                </div>
+
+                <!-- No Data Message (Hidden initially) -->
+                <div class="no-data-message" id="noDataMessage" style="display: none;">
+                    <div class="no-data-icon">📊</div>
+                    <div class="no-data-text">No Prediction Data Found</div>
+                    <div class="no-data-subtitle">Start making predictions to see your personalized analytics dashboard</div>
+                    <div class="prediction-links">
+                        <a href="/heart_disease" class="prediction-link">
+                            <span>❤️</span>
+                            <span>Heart Disease Prediction</span>
+                        </a>
+                        <a href="/diabeties" class="prediction-link">
+                            <span>🩺</span>
+                            <span>Diabetes Prediction</span>
+                        </a>
+                        <a href="/lung_cancer" class="prediction-link">
+                            <span>🫁</span>
+                            <span>Lung Cancer Prediction</span>
+                        </a>
+                        <a href="/kidney_disease" class="prediction-link">
+                            <span>🫘</span>
+                            <span>Kidney Disease Prediction</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Data Modal -->
+    <div id="viewDataModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="viewModalTitle">📊 Complete Prediction Data</h3>
+                <span class="close-btn" onclick="closeModal('viewDataModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="viewDataContent">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analysis Modal -->
+    <div id="analysisModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="analysisModalTitle">📈 Detailed Analysis</h3>
+                <span class="close-btn" onclick="closeModal('analysisModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="analysisContent">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div class="success-message" id="successMessage">
+        ✅ Success!
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE_URL = 'https://precisionmedicine-production.up.railway.app';
+
+        // Global variables for user management
+        let currentUser = null;
+        let currentUserEmail = null;
+        let currentUserId = null;
+        let userPredictions = [];
+        let currentAnalysisData = null;
+        let backendConnected = false;
+
+        // Disease type mapping
+        const diseaseMapping = {
+            'heart_disease': {
+                name: 'Heart Disease',
+                icon: '❤️',
+                color: '#ef4444'
+            },
+            'diabetes': {
+                name: 'Diabetes',
+                icon: '🩺',
+                color: '#3b82f6'
+            },
+            'lung_cancer': {
+                name: 'Lung Cancer',
+                icon: '🫁',
+                color: '#8b5cf6'
+            },
+            'kidney_disease': {
+                name: 'Kidney Disease',
+                icon: '🫘',
+                color: '#10b981'
+            }
+        };
+
+        // Generate a numeric user ID from email
+        function generateUserId(email) {
+            let hash = 0;
+            for (let i = 0; i < email.length; i++) {
+                const char = email.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return String(Math.abs(hash % 9999) + 1001); // Return as string for PostgreSQL VARCHAR
+        }
+
+        // Get current user information ONLY from dashboard localStorage (userAuth)
+        function getCurrentUser() {
+            console.log('🔍 Retrieving current user information from dashboard...');
+            
+            try {
+                // Get user authentication data from localStorage (from dashboard system)
+                const userAuth = localStorage.getItem('userAuth');
+                
+                if (!userAuth) {
+                    console.log('⚠️ No userAuth found in localStorage');
+                    return null;
+                }
+
+                const userData = JSON.parse(userAuth);
+                console.log('✅ Found user authentication data from dashboard:', userData);
+                
+                // Extract REAL username and email from dashboard authentication
+                const realUsername = userData.username || userData.displayName;
+                const realEmail = userData.email;
+                
+                if (!realUsername || !realEmail) {
+                    console.log('⚠️ Incomplete user data - missing username or email');
+                    return null;
+                }
+
+                const userId = generateUserId(realEmail);
+                
+                console.log('📋 Extracted DASHBOARD user data:');
+                console.log('  Username:', realUsername);
+                console.log('  Email:', realEmail);
+                console.log('  Generated User ID:', userId);
+                
+                return {
+                    username: realUsername,
+                    email: realEmail,
+                    userId: userId,
+                    uid: userData.uid || null
+                };
+                
+            } catch (error) {
+                console.error('❌ Error parsing userAuth data:', error);
+                return null;
+            }
+        }
+
+        // Update user interface with current user data from dashboard
+        function updateUserInterface() {
+            // Get current user information ONLY from dashboard
+            const userInfo = getCurrentUser();
+            
+            if (!userInfo) {
+                console.error('❌ No valid user data found from dashboard');
+                currentUser = 'Unknown User';
+                currentUserEmail = 'unknown@example.com';
+                currentUserId = '1001';
+            } else {
+                currentUser = userInfo.username;
+                currentUserEmail = userInfo.email;
+                currentUserId = userInfo.userId;
+            }
+            
+            console.log('👤 Current user from DASHBOARD:', currentUser);
+            console.log('📧 Current email from DASHBOARD:', currentUserEmail);
+            console.log('🆔 Generated user ID:', currentUserId);
+            
+            // Update page title and navbar with dashboard user data
+            document.title = `Analytics Dashboard - ${currentUser || 'User'} | Precision Medicine`;
+            
+            // Update navbar user info
+            const userAvatar = document.getElementById('userAvatar');
+            const userName = document.getElementById('userName');
+            const currentDate = document.getElementById('currentDate');
+            
+            if (userAvatar) {
+                userAvatar.textContent = currentUser.charAt(0).toUpperCase();
+            }
+            if (userName) {
+                userName.textContent = currentUser;
+            }
+            if (currentDate) {
+                currentDate.textContent = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            }
+            
+            console.log('✅ User interface updated with DASHBOARD data');
+        }
+
+        // Test backend connection
+        async function testBackendConnection() {
+            const connectionStatus = document.getElementById('connectionStatus');
+            connectionStatus.style.display = 'block';
+            connectionStatus.textContent = '🔗 Testing connection...';
+            connectionStatus.className = 'connection-status';
+            
+            try {
+                console.log('Testing backend connection...');
+                const response = await fetch(`${API_BASE_URL}/health`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ Backend connected successfully:', data);
+                    backendConnected = true;
+                    connectionStatus.textContent = '✅ Backend Connected';
+                    connectionStatus.className = 'connection-status connected';
+                    
+                    setTimeout(() => {
+                        connectionStatus.style.display = 'none';
+                    }, 3000);
+                    
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('❌ Backend connection failed:', error);
+                backendConnected = false;
+                connectionStatus.textContent = '❌ Backend Disconnected';
+                connectionStatus.className = 'connection-status disconnected';
+                
+                showErrorMessage('⚠️ Cannot connect to backend server. Please check if the server is running.');
+            }
+        }
+
+        // NEW: Enhanced API endpoint to get user predictions based on username and email (PostgreSQL)
+        async function fetchUserPredictions() {
+            try {
+                console.log(`📊 Fetching user predictions for ${currentUser} (${currentUserEmail}) from PostgreSQL database...`);
+                
+                const response = await fetch(`${API_BASE_URL}/api/analytics/user-predictions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: currentUser,
+                        email: currentUserEmail
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error(`❌ PostgreSQL API Error: ${response.status} - ${errorText}`);
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log(`✅ PostgreSQL Database response:`, data);
+                
+                if (data.success && data.predictions) {
+                    userPredictions = data.predictions;
+                    console.log(`📊 Found ${userPredictions.length} predictions in PostgreSQL database for ${currentUser}`);
+                    
+                    // Transform predictions to match expected format
+                    userPredictions = userPredictions.map(prediction => ({
+                        ...prediction,
+                        CreatedAt: new Date(prediction.CreatedAt).toISOString(),
+                        type: prediction.PredictionType,
+                        risk_level: prediction.RiskLevel,
+                        health_score: prediction.HealthScore,
+                        confidence: prediction.Confidence,
+                        probability: prediction.Probability
+                    }));
+                    
+                    return userPredictions;
+                } else {
+                    console.log(`📊 No predictions found in PostgreSQL for user ${currentUser}`);
+                    return [];
+                }
+                
+            } catch (error) {
+                console.error('❌ Error fetching user predictions from PostgreSQL:', error);
+                // Return empty array on error to avoid breaking the UI
+                return [];
+            }
+        }
+
+        // Load user-specific analytics data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get current user information ONLY from dashboard/login system
+            updateUserInterface();
+            
+            // Test backend connection
+            testBackendConnection();
+            
+            console.log(`🚀 Loading analytics for user: ${currentUser} (${currentUserEmail})`);
+            loadUserAnalyticsData();
+        });
+
+        async function loadUserAnalyticsData() {
+            try {
+                console.log(`📊 Loading analytics data for ${currentUser} (${currentUserEmail})...`);
+                
+                // Check backend connection first
+                if (!backendConnected) {
+                    await testBackendConnection();
+                    if (!backendConnected) {
+                        throw new Error('Backend server is not available');
+                    }
+                }
+                
+                // Fetch REAL user predictions from database
+                const predictions = await fetchUserPredictions();
+                userPredictions = predictions;
+                
+                if (userPredictions.length === 0) {
+                    console.log(`📊 No predictions found for ${currentUser} in database`);
+                    showNoDataMessage();
+                } else {
+                    console.log(`📊 Loaded ${userPredictions.length} REAL predictions for ${currentUser}`);
+                    updateAnalyticsCounts();
+                    showUserDataSection();
+                    showSuccessMessage(`📊 Loaded ${userPredictions.length} predictions from database!`);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error loading user analytics:', error);
+                
+                // Show error message
+                showErrorMessage(`❌ Error loading analytics: ${error.message}`);
+                showNoDataMessage();
+            }
+        }
+
+        function updateAnalyticsCounts() {
+            // Count predictions by disease type from REAL database data
+            const counts = {
+                heart_disease: 0,
+                diabetes: 0,
+                lung_cancer: 0,
+                kidney_disease: 0,
+                total: userPredictions.length,
+                recent: 0
+            };
+
+            // Calculate recent predictions (last 7 days)
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+            userPredictions.forEach(prediction => {
+                const predictionType = prediction.PredictionType;
+                if (counts.hasOwnProperty(predictionType)) {
+                    counts[predictionType]++;
+                }
+
+                // Count recent predictions
+                const predictionDate = new Date(prediction.CreatedAt);
+                if (predictionDate >= sevenDaysAgo) {
+                    counts.recent++;
+                }
+            });
+
+            console.log(`📊 Analytics counts for ${currentUser}:`, counts);
+
+            // Update UI counts with REAL data
+            document.getElementById('heart-count').textContent = counts.heart_disease;
+            document.getElementById('diabetes-count').textContent = counts.diabetes;
+            document.getElementById('lung-count').textContent = counts.lung_cancer;
+            document.getElementById('kidney-count').textContent = counts.kidney_disease;
+            document.getElementById('total-count').textContent = counts.total;
+            document.getElementById('recent-count').textContent = counts.recent;
+
+            // Enable/disable buttons based on REAL data availability
+            Object.keys(diseaseMapping).forEach(diseaseType => {
+                const hasData = counts[diseaseType] > 0;
+                const card = document.querySelector(`[data-disease="${diseaseType}"]`);
+                if (card) {
+                    const buttons = card.querySelectorAll('.view-btn, .analyze-btn');
+                    buttons.forEach(btn => {
+                        btn.disabled = !hasData;
+                        btn.style.opacity = hasData ? '1' : '0.5';
+                        btn.style.cursor = hasData ? 'pointer' : 'not-allowed';
+                    });
+                }
+            });
+        }
+
+        function showNoDataMessage() {
+            document.getElementById('predictionCardsGrid').style.display = 'none';
+            document.getElementById('noDataMessage').style.display = 'block';
+        }
+
+        function showUserDataSection() {
+            document.getElementById('predictionCardsGrid').style.display = 'grid';
+            document.getElementById('noDataMessage').style.display = 'none';
+        }
+
+        // Enhanced viewData function with complete details
+        async function viewData(diseaseType) {
+            const diseaseInfo = diseaseMapping[diseaseType];
+            if (!diseaseInfo) return;
+
+            // Filter REAL predictions for this disease type from database
+            const diseaseData = userPredictions.filter(p => p.PredictionType === diseaseType);
+            
+            if (diseaseData.length === 0) {
+                alert(`No ${diseaseInfo.name} prediction data found in database for ${currentUser}`);
+                return;
+            }
+
+            // Set modal title
+            document.getElementById('viewModalTitle').textContent = `${diseaseInfo.icon} Complete ${diseaseInfo.name} Data for ${currentUser}`;
+            
+            // Show modal
+            document.getElementById('viewDataModal').style.display = 'block';
+            
+            // Generate enhanced HTML with complete details
+            let tableHTML = `
+                <div style="margin-bottom: 25px; padding: 20px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); border-radius: 15px; border: 1px solid rgba(102, 126, 234, 0.2);">
+                    <h4 style="margin-bottom: 15px; color: var(--text-primary); font-size: 1.4rem; font-weight: 700;">📊 Complete ${diseaseInfo.name} Analysis for ${currentUser}</h4>
+                    <p style="color: var(--text-secondary); margin-bottom: 15px; font-size: 1.1rem;"><strong>Data Source:</strong> Real predictions from database for ${currentUserEmail}</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                        <div style="background: white; padding: 15px; border-radius: 12px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"><strong>Total Records:</strong><br><span style="font-size: 1.5rem; font-weight: 800; color: var(--primary-blue);">${diseaseData.length}</span></div>
+                        <div style="background: white; padding: 15px; border-radius: 12px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"><strong>High Risk:</strong><br><span style="font-size: 1.5rem; font-weight: 800; color: var(--danger-red);">${diseaseData.filter(p => p.RiskLevel === 'High Risk').length}</span></div>
+                        <div style="background: white; padding: 15px; border-radius: 12px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"><strong>Low Risk:</strong><br><span style="font-size: 1.5rem; font-weight: 800; color: var(--success-green);">${diseaseData.filter(p => p.RiskLevel === 'Low Risk').length}</span></div>
+                        <div style="background: white; padding: 15px; border-radius: 12px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"><strong>Avg Health Score:</strong><br><span style="font-size: 1.5rem; font-weight: 800; color: var(--purple-gradient);">${Math.round(diseaseData.reduce((sum, p) => sum + (p.HealthScore || 0), 0) / diseaseData.length)}</span></div>
+                    </div>
+                </div>
+            `;
+
+            // Add detailed data for each prediction
+            for (const [index, prediction] of diseaseData.entries()) {
+                const date = new Date(prediction.CreatedAt).toLocaleDateString();
+                const riskClass = prediction.RiskLevel === 'High Risk' ? 'risk-high' : 'risk-low';
+                const healthScore = prediction.HealthScore || 0;
+                const confidence = prediction.Confidence || 0;
+                
+                tableHTML += `
+                    <div style="margin-bottom: 25px; background: white; border-radius: 15px; padding: 25px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); border: 1px solid rgba(102, 126, 234, 0.1);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid var(--gray-200);">
+                            <h5 style="margin: 0; color: var(--text-primary); font-size: 1.3rem; font-weight: 700;">📋 Prediction #${prediction.PredictionID}</h5>
+                            <span style="background: ${riskClass === 'risk-high' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : 'linear-gradient(135deg, #10b981, #059669)'}; color: white; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">${prediction.RiskLevel || 'Low Risk'}</span>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                            <div style="text-align: center; padding: 12px; background: var(--gray-100); border-radius: 10px;">
+                                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Date</div>
+                                <div style="font-weight: 700; color: var(--text-primary);">${date}</div>
+                            </div>
+                            <div style="text-align: center; padding: 12px; background: var(--gray-100); border-radius: 10px;">
+                                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Health Score</div>
+                                <div style="font-weight: 700; color: var(--text-primary); font-size: 1.2rem;">${healthScore}</div>
+                            </div>
+                            <div style="text-align: center; padding: 12px; background: var(--gray-100); border-radius: 10px;">
+                                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Confidence</div>
+                                <div style="font-weight: 700; color: var(--text-primary); font-size: 1.2rem;">${Math.round(confidence)}%</div>
+                            </div>
+                        </div>
+
+                        ${await generateInputDetailsSection(prediction, diseaseType)}
+                        ${generateHealthScoreSection(healthScore, confidence)}
+                    </div>
+                `;
+            };
+            
+            document.getElementById('viewDataContent').innerHTML = tableHTML;
+        }
+
+        // Generate input details section for each prediction
+        async function generateInputDetailsSection(prediction, diseaseType) {
+            try {
+                // Fetch detailed input data from the backend
+                let inputData = await fetchDetailedInputData(prediction.PredictionID, diseaseType);
+
+                // If no real input data, show message instead of fake data
+                if (!inputData) {
+                    return `
+                        <div class="input-details-section">
+                            <div class="input-details-title">
+                                <i class="fas fa-clipboard-list"></i>
+                                Complete Input Parameters
+                            </div>
+                            <div style="text-align: center; padding: 30px; color: var(--text-secondary); background: var(--gray-100); border-radius: 10px;">
+                                <i class="fas fa-database" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
+                                <p><strong>Input data not available</strong></p>
+                                <p>Raw input parameters for this prediction were not saved in the database.</p>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                let inputHTML = `
+                    <div class="input-details-section">
+                        <div class="input-details-title">
+                            <i class="fas fa-clipboard-list"></i>
+                            Complete Input Parameters (Real Database Data)
+                        </div>
+                        <div class="input-details-grid">
+                `;
+
+                // Generate input details based on disease type
+                const inputFields = getInputFieldsForDiseaseType(diseaseType);
+                inputFields.forEach(field => {
+                    const value = inputData[field.key] || 'N/A';
+                    const status = getInputStatus(field.key, value, diseaseType);
+                    inputHTML += `
+                        <div class="input-detail-item">
+                            <div class="input-detail-label">${field.label}</div>
+                            <div class="input-detail-value">
+                                ${value}
+                                ${field.unit ? `<span class="input-detail-unit">${field.unit}</span>` : ''}
+                            </div>
+                            <div class="input-detail-status ${status}">${getStatusText(status)}</div>
+                        </div>
+                    `;
+                });
+
+                inputHTML += `
+                        </div>
+                    </div>
+                `;
+
+                return inputHTML;
+            } catch (error) {
+                console.error('Error generating input details:', error);
+                // On error, show error message instead of fake data
+                return `
+                    <div class="input-details-section">
+                        <div class="input-details-title">
+                            <i class="fas fa-clipboard-list"></i>
+                            Complete Input Parameters
+                        </div>
+                        <div style="text-align: center; padding: 30px; color: var(--danger-red); background: var(--gray-100); border-radius: 10px;">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                            <p><strong>Error loading input data</strong></p>
+                            <p>Unable to retrieve input parameters from database: ${error.message}</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Fetch detailed input data from backend
+        async function fetchDetailedInputData(predictionId, diseaseType) {
+            try {
+                console.log(`🔍 Fetching real input data for prediction ${predictionId} (${diseaseType})...`);
+                
+                // Fetch real input data from the database based on prediction ID and disease type
+                const response = await fetch(`${API_BASE_URL}/api/predictions/input-data`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        predictionId: predictionId,
+                        diseaseType: diseaseType
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.inputData) {
+                        console.log(`✅ Retrieved real input data for prediction ${predictionId}:`, data.inputData);
+                        return data.inputData;
+                    } else {
+                        console.log(`⚠️ No input data found for prediction ${predictionId} in database`);
+                        return null;
+                    }
+                } else {
+                    console.error(`❌ Failed to fetch input data: ${response.status} ${response.statusText}`);
+                    return null;
+                }
+            } catch (error) {
+                console.error('Error fetching detailed input data:', error);
+                return null;
+            }
+        }
+
+        // Get input fields for disease type
+        function getInputFieldsForDiseaseType(diseaseType) {
+            const fieldMappings = {
+                heart_disease: [
+                    { key: 'age', label: 'Age', unit: 'years' },
+                    { key: 'sex', label: 'Sex', unit: '' },
+                    { key: 'anaemia', label: 'Anaemia', unit: '' },
+                    { key: 'creatinine_phosphokinase', label: 'Creatinine Phosphokinase', unit: 'mcg/L' },
+                    { key: 'diabetes', label: 'Diabetes', unit: '' },
+                    { key: 'ejection_fraction', label: 'Ejection Fraction', unit: '%' },
+                    { key: 'high_blood_pressure', label: 'High Blood Pressure', unit: '' },
+                    { key: 'platelets', label: 'Platelets', unit: 'kiloplatelets/mL' },
+                    { key: 'serum_creatinine', label: 'Serum Creatinine', unit: 'mg/dL' },
+                    { key: 'serum_sodium', label: 'Serum Sodium', unit: 'mEq/L' },
+                    { key: 'smoking', label: 'Smoking', unit: '' },
+                    { key: 'time', label: 'Follow-up Time', unit: 'days' }
+                ],
+                diabetes: [
+                    { key: 'pregnancies', label: 'Pregnancies', unit: '' },
+                    { key: 'glucose', label: 'Glucose Level', unit: 'mg/dL' },
+                    { key: 'blood_pressure', label: 'Blood Pressure', unit: 'mm Hg' },
+                    { key: 'skin_thickness', label: 'Skin Thickness', unit: 'mm' },
+                    { key: 'insulin', label: 'Insulin', unit: 'mu U/ml' },
+                    { key: 'bmi', label: 'BMI', unit: 'kg/m²' },
+                    { key: 'diabetes_pedigree_function', label: 'Diabetes Pedigree Function', unit: '' },
+                    { key: 'age', label: 'Age', unit: 'years' }
+                ],
+                lung_cancer: [
+                    { key: 'age', label: 'Age', unit: 'years' },
+                    { key: 'sex', label: 'Sex', unit: '' },
+                    { key: 'smoking', label: 'Smoking', unit: '' },
+                    { key: 'yellow_fingers', label: 'Yellow Fingers', unit: '' },
+                    { key: 'anxiety', label: 'Anxiety', unit: '' },
+                    { key: 'peer_pressure', label: 'Peer Pressure', unit: '' },
+                    { key: 'chronic_disease', label: 'Chronic Disease', unit: '' },
+                    { key: 'fatigue', label: 'Fatigue', unit: '' },
+                    { key: 'allergy', label: 'Allergy', unit: '' },
+                    { key: 'wheezing', label: 'Wheezing', unit: '' },
+                    { key: 'alcohol_consuming', label: 'Alcohol Consuming', unit: '' },
+                    { key: 'coughing', label: 'Coughing', unit: '' },
+                    { key: 'shortness_of_breath', label: 'Shortness of Breath', unit: '' },
+                    { key: 'swallowing_difficulty', label: 'Swallowing Difficulty', unit: '' },
+                    { key: 'chest_pain', label: 'Chest Pain', unit: '' }
+                ],
+                kidney_disease: [
+                    { key: 'age', label: 'Age', unit: 'years' },
+                    { key: 'blood_pressure', label: 'Blood Pressure', unit: 'mm Hg' },
+                    { key: 'blood_glucose_random', label: 'Blood Glucose Random', unit: 'mgs/dl' },
+                    { key: 'blood_urea', label: 'Blood Urea', unit: 'mgs/dl' },
+                    { key: 'serum_sodium', label: 'Serum Sodium', unit: 'mEq/L' },
+                    { key: 'potassium', label: 'Potassium', unit: 'mEq/L' },
+                    { key: 'white_blood_cells', label: 'White Blood Cells', unit: 'cells/cumm' },
+                    { key: 'hypertension', label: 'Hypertension', unit: '' },
+                    { key: 'diabetes_mellitus', label: 'Diabetes Mellitus', unit: '' },
+                    { key: 'coronary_artery_disease', label: 'Coronary Artery Disease', unit: '' },
+                    { key: 'appetite', label: 'Appetite', unit: '' },
+                    { key: 'pedal_edema', label: 'Pedal Edema', unit: '' },
+                    { key: 'anemia', label: 'Anemia', unit: '' }
+                ]
+            };
+
+            return fieldMappings[diseaseType] || [];
+        }
+
+        // Get input status based on value and disease type
+        function getInputStatus(fieldKey, value, diseaseType) {
+            // Define normal/warning/critical ranges for each parameter
+            const statusRules = {
+                heart_disease: {
+                    age: { warning: 65, critical: 75 },
+                    ejection_fraction: { critical: 35, warning: 45 },
+                    serum_creatinine: { warning: 1.2, critical: 2.0 },
+                    creatinine_phosphokinase: { warning: 200, critical: 400 }
+                },
+                diabetes: {
+                    glucose: { warning: 100, critical: 126 },
+                    bmi: { warning: 25, critical: 30 },
+                    blood_pressure: { warning: 120, critical: 140 },
+                    age: { warning: 45, critical: 65 }
+                },
+                lung_cancer: {
+                    age: { warning: 50, critical: 65 }
+                },
+                kidney_disease: {
+                    blood_pressure: { warning: 120, critical: 140 },
+                    blood_glucose_random: { warning: 140, critical: 180 },
+                    blood_urea: { warning: 40, critical: 50 },
+                    age: { warning: 60, critical: 70 }
+                }
+            };
+
+            const rules = statusRules[diseaseType]?.[fieldKey];
+            if (!rules || isNaN(value)) {
+                // For non-numeric values or boolean-like values
+                if (typeof value === 'string') {
+                    const riskFactors = ['yes', 'smoking', 'high', 'poor', 'positive'];
+                    return riskFactors.some(factor => value.toLowerCase().includes(factor)) ? 'warning' : 'normal';
+                }
+                return 'normal';
+            }
+
+            const numValue = parseFloat(value);
+            if (numValue >= rules.critical) return 'critical';
+            if (numValue >= rules.warning) return 'warning';
+            return 'normal';
+        }
+
+        // Get status text
+        function getStatusText(status) {
+            const statusTexts = {
+                normal: '✅ Normal',
+                warning: '⚠️ Attention',
+                critical: '🚨 Critical'
+            };
+            return statusTexts[status] || 'Normal';
+        }
+
+        // Generate health score section
+        function generateHealthScoreSection(healthScore, confidence) {
+            const scoreColor = healthScore >= 80 ? 'var(--success-green)' : 
+                             healthScore >= 60 ? 'var(--warning-orange)' : 'var(--danger-red)';
+            
+            const scoreDescription = healthScore >= 80 ? 'Excellent health status with optimal parameters' :
+                                   healthScore >= 60 ? 'Good health with some areas for improvement' :
+                                   'Health requires attention and lifestyle modifications';
+
+            return `
+                <div class="health-score-section">
+                    <div class="health-score-title">🏥 Health Score Analysis</div>
+                    <div class="health-score-value" style="color: ${scoreColor};">${healthScore}</div>
+                    <div class="health-score-description">${scoreDescription}</div>
+                    <div class="health-score-bar">
+                        <div class="health-score-fill" style="width: ${healthScore}%; background: ${scoreColor};"></div>
+                    </div>
+                    <div style="margin-top: 15px; padding: 15px; background: rgba(102, 126, 234, 0.05); border-radius: 10px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Confidence Level</div>
+                                <div style="font-size: 1.4rem; font-weight: 700; color: var(--primary-blue);">${Math.round(confidence)}%</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Risk Category</div>
+                                <div style="font-size: 1.1rem; font-weight: 600; color: ${scoreColor};">
+                                    ${healthScore >= 70 ? 'Low Risk' : healthScore >= 50 ? 'Moderate Risk' : 'High Risk'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Enhanced analyzeData function with detailed analysis
+        async function analyzeData(diseaseType) {
+            const diseaseInfo = diseaseMapping[diseaseType];
+            if (!diseaseInfo) return;
+
+            // Filter REAL predictions for this disease type from database
+            const diseaseData = userPredictions.filter(p => p.PredictionType === diseaseType);
+            
+            if (diseaseData.length === 0) {
+                alert(`No ${diseaseInfo.name} prediction data found in database for detailed analysis`);
+                return;
+            }
+
+            // Set modal title
+            document.getElementById('analysisModalTitle').textContent = `${diseaseInfo.icon} Detailed ${diseaseInfo.name} Analysis for ${currentUser}`;
+            
+            // Show modal with loading
+            document.getElementById('analysisModal').style.display = 'block';
+            document.getElementById('analysisContent').innerHTML = '<div class="loading-spinner"></div>';
+
+            try {
+                // Generate comprehensive analysis from REAL database data with enhanced details
+                await generateEnhancedComprehensiveAnalysis(diseaseType, diseaseData);
+            } catch (error) {
+                console.error('Error generating detailed analysis:', error);
+                document.getElementById('analysisContent').innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--danger-red);">
+                        <h3>❌ Analysis Error</h3>
+                        <p>Unable to generate detailed analysis from database data. Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Enhanced comprehensive analysis with detailed explanations
+        async function generateEnhancedComprehensiveAnalysis(diseaseType, data) {
+            const diseaseInfo = diseaseMapping[diseaseType];
+            
+            // Prepare enhanced analysis data from REAL database records
+            const analysisData = {
+                totalPredictions: data.length,
+                highRiskCount: data.filter(p => p.RiskLevel === 'High Risk').length,
+                lowRiskCount: data.filter(p => p.RiskLevel === 'Low Risk').length,
+                avgHealthScore: Math.round(data.reduce((sum, p) => sum + (p.HealthScore || 0), 0) / data.length),
+                avgConfidence: Math.round(data.reduce((sum, p) => sum + (p.Confidence || 0), 0) / data.length),
+                dateRange: {
+                    earliest: new Date(Math.min(...data.map(p => new Date(p.CreatedAt)))).toLocaleDateString(),
+                    latest: new Date(Math.max(...data.map(p => new Date(p.CreatedAt)))).toLocaleDateString()
+                },
+                riskTrend: calculateRiskTrend(data),
+                healthScoreTrend: calculateHealthScoreTrend(data)
+            };
+
+            console.log('Enhanced analysis data:', analysisData);
+
+            // Generate comprehensive HTML with detailed analysis
+            const analysisHTML = `
+                <div class="analysis-summary" style="margin-bottom: 35px;">
+                    <h3 style="color: #1a202c; margin-bottom: 25px; font-size: 1.6rem;">📊 Comprehensive Analysis Report</h3>
+                    <p style="color: #4a5568; margin-bottom: 25px; font-size: 1.1rem;"><strong>Data Source:</strong> Real predictions from database</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                        <div style="background: rgba(59, 130, 246, 0.1); padding: 25px; border-radius: 18px; border-left: 5px solid #3b82f6; text-align: center;">
+                            <h4 style="margin-bottom: 12px; color: #3b82f6; font-size: 1rem;">Total Predictions</h4>
+                            <div style="font-size: 2.2rem; font-weight: 800; color: #3b82f6; margin-bottom: 8px;">${analysisData.totalPredictions}</div>
+                            <div style="font-size: 0.9rem; color: #4a5568;">Database Records</div>
+                        </div>
+                        <div style="background: rgba(239, 68, 68, 0.1); padding: 25px; border-radius: 18px; border-left: 5px solid #ef4444; text-align: center;">
+                            <h4 style="margin-bottom: 12px; color: #ef4444; font-size: 1rem;">High Risk Cases</h4>
+                            <div style="font-size: 2.2rem; font-weight: 800; color: #ef4444; margin-bottom: 8px;">${analysisData.highRiskCount}</div>
+                            <div style="font-size: 0.9rem; color: #4a5568;">${Math.round((analysisData.highRiskCount / analysisData.totalPredictions) * 100)}% of Total</div>
+                        </div>
+                        <div style="background: rgba(16, 185, 129, 0.1); padding: 25px; border-radius: 18px; border-left: 5px solid #10b981; text-align: center;">
+                            <h4 style="margin-bottom: 12px; color: #10b981; font-size: 1rem;">Low Risk Cases</h4>
+                            <div style="font-size: 2.2rem; font-weight: 800; color: #10b981; margin-bottom: 8px;">${analysisData.lowRiskCount}</div>
+                            <div style="font-size: 0.9rem; color: #4a5568;">${Math.round((analysisData.lowRiskCount / analysisData.totalPredictions) * 100)}% of Total</div>
+                        </div>
+                        <div style="background: rgba(139, 92, 246, 0.1); padding: 25px; border-radius: 18px; border-left: 5px solid #8b5cf6; text-align: center;">
+                            <h4 style="margin-bottom: 12px; color: #8b5cf6; font-size: 1rem;">Avg Health Score</h4>
+                            <div style="font-size: 2.2rem; font-weight: 800; color: #8b5cf6; margin-bottom: 8px;">${analysisData.avgHealthScore}</div>
+                            <div style="font-size: 0.9rem; color: #4a5568;">${analysisData.avgHealthScore >= 80 ? 'Excellent' : analysisData.avgHealthScore >= 60 ? 'Good' : 'Needs Attention'}</div>
+                        </div>
+                        <div style="background: rgba(245, 158, 11, 0.1); padding: 25px; border-radius: 18px; border-left: 5px solid #f59e0b; text-align: center;">
+                            <h4 style="margin-bottom: 12px; color: #f59e0b; font-size: 1rem;">Avg Confidence</h4>
+                            <div style="font-size: 2.2rem; font-weight: 800; color: #f59e0b; margin-bottom: 8px;">${analysisData.avgConfidence}%</div>
+                            <div style="font-size: 0.9rem; color: #4a5568;">${analysisData.avgConfidence >= 85 ? 'Very High' : analysisData.avgConfidence >= 70 ? 'High' : 'Moderate'}</div>
+                        </div>
+                    </div>
+                </div>
+
+                ${generateDetailedInsightsSection(analysisData, diseaseType)}
+                ${generateRecommendationsSection(analysisData, diseaseType)}
+
+                <div style="margin-top: 35px; padding: 30px; background: rgba(139, 92, 246, 0.1); border-radius: 20px; border: 1px solid rgba(139, 92, 246, 0.2);">
+                    <h4 style="margin-bottom: 20px; color: #1a202c;">📊 Analysis Summary</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div><strong>Disease Type:</strong> ${diseaseInfo.name}</div>
+                        <div><strong>Records Analyzed:</strong> ${analysisData.totalPredictions}</div>
+                        <div><strong>Period:</strong> ${analysisData.dateRange.earliest} to ${analysisData.dateRange.latest}</div>
+                        <div><strong>Risk Trend:</strong> ${analysisData.riskTrend}</div>
+                        <div><strong>Health Trend:</strong> ${analysisData.healthScoreTrend}</div>
+                        <div><strong>Analysis Date:</strong> ${new Date().toLocaleDateString()}</div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('analysisContent').innerHTML = analysisHTML;
+        }
+
+        // Calculate risk trend
+        function calculateRiskTrend(data) {
+            if (data.length < 2) return 'Insufficient Data';
+            
+            const sortedData = data.sort((a, b) => new Date(a.CreatedAt) - new Date(b.CreatedAt));
+            const firstHalf = sortedData.slice(0, Math.floor(sortedData.length / 2));
+            const secondHalf = sortedData.slice(Math.floor(sortedData.length / 2));
+            
+            const firstHalfHighRisk = firstHalf.filter(p => p.RiskLevel === 'High Risk').length / firstHalf.length;
+            const secondHalfHighRisk = secondHalf.filter(p => p.RiskLevel === 'High Risk').length / secondHalf.length;
+            
+            if (secondHalfHighRisk > firstHalfHighRisk) return '📈 Increasing Risk';
+            if (secondHalfHighRisk < firstHalfHighRisk) return '📉 Decreasing Risk';
+            return '➡️ Stable Risk';
+        }
+
+        // Calculate health score trend
+        function calculateHealthScoreTrend(data) {
+            if (data.length < 2) return 'Insufficient Data';
+            
+            const sortedData = data.sort((a, b) => new Date(a.CreatedAt) - new Date(b.CreatedAt));
+            const firstScore = sortedData[0].HealthScore || 0;
+            const lastScore = sortedData[sortedData.length - 1].HealthScore || 0;
+            
+            if (lastScore > firstScore + 5) return '📈 Improving';
+            if (lastScore < firstScore - 5) return '📉 Declining';
+            return '➡️ Stable';
+        }
+
+        // Get health score category
+        function getHealthScoreCategory(score) {
+            if (score >= 80) return 'Excellent';
+            if (score >= 70) return 'Good';
+            if (score >= 60) return 'Fair';
+            return 'Needs Attention';
+        }
+
+        // Get confidence category
+        function getConfidenceCategory(confidence) {
+            if (confidence >= 90) return 'Very High';
+            if (confidence >= 80) return 'High';
+            if (confidence >= 70) return 'Moderate';
+            return 'Low';
+        }
+
+        // Generate detailed insights section with explanations
+        function generateDetailedInsightsSection(analysisData, diseaseType) {
+            return `
+                <div style="margin: 35px 0; padding: 30px; background: white; border-radius: 20px; border: 1px solid rgba(102, 126, 234, 0.2); box-shadow: 0 8px 16px rgba(0,0,0,0.1);">
+                    <h4 style="margin-bottom: 25px; color: #1a202c; font-size: 1.4rem;">
+                        📊 Detailed Textual Analysis
+                    </h4>
+                    <div style="display: grid; gap: 20px;">
+                        <div style="padding: 20px; background: rgba(59, 130, 246, 0.05); border-radius: 15px; border-left: 4px solid #3b82f6;">
+                            <h5 style="color: #3b82f6; margin-bottom: 15px;">🔍 Data Comparisons</h5>
+                            <p style="color: #4a5568; line-height: 1.6;">
+                                Analysis shows ${analysisData.totalPredictions} total predictions with ${analysisData.highRiskCount} high-risk cases (${Math.round((analysisData.highRiskCount / analysisData.totalPredictions) * 100)}%) and ${analysisData.lowRiskCount} low-risk cases (${Math.round((analysisData.lowRiskCount / analysisData.totalPredictions) * 100)}%). 
+                                The average health score of ${analysisData.avgHealthScore} indicates ${analysisData.avgHealthScore >= 80 ? 'excellent' : analysisData.avgHealthScore >= 60 ? 'good' : 'concerning'} overall health status.
+                            </p>
+                        </div>
+                        <div style="padding: 20px; background: rgba(16, 185, 129, 0.05); border-radius: 15px; border-left: 4px solid #10b981;">
+                            <h5 style="color: #10b981; margin-bottom: 15px;">📈 Key Differences</h5>
+                            <p style="color: #4a5568; line-height: 1.6;">
+                                Prediction confidence averages ${analysisData.avgConfidence}%, indicating ${analysisData.avgConfidence >= 85 ? 'very reliable' : analysisData.avgConfidence >= 70 ? 'moderately reliable' : 'variable'} assessment quality. 
+                                Risk trends show ${analysisData.riskTrend} patterns, while health scores demonstrate ${analysisData.healthScoreTrend} trajectory over the analysis period from ${analysisData.dateRange.earliest} to ${analysisData.dateRange.latest}.
+                            </p>
+                        </div>
+                        <div style="padding: 20px; background: rgba(139, 92, 246, 0.05); border-radius: 15px; border-left: 4px solid #8b5cf6;">
+                            <h5 style="color: #8b5cf6; margin-bottom: 15px;">🤝 Common Patterns</h5>
+                            <p style="color: #4a5568; line-height: 1.6;">
+                                Common factors across all predictions include consistent data collection methods, standardized risk assessment protocols, and uniform health scoring systems. 
+                                All predictions share similar evaluation criteria and benefit from the same machine learning model accuracy standards, ensuring reliable and comparable results across different time periods.
+                            </p>
+                        </div>
+                        <div style="padding: 20px; background: rgba(245, 158, 11, 0.05); border-radius: 15px; border-left: 4px solid #f59e0b;">
+                            <h5 style="color: #f59e0b; margin-bottom: 15px;">💡 Key Takeaways</h5>
+                            <p style="color: #4a5568; line-height: 1.6;">
+                                The analysis reveals ${analysisData.totalPredictions > 5 ? 'sufficient data volume' : 'limited data volume'} for meaningful trend analysis. 
+                                ${analysisData.highRiskCount > analysisData.lowRiskCount ? 'Higher proportion of high-risk cases suggests need for immediate medical attention' : 'Lower proportion of high-risk cases indicates effective health management'}. 
+                                Regular monitoring and preventive care remain essential for maintaining optimal health outcomes.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Generate enhanced insights with detailed explanations
+        function generateEnhancedInsights(analysisData, diseaseType) {
+            const insights = [];
+            const diseaseInfo = diseaseMapping[diseaseType];
+            const riskPercentage = analysisData.totalPredictions > 0 ? 
+                Math.round((analysisData.highRiskCount / analysisData.totalPredictions) * 100) : 0;
+            
+            // Risk Assessment Insight
+            if (riskPercentage > 50) {
+                insights.push({
+                    icon: '⚠️',
+                    title: 'High Risk Pattern Detected',
+                    description: `${riskPercentage}% of ${currentUser}'s database predictions show high risk for ${diseaseInfo.name}. This pattern suggests multiple risk factors may be present and requires immediate attention from SKY035.`,
+                    recommendation: 'Schedule immediate consultation with a healthcare professional to discuss comprehensive risk management strategies.',
+                    bgColor: 'rgba(239, 68, 68, 0.05)',
+                    borderColor: '#ef4444'
+                });
+            } else if (riskPercentage > 25) {
+                insights.push({
+                    icon: '📊',
+                    title: 'Moderate Risk Pattern',
+                    description: `${riskPercentage}% of ${currentUser}'s predictions indicate moderate risk for ${diseaseInfo.name}. While not immediately concerning, this suggests room for preventive measures.`,
+                    recommendation: 'Consider lifestyle modifications and regular monitoring to prevent risk escalation.',
+                    bgColor: 'rgba(245, 158, 11, 0.05)',
+                    borderColor: '#f59e0b'
+                });
+            } else {
+                insights.push({
+                    icon: '✅',
+                    title: 'Positive Risk Profile',
+                    description: `Only ${riskPercentage}% of ${currentUser}'s database predictions show high risk for ${diseaseInfo.name}. This indicates effective risk management and healthy lifestyle choices by SKY035.`,
+                    recommendation: 'Continue current healthy habits and maintain regular health monitoring.',
+                    bgColor: 'rgba(16, 185, 129, 0.05)',
+                    borderColor: '#10b981'
+                });
+            }
+
+            // Health Score Analysis
+            if (analysisData.avgHealthScore >= 80) {
+                insights.push({
+                    icon: '💪',
+                    title: 'Excellent Health Score',
+                    description: `${currentUser}'s average health score of ${analysisData.avgHealthScore} from database records indicates excellent overall health management. This score reflects optimal values in most health parameters.`,
+                    recommendation: 'Maintain current health practices and use this as a benchmark for continued wellness.',
+                    bgColor: 'rgba(16, 185, 129, 0.05)',
+                    borderColor: '#10b981'
+                });
+            } else if (analysisData.avgHealthScore >= 60) {
+                insights.push({
+                    icon: '📈',
+                    title: 'Good Health Score with Improvement Potential',
+                    description: `${currentUser}'s average health score of ${analysisData.avgHealthScore} indicates good health with opportunities for optimization in certain areas related to ${diseaseInfo.name} prevention.`,
+                    recommendation: 'Focus on improving specific health parameters that contribute most to disease risk.',
+                    bgColor: 'rgba(59, 130, 246, 0.05)',
+                    borderColor: '#3b82f6'
+                });
+            } else {
+                insights.push({
+                    icon: '🎯',
+                    title: 'Health Score Requires Attention',
+                    description: `${currentUser}'s average health score of ${analysisData.avgHealthScore} from database suggests significant opportunities for health improvement through lifestyle changes and medical intervention.`,
+                    recommendation: 'Develop a comprehensive health improvement plan with healthcare professionals.',
+                    bgColor: 'rgba(239, 68, 68, 0.05)',
+                    borderColor: '#ef4444'
+                });
+            }
+
+            // Confidence Analysis
+            if (analysisData.avgConfidence >= 85) {
+                insights.push({
+                    icon: '🎯',
+                    title: 'High Prediction Confidence',
+                    description: `Average prediction confidence of ${analysisData.avgConfidence}% indicates very reliable assessments for ${currentUser}. The input parameters provide clear indicators for ${diseaseInfo.name} risk evaluation.`,
+                    recommendation: 'These predictions can be trusted for making informed health decisions.',
+                    bgColor: 'rgba(139, 92, 246, 0.05)',
+                    borderColor: '#8b5cf6'
+                });
+            } else if (analysisData.avgConfidence >= 70) {
+                insights.push({
+                    icon: '📊',
+                    title: 'Moderate Prediction Confidence',
+                    description: `Average prediction confidence of ${analysisData.avgConfidence}% suggests reasonable reliability in assessments, though some predictions may benefit from additional clinical evaluation.`,
+                    recommendation: 'Consider supplementing with additional medical tests for more comprehensive assessment.',
+                    bgColor: 'rgba(245, 158, 11, 0.05)',
+                    borderColor: '#f59e0b'
+                });
+            }
+
+            // Trend Analysis
+            const riskTrend = analysisData.riskTrend;
+            if (riskTrend.includes('Increasing')) {
+                insights.push({
+                    icon: '📈',
+                    title: 'Risk Trend Analysis',
+                    description: `Analysis shows an increasing risk trend over time for ${currentUser}. This pattern suggests that risk factors may be worsening or new risk factors are emerging for user SKY035.`,
+                    recommendation: 'Immediate review of recent lifestyle changes and health status is recommended.',
+                    bgColor: 'rgba(239, 68, 68, 0.05)',
+                    borderColor: '#ef4444'
+                });
+            } else if (riskTrend.includes('Decreasing')) {
+                insights.push({
+                    icon: '📉',
+                    title: 'Positive Risk Trend',
+                    description: `Analysis shows a decreasing risk trend over time for ${currentUser}. This indicates effective risk management and positive health improvements by SKY035.`,
+                    recommendation: 'Continue current health management strategies as they are proving effective.',
+                    bgColor: 'rgba(16, 185, 129, 0.05)',
+                    borderColor: '#10b981'
+                });
+            }
+
+            return insights;
+        }
+
+        // Generate prediction details section
+        function generatePredictionDetailsSection(data, diseaseType) {
+            const recentPredictions = data.slice(-3); // Show last 3 predictions
+            
+            return `
+                <div style="margin: 35px 0; padding: 30px; background: rgba(255, 255, 255, 0.9); border-radius: 20px; border: 1px solid rgba(102, 126, 234, 0.2); box-shadow: var(--shadow-md);">
+                    <h4 style="margin-bottom: 25px; color: var(--text-primary); font-size: 1.4rem; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-clipboard-list"></i> Recent Prediction Details for ${currentUser}
+                    </h4>
+                    <div style="display: grid; gap: 20px;">
+                        ${recentPredictions.map((prediction, index) => `
+                            <div style="padding: 20px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%); border-radius: 15px; border: 1px solid rgba(102, 126, 234, 0.1);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                    <h5 style="margin: 0; color: var(--text-primary); font-weight: 700;">
+                                        Prediction #${prediction.PredictionID} - ${new Date(prediction.CreatedAt).toLocaleDateString()}
+                                    </h5>
+                                    <span style="padding: 6px 12px; border-radius: 15px; font-size: 0.8rem; font-weight: 600; 
+                                        background: ${prediction.RiskLevel === 'High Risk' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)'};
+                                        color: ${prediction.RiskLevel === 'High Risk' ? '#ef4444' : '#10b981'};">
+                                        ${prediction.RiskLevel || 'Low Risk'}
+                                    </span>
+                                </div>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                                    <div style="text-align: center; padding: 10px; background: white; border-radius: 10px;">
+                                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px;">Health Score</div>
+                                        <div style="font-size: 1.4rem; font-weight: 700; color: ${prediction.HealthScore >= 70 ? '#10b981' : prediction.HealthScore >= 50 ? '#f59e0b' : '#ef4444'};">
+                                            ${prediction.HealthScore || 'N/A'}
+                                        </div>
+                                    </div>
+                                    <div style="text-align: center; padding: 10px; background: white; border-radius: 10px;">
+                                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px;">Confidence</div>
+                                        <div style="font-size: 1.4rem; font-weight: 700; color: var(--primary-blue);">
+                                            ${prediction.Confidence ? Math.round(prediction.Confidence) + '%' : 'N/A'}
+                                        </div>
+                                    </div>
+                                    <div style="text-align: center; padding: 10px; background: white; border-radius: 10px;">
+                                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px;">User</div>
+                                        <div style="font-size: 1rem; font-weight: 600; color: var(--text-primary);">
+                                            ${prediction.Username || currentUser}
+                                        </div>
+                                    </div>
+                                    <div style="text-align: center; padding: 10px; background: white; border-radius: 10px;">
+                                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px;">Time</div>
+                                        <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-primary);">
+                                            ${new Date(prediction.CreatedAt).toLocaleTimeString()}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Generate recommendations section with detailed explanations
+        function generateRecommendationsSection(analysisData, diseaseType) {
+            const recommendations = getDetailedRecommendations(analysisData, diseaseType);
+            
+            return `
+                <div style="margin: 35px 0; padding: 30px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(5, 150, 105, 0.05) 100%); border-radius: 20px; border-left: 5px solid #10b981; box-shadow: var(--shadow-md);">
+                    <h4 style="margin-bottom: 25px; color: var(--text-primary); font-size: 1.4rem; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-user-md"></i> Personalized Health Recommendations for ${currentUser}
+                    </h4>
+                    <div style="display: grid; gap: 20px;">
+                        ${recommendations.map((rec, index) => `
+                            <div style="padding: 20px; background: white; border-radius: 15px; border: 1px solid rgba(16, 185, 129, 0.1); box-shadow: var(--shadow-sm);">
+                                <div style="display: flex; align-items: flex-start; gap: 15px;">
+                                    <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem;">
+                                        ${index + 1}
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <h5 style="margin-bottom: 10px; color: var(--text-primary); font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                                            ${rec.icon} ${rec.category}
+                                        </h5>
+                                        <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px;">${rec.description}</p>
+                                        <div style="padding: 12px; background: rgba(16, 185, 129, 0.05); border-radius: 10px; border-left: 3px solid #10b981;">
+                                            <div style="font-size: 0.9rem; color: #059669; font-weight: 600;">
+                                                💡 Action: ${rec.action}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Get detailed recommendations based on analysis
+        function getDetailedRecommendations(analysisData, diseaseType) {
+            const recommendations = [];
+            const diseaseInfo = diseaseMapping[diseaseType];
+            const riskPercentage = analysisData.totalPredictions > 0 ? 
+                Math.round((analysisData.highRiskCount / analysisData.totalPredictions) * 100) : 0;
+
+            // Risk-based recommendations
+            if (riskPercentage > 40) {
+                recommendations.push({
+                    icon: '🏥',
+                    category: 'Immediate Medical Consultation',
+                    description: `With ${riskPercentage}% of predictions showing high risk for ${diseaseInfo.name}, immediate professional medical evaluation is strongly recommended for ${currentUser}.`,
+                    action: 'Schedule appointment with appropriate specialist within 1-2 weeks'
+                });
+            } else if (riskPercentage > 20) {
+                recommendations.push({
+                    icon: '📅',
+                    category: 'Enhanced Medical Monitoring',
+                    description: `Moderate risk pattern detected for ${currentUser}. Regular monitoring and preventive care can help manage and reduce ${diseaseInfo.name} risk factors.`,
+                    action: 'Schedule bi-annual check-ups and discuss prevention strategies'
+                });
+            } else {
+                recommendations.push({
+                    icon: '✅',
+                    category: 'Maintenance Care',
+                    description: `Low risk profile indicates good health management for ${currentUser}. Continue current practices to maintain low ${diseaseInfo.name} risk.`,
+                    action: 'Maintain annual health check-ups and current lifestyle habits'
+                });
+            }
+
+            // Health score based recommendations
+            if (analysisData.avgHealthScore < 60) {
+                recommendations.push({
+                    icon: '🏃‍♂️',
+                    category: 'Comprehensive Lifestyle Modification',
+                    description: 'Health score indicates significant room for improvement through lifestyle changes including diet, exercise, stress management, and sleep optimization.',
+                    action: 'Develop a structured 90-day health improvement plan with measurable goals'
+                });
+            } else if (analysisData.avgHealthScore < 80) {
+                recommendations.push({
+                    icon: '📈',
+                    category: 'Targeted Health Optimization',
+                    description: 'Good health score with opportunities for optimization. Focus on specific areas that contribute most to your health score improvement.',
+                    action: 'Identify and address 2-3 key health parameters for improvement'
+                });
+            }
+
+            // Disease-specific recommendations
+            switch (diseaseType) {
+                case 'heart_disease':
+                    recommendations.push({
+                        icon: '❤️',
+                        category: 'Cardiovascular Health Management',
+                        description: 'Implement heart-healthy lifestyle including regular cardio exercise, Mediterranean diet, blood pressure monitoring, and stress reduction.',
+                        action: 'Start 30-minute cardio exercise 5 days/week and monitor BP daily'
+                    });
+                    break;
+                case 'diabetes':
+                    recommendations.push({
+                        icon: '🍎',
+                        category: 'Metabolic Health Optimization',
+                        description: 'Focus on blood sugar management through controlled carbohydrate intake, regular meal timing, and continuous glucose monitoring.',
+                        action: 'Implement structured meal planning and blood glucose tracking'
+                    });
+                    break;
+                case 'lung_cancer':
+                    recommendations.push({
+                        icon: '🫁',
+                        category: 'Pulmonary Health Protection',
+                        description: 'Prioritize lung health through smoking cessation, air quality improvement, and regular respiratory function monitoring.',
+                        action: 'Complete smoking cessation program and schedule annual lung function tests'
+                    });
+                    break;
+                case 'kidney_disease':
+                    recommendations.push({
+                        icon: '💧',
+                        category: 'Renal Function Support',
+                        description: 'Maintain kidney health through adequate hydration, blood pressure control, and avoiding nephrotoxic substances.',
+                        action: 'Maintain daily fluid intake log and monthly kidney function monitoring'
+                    });
+                    break;
+            }
+
+            // Confidence-based recommendations
+            if (analysisData.avgConfidence < 75) {
+                recommendations.push({
+                    icon: '🔬',
+                    category: 'Enhanced Diagnostic Evaluation',
+                    description: 'Lower prediction confidence suggests need for additional clinical tests to provide more comprehensive health assessment.',
+                    action: 'Discuss additional diagnostic tests with healthcare provider'
+                });
+            }
+
+            // General wellness recommendations
+            recommendations.push({
+                icon: '🧘‍♀️',
+                category: 'Holistic Wellness Approach',
+                description: 'Incorporate stress management, mental health support, and social wellness activities to support overall health and disease prevention.',
+                action: 'Practice daily stress reduction techniques and maintain social connections'
+            });
+
+            return recommendations;
+        }
+
+        // Feature mappings for different disease types
+        function getDiseaseFeatureMapping(diseaseType) {
+            const featureMappings = {
+                heart_disease: {
+                    numeric: ['age', 'creatinine_phosphokinase', 'ejection_fraction', 'platelets', 'serum_creatinine', 'serum_sodium', 'time'],
+                    categorical: ['sex', 'anaemia', 'diabetes', 'high_blood_pressure', 'smoking'],
+                    target: 'death_event',
+                    labels: {
+                        age: 'Age (years)',
+                        sex: 'Sex',
+                        anaemia: 'Anaemia',
+                        creatinine_phosphokinase: 'Creatinine Phosphokinase (mcg/L)',
+                        diabetes: 'Diabetes',
+                        ejection_fraction: 'Ejection Fraction (%)',
+                        high_blood_pressure: 'High Blood Pressure',
+                        platelets: 'Platelets (kiloplatelets/mL)',
+                        serum_creatinine: 'Serum Creatinine (mg/dL)',
+                        serum_sodium: 'Serum Sodium (mEq/L)',
+                        smoking: 'Smoking',
+                        time: 'Follow-up Time (days)',
+                        death_event: 'Death Event'
+                    }
+                },
+                diabetes: {
+                    numeric: ['pregnancies', 'glucose', 'blood_pressure', 'skin_thickness', 'insulin', 'bmi', 'diabetes_pedigree_function', 'age'],
+                    categorical: [],
+                    target: 'outcome',
+                    labels: {
+                        pregnancies: 'Pregnancies',
+                        glucose: 'Glucose Level (mg/dL)',
+                        blood_pressure: 'Blood Pressure (mm Hg)',
+                        skin_thickness: 'Skin Thickness (mm)',
+                        insulin: 'Insulin (mu U/ml)',
+                        bmi: 'BMI (kg/m²)',
+                        diabetes_pedigree_function: 'Diabetes Pedigree Function',
+                        age: 'Age (years)',
+                        outcome: 'Diabetes Outcome'
+                    }
+                },
+                lung_cancer: {
+                    numeric: ['age'],
+                    categorical: ['sex', 'smoking', 'yellow_fingers', 'anxiety', 'peer_pressure', 'chronic_disease', 'fatigue', 'allergy', 'wheezing', 'alcohol_consuming', 'coughing', 'shortness_of_breath', 'swallowing_difficulty', 'chest_pain'],
+                    target: 'lung_cancer',
+                    labels: {
+                        age: 'Age (years)',
+                        sex: 'Sex',
+                        smoking: 'Smoking',
+                        yellow_fingers: 'Yellow Fingers',
+                        anxiety: 'Anxiety',
+                        peer_pressure: 'Peer Pressure',
+                        chronic_disease: 'Chronic Disease',
+                        fatigue: 'Fatigue',
+                        allergy: 'Allergy',
+                        wheezing: 'Wheezing',
+                        alcohol_consuming: 'Alcohol Consuming',
+                        coughing: 'Coughing',
+                        shortness_of_breath: 'Shortness of Breath',
+                        swallowing_difficulty: 'Swallowing Difficulty',
+                        chest_pain: 'Chest Pain',
+                        lung_cancer: 'Lung Cancer'
+                    }
+                },
+                kidney_disease: {
+                    numeric: ['age', 'blood_pressure', 'blood_glucose_random', 'blood_urea', 'serum_sodium', 'potassium', 'white_blood_cells'],
+                    categorical: ['hypertension', 'diabetes_mellitus', 'coronary_artery_disease', 'appetite', 'pedal_edema', 'anemia'],
+                    target: 'classification',
+                    labels: {
+                        age: 'Age (years)',
+                        blood_pressure: 'Blood Pressure (mm Hg)',
+                        blood_glucose_random: 'Blood Glucose Random (mgs/dl)',
+                        blood_urea: 'Blood Urea (mgs/dl)',
+                        serum_sodium: 'Serum Sodium (mEq/L)',
+                        potassium: 'Potassium (mEq/L)',
+                        white_blood_cells: 'White Blood Cells (cells/cumm)',
+                        hypertension: 'Hypertension',
+                        diabetes_mellitus: 'Diabetes Mellitus',
+                        coronary_artery_disease: 'Coronary Artery Disease',
+                        appetite: 'Appetite',
+                        pedal_edema: 'Pedal Edema',
+                        anemia: 'Anemia',
+                        classification: 'Kidney Disease Classification'
+                    }
+                }
+            };
+            return featureMappings[diseaseType] || {};
+        }
+
+        // Note: generateSampleInputData function removed to ensure only real database data is used
+        // All chart visualizations now show informational messages instead of synthetic data
+
+        // Advanced chart creation functions with detailed visualizations
+        function createCorrelationHeatmap(data, diseaseType, color) {
+            // Show message instead of generating fake sample data
+            document.getElementById('correlationHeatmapChart').innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                    <i class="fas fa-chart-line" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
+                    <h3>Correlation Analysis</h3>
+                    <p>Feature correlation analysis requires detailed input parameter data.</p>
+                    <p>This visualization will be available when comprehensive input data is stored in the database.</p>
+                    <small style="color: var(--text-muted);">Currently showing real prediction results only - no synthetic data</small>
+                </div>
+            `;
+        }
+
+        function createFeatureBoxplots(data, diseaseType, color) {
+            // Show message instead of generating fake sample data
+            document.getElementById('featureBoxplotsChart').innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                    <i class="fas fa-chart-bar" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
+                    <h3>Feature Distribution Analysis</h3>
+                    <p>Box plot analysis requires detailed input parameter data.</p>
+                    <p>This visualization will be available when comprehensive input data is stored in the database.</p>
+                    <small style="color: var(--text-muted);">Currently showing real prediction results only - no synthetic data</small>
+                </div>
+            `;
+        }
+
+        function createStripPlots(data, diseaseType, color) {
+            // Show message instead of generating fake sample data
+            document.getElementById('stripPlotsChart').innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                    <i class="fas fa-chart-scatter" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
+                    <h3>Feature Strip Plot Analysis</h3>
+                    <p>Strip plot analysis requires detailed input parameter data.</p>
+                    <p>This visualization will be available when comprehensive input data is stored in the database.</p>
+                    <small style="color: var(--text-muted);">Currently showing real prediction results only - no synthetic data</small>
+                </div>
+            `;
+        }
+
+        function createPairplotAnalysis(data, diseaseType, color) {
+            // Show message instead of generating fake sample data
+            document.getElementById('pairplotChart').innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                    <i class="fas fa-project-diagram" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
+                    <h3>Pairplot Analysis</h3>
+                    <p>Pairplot analysis requires detailed input parameter data.</p>
+                    <p>This visualization will be available when comprehensive input data is stored in the database.</p>
+                    <small style="color: var(--text-muted);">Currently showing real prediction results only - no synthetic data</small>
+                </div>
+            `;
+        }
+
+        function createFeatureImportance(data, diseaseType, color) {
+            // Show message instead of generating fake importance data
+            document.getElementById('featureImportanceChart').innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                    <i class="fas fa-chart-line" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
+                    <h3>Feature Importance Analysis</h3>
+                    <p>Feature importance analysis requires trained models and input data.</p>
+                    <p>This visualization will be available when comprehensive input data is stored in the database.</p>
+                    <small style="color: var(--text-muted);">Currently showing real prediction results only - no synthetic data</small>
+                </div>
+            `;
+        }
+
+        // Helper function to calculate correlation between two features (for future use with real data)
+        function calculateCorrelation(data, feature1, feature2) {
+            const values1 = data.map(d => d[feature1]).filter(v => v !== undefined && v !== null);
+            const values2 = data.map(d => d[feature2]).filter(v => v !== undefined && v !== null);
+            
+            if (values1.length !== values2.length || values1.length === 0) {
+                return 0;
+            }
+
+            const mean1 = values1.reduce((sum, val) => sum + val, 0) / values1.length;
+            const mean2 = values2.reduce((sum, val) => sum + val, 0) / values2.length;
+            
+            const numerator = values1.reduce((sum, val, i) => sum + (val - mean1) * (values2[i] - mean2), 0);
+            const denominator1 = Math.sqrt(values1.reduce((sum, val) => sum + Math.pow(val - mean1, 2), 0));
+            const denominator2 = Math.sqrt(values2.reduce((sum, val) => sum + Math.pow(val - mean2, 2), 0));
+            
+            if (denominator1 === 0 || denominator2 === 0) {
+                return 0;
+            }
+            
+            return numerator / (denominator1 * denominator2);
+        }
+
+        // Remove old chart creation functions
+        function createEnhancedRiskDistributionChart(data, color) {
+            // This function is no longer used
+        }
+
+        function createEnhancedHealthScoreTrendChart(data, color) {
+            // This function is no longer used
+        }
+
+        function createEnhancedPredictionTimelineChart(data, color) {
+            // This function is no longer used
+        }
+
+        function createEnhancedConfidenceAnalysisChart(data, color) {
+            // This function is no longer used
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modals = document.getElementsByClassName('modal');
+            for (let i = 0; i < modals.length; i++) {
+                if (event.target === modals[i]) {
+                    modals[i].style.display = 'none';
+                }
+            }
+        }
+
+        // ESC key to close modal
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modals = document.getElementsByClassName('modal');
+                for (let i = 0; i < modals.length; i++) {
+                    if (modals[i].style.display === 'block') {
+                        modals[i].style.display = 'none';
+                    }
+                }
+            }
+        });
+
+        // Show success message
+        function showSuccessMessage(message = '✅ Success!') {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = message;
+            successMessage.style.background = 'var(--success-green)';
+            successMessage.classList.add('show');
+            
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 3000);
+        }
+
+        // Show error message
+        function showErrorMessage(message) {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = message;
+            successMessage.style.background = 'var(--danger-red)';
+            successMessage.classList.add('show');
+            
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+                successMessage.style.background = 'var(--success-green)';
+            }, 5000);
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Analytics Dashboard loaded for user:', 'SKY035');
+            console.log('📅 Current Date and Time:', '2025-07-12 18:38:34 UTC');
+            console.log('👤 Current User Login:', 'SKY035');
+            console.log('🔗 Backend URL:', API_BASE_URL);
+            console.log('📊 Analytics system ready for complete database integration');
+        });
+
+        // Global functions for external access
+        window.analyticsAPI = {
+            getCurrentUser: () => ({ 
+                username: currentUser, 
+                email: currentUserEmail, 
+                userId: currentUserId,
+                loginTime: '2025-07-12 18:38:34 UTC',
+                currentLogin: 'SKY035'
+            }),
+            getUserPredictions: () => userPredictions,
+            getDatabaseStats: () => ({
+                totalRecords: userPredictions.length,
+                heartDisease: userPredictions.filter(p => p.PredictionType === 'heart_disease').length,
+                diabetes: userPredictions.filter(p => p.PredictionType === 'diabetes').length,
+                lungCancer: userPredictions.filter(p => p.PredictionType === 'lung_cancer').length,
+                kidneyDisease: userPredictions.filter(p => p.PredictionType === 'kidney_disease').length,
+                highRisk: userPredictions.filter(p => p.RiskLevel === 'High Risk').length,
+                lowRisk: userPredictions.filter(p => p.RiskLevel === 'Low Risk').length,
+                currentUser: 'SKY035',
+                sessionTime: '2025-07-12 18:38:34 UTC'
+            })
+        };
+
+        console.log('🔧 Analytics API ready with complete functionality for:', 'SKY035');
+    </script>
+</body>
+</html>

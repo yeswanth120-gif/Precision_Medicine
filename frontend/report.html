@@ -1,0 +1,2158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Reports - PRED.AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --modern-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --card-shadow: 0 25px 60px rgba(0, 0, 0, 0.1);
+            --card-shadow-hover: 0 35px 80px rgba(0, 0, 0, 0.18);
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --white-transparent: rgba(255, 255, 255, 0.95);
+            --border-radius: 20px;
+            --border-radius-lg: 24px;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            
+            /* Enhanced color palette */
+            --primary-blue: #3b82f6;
+            --secondary-blue: #1e40af;
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --danger-red: #ef4444;
+            --purple-gradient: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            --blue-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --green-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --red-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --orange-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            
+            /* Neutral Colors */
+            --white: #ffffff;
+            --gray-100: #f8fafc;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e0;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            
+            /* Shadows */
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --shadow-xl: 0 30px 60px rgba(0, 0, 0, 0.2);
+            
+            /* Spacing */
+            --space-xs: 0.5rem;
+            --space-sm: 0.75rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Enhanced Background with animated gradient - EXACTLY matching analytics.html */
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, 
+                #fef3c7 0%,     /* Light amber */
+                #fed7aa 15%,    /* Light orange */
+                #fbb6ce 30%,    /* Light pink */
+                #c7d2fe 45%,    /* Light indigo */
+                #a5f3fc 60%,    /* Light cyan */
+                #bbf7d0 75%,    /* Light emerald */
+                #fde68a 90%,    /* Light yellow */
+                #fef3c7 100%);  /* Back to light amber */
+            background-size: 400% 400%;
+            animation: gradientShift 25s ease infinite;
+            position: relative;
+            overflow-x: hidden;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 100% 25%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 75%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Add subtle floating particles - EXACTLY matching analytics.html */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.4) 1px, transparent 1px),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+                radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
+                radial-gradient(circle at 60% 90%, rgba(255, 255, 255, 0.4) 1px, transparent 1px);
+            background-size: 120px 120px, 140px 140px, 90px 90px, 160px 160px;
+            animation: floatParticles 30s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes floatParticles {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-120px) rotate(360deg); }
+        }
+
+        /* Enhanced Navigation Bar - EXACTLY matching analytics.html */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(25px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .nav-brand {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: var(--modern-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.8px;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .nav-brand::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--modern-gradient);
+            border-radius: 2px;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-brand:hover::after {
+            transform: scaleX(1);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            padding: 0.75rem 1.5rem;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-link:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            color: white;
+            background: var(--primary-gradient);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: var(--space-sm) var(--space-lg);
+            background: var(--modern-gradient);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 15px;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        /* Enhanced Main Container - EXACTLY matching analytics.html */
+        .container {
+            position: relative;
+            z-index: 10;
+            margin: 140px 50px 50px;
+            padding: 80px 50px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(30px);
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: var(--shadow-xl);
+            max-width: 1400px;
+            margin: 140px auto 50px;
+        }
+
+        /* Enhanced Page Header - EXACTLY matching analytics.html */
+        .reports-header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding-top: 10px;
+        }
+
+        .reports-header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 3.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 30%, #4a5568 70%, #667eea 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .reports-header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .filter-select {
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            background: white;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 0.9rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .download-btn {
+            padding: 12px 24px;
+            background: var(--modern-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        /* Enhanced Analytics summary - EXACTLY matching analytics.html */
+        .analytics-summary {
+            background: linear-gradient(145deg, 
+                rgba(255, 255, 255, 0.98) 0%, 
+                rgba(255, 255, 255, 0.92) 50%, 
+                rgba(255, 255, 255, 0.96) 100%);
+            backdrop-filter: blur(30px);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 40px;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .summary-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .summary-title {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .summary-value {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-high { color: var(--danger-red); }
+        .summary-low { color: var(--success-green); }
+        .summary-total { color: var(--primary-blue); }
+        .summary-recent { color: var(--warning-orange); }
+        .summary-user { color: var(--secondary-blue); }
+
+        /* Enhanced Reports Grid */
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .report-card {
+            background: linear-gradient(145deg, 
+                rgba(255, 255, 255, 0.98) 0%, 
+                rgba(255, 255, 255, 0.92) 50%, 
+                rgba(255, 255, 255, 0.96) 100%);
+            backdrop-filter: blur(30px);
+            border-radius: var(--border-radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .report-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: var(--modern-gradient);
+            border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+        }
+
+        .report-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .report-type {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .report-date {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .report-status {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .status-high-risk {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+            color: var(--danger-red);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .status-moderate {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
+            color: var(--warning-orange);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .status-low-risk {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+            color: var(--success-green);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .report-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .metric-item {
+            font-size: 0.95rem;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        .report-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .view-details {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+        .view-details:hover {
+            background: rgba(59, 130, 246, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 40px;
+        }
+
+        .page-btn {
+            padding: 12px 16px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .page-btn:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .page-btn.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .no-reports {
+            text-align: center;
+            padding: 80px 50px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--border-radius-lg);
+            border: 2px dashed rgba(102, 126, 234, 0.3);
+            margin: 30px 0;
+            backdrop-filter: blur(20px);
+        }
+
+        .no-reports h3 {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .no-reports p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Enhanced PDF Modal */
+        .pdf-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .pdf-modal-content {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 0;
+            max-width: 800px;
+            width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+        }
+
+        .pdf-modal-header {
+            padding: 30px 35px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--modern-gradient);
+            color: white;
+            border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+        }
+
+        .pdf-modal-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .pdf-close-btn {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: white;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .pdf-close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .pdf-modal-body {
+            padding: 35px;
+        }
+
+        .pdf-analytics-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 25px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .pdf-analytics-section {
+            margin-bottom: 30px;
+        }
+
+        .pdf-user-details {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .pdf-user-details h4 {
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .pdf-user-details p {
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .pdf-analytics-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .pdf-analytics-table th,
+        .pdf-analytics-table td {
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            padding: 12px;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        .pdf-analytics-table th {
+            background: var(--modern-gradient);
+            color: white;
+            font-weight: 700;
+        }
+
+        .pdf-analytics-table tr:nth-child(even) {
+            background: rgba(102, 126, 234, 0.03);
+        }
+
+        .pdf-analytics-table tr:hover {
+            background: rgba(102, 126, 234, 0.08);
+        }
+
+        /* Enhanced Input Details Section */
+        .input-details-section {
+            background: rgba(139, 92, 246, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid var(--purple-gradient);
+        }
+
+        .input-details-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .input-detail-item {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(139, 92, 246, 0.1);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .input-detail-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .input-detail-value {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        .input-detail-unit {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-left: 5px;
+        }
+
+        /* Enhanced Health Score Section */
+        .health-score-section {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .health-score-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        .health-score-value {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: var(--modern-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .health-score-description {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .health-score-bar {
+            width: 100%;
+            height: 12px;
+            background: var(--gray-200);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .health-score-fill {
+            height: 100%;
+            background: var(--green-gradient);
+            transition: width 0.8s ease;
+            border-radius: 6px;
+        }
+
+        /* Enhanced Analysis Section */
+        .analysis-section {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .analysis-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .analysis-item {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .analysis-item h5 {
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .analysis-item p {
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
+                margin: 140px 30px 30px;
+                padding: 60px 30px;
+            }
+
+            .analytics-summary {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+
+            .reports-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-left {
+                gap: 1.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .reports-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .container {
+                margin: 120px 20px 25px;
+                padding: 50px 25px;
+            }
+
+            .filter-section {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .analytics-summary {
+                grid-template-columns: 1fr;
+                padding: 25px;
+            }
+
+            .reports-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pdf-modal-content {
+                max-width: 95vw;
+                padding: 0;
+            }
+
+            .pdf-modal-body {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .reports-header h1 {
+                font-size: 2.2rem;
+            }
+
+            .container {
+                margin: 100px 15px 20px;
+                padding: 40px 20px;
+            }
+
+            .report-card {
+                padding: 25px;
+            }
+
+            .summary-card {
+                padding: 20px;
+            }
+
+            .input-details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced Navigation Bar - EXACTLY matching analytics.html -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="/dashboard" class="nav-brand"> 🔬 PRED.AI </a>
+            <div class="nav-links">
+                <a href="/report" class="nav-link active">Reports</a>
+            </div>
+        </div>
+        <div class="nav-profile">
+            <a href="/dashboard" class="back-btn">
+                <span>←</span>
+                <span>Back to Dashboard</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Enhanced Page Header - EXACTLY matching analytics.html -->
+        <div class="reports-header">
+            <h1>📄 Medical Reports & Analytics</h1>
+            <p>Comprehensive health reports with detailed insights and analysis</p>
+            <div class="filter-section">
+                <button class="download-btn" id="downloadAnalyticsBtn">
+                    <i class="fas fa-download"></i>
+                    Download Complete Analytics PDF
+                </button>
+                <select class="filter-select" id="reportType">
+                    <option value="all">All Reports</option>
+                    <option value="heart">Heart Disease</option>
+                    <option value="diabetes">Diabetes</option>
+                    <option value="lung">Lung Cancer</option>
+                    <option value="kidney">Kidney Disease</option>
+                </select>
+                <select class="filter-select" id="dateRange">
+                    <option value="all">All Time</option>
+                    <option value="week">Last Week</option>
+                    <option value="month">Last Month</option>
+                    <option value="year">Last Year</option>
+                </select>
+                <select class="filter-select" id="riskLevel">
+                    <option value="all">All Risk Levels</option>
+                    <option value="high">High Risk</option>
+                    <option value="low">Low Risk</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Enhanced Analytics summary cards -->
+        <div class="analytics-summary" id="analyticsSummary">
+            <!-- Cards will be inserted here -->
+        </div>
+
+        <div class="reports-grid" id="reportsContainer">
+            <!-- Report cards will be dynamically inserted here -->
+        </div>
+
+        <div class="pagination" id="pagination">
+            <!-- Pagination buttons will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <!-- Enhanced PDF Analytics Modal -->
+    <div class="pdf-modal" id="pdfModal">
+        <div class="pdf-modal-content">
+            <div class="pdf-modal-header">
+                <h3 class="pdf-modal-title" id="pdfModalTitle">📄 Complete Medical Report</h3>
+                <button class="pdf-close-btn" onclick="closePdfModal()">×</button>
+            </div>
+            <div class="pdf-modal-body" id="pdfModalContent">
+                <!-- Analytics PDF content will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- jsPDF CDN for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script type="module">
+        // Configuration
+        const API_BASE_URL = 'https://precisionmedicine-production.up.railway.app';
+
+        let currentUser = null;
+        let currentUserEmail = null;
+        let currentUserId = null;
+        let allReports = [];
+        let analyticsStats = {};
+        const reportsPerPage = 9;
+        let currentPage = 1;
+
+        // Extract user from localStorage - EXACTLY matching analytics.html
+        function getCurrentUser() {
+            console.log('🔍 Retrieving current user information from dashboard...');
+            
+            try {
+                const userAuth = localStorage.getItem('userAuth');
+                
+                if (!userAuth) {
+                    console.log('⚠️ No userAuth found in localStorage');
+                    return null;
+                }
+
+                const userData = JSON.parse(userAuth);
+                console.log('✅ Found user authentication data from dashboard:', userData);
+                
+                const realUsername = userData.username || userData.displayName;
+                const realEmail = userData.email;
+                
+                if (!realUsername || !realEmail) {
+                    console.log('⚠️ Incomplete user data - missing username or email');
+                    return null;
+                }
+
+                const userId = generateUserId(realEmail);
+                
+                return {
+                    username: realUsername,
+                    email: realEmail,
+                    userId: userId,
+                    uid: userData.uid || null
+                };
+                
+            } catch (error) {
+                console.error('❌ Error parsing userAuth data:', error);
+                return null;
+            }
+        }
+
+        // Generate user ID from email
+        function generateUserId(email) {
+            let hash = 0;
+            for (let i = 0; i < email.length; i++) {
+                const char = email.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return String(Math.abs(hash % 9999) + 1001);
+        }
+
+        // Initialize user context
+        function initUserContext() {
+            const userInfo = getCurrentUser();
+            if (userInfo) {
+                currentUser = userInfo.username;
+                currentUserEmail = userInfo.email;
+                currentUserId = userInfo.userId;
+            } else {
+                currentUser = 'SKY035';
+                currentUserEmail = 'sky035@precisionmedicine.com';
+                currentUserId = '1001';
+            }
+
+            console.log('👤 Current user:', currentUser);
+            console.log('📧 Current email:', currentUserEmail);
+            
+            // Update navbar user info
+            const userAvatar = document.getElementById('userAvatar');
+            const userName = document.getElementById('userName');
+            
+            if (userAvatar) {
+                userAvatar.textContent = currentUser.charAt(0).toUpperCase();
+            }
+            if (userName) {
+                userName.textContent = currentUser;
+            }
+        }
+
+        // Fetch all predictions for current user from backend
+        async function fetchAllReports() {
+            try {
+                console.log(`📊 Fetching reports for ${currentUser} (${currentUserEmail})...`);
+                
+                const response = await fetch(`${API_BASE_URL}/api/analytics/user-predictions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: currentUser, email: currentUserEmail })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                allReports = data.predictions || [];
+                
+                console.log(`✅ Loaded ${allReports.length} reports for ${currentUser}`);
+                
+                buildAnalyticsSummary();
+                displayReports();
+                updatePagination();
+            } catch (error) {
+                console.error('❌ Error loading reports:', error);
+                document.getElementById('reportsContainer').innerHTML = `
+                    <div class="no-reports">
+                        <h3>📄 No Reports Available</h3>
+                        <p>Unable to load reports from the database. Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Build analytics summary cards
+        function buildAnalyticsSummary() {
+            const stats = {
+                heart: 0,
+                diabetes: 0,
+                lung: 0,
+                kidney: 0,
+                total: allReports.length,
+                recent: 0,
+                high: 0,
+                low: 0
+            };
+            
+            const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 3600 * 1000);
+
+            allReports.forEach(r => {
+                if (r.PredictionType === 'heart_disease') stats.heart++;
+                if (r.PredictionType === 'diabetes') stats.diabetes++;
+                if (r.PredictionType === 'lung_cancer') stats.lung++;
+                if (r.PredictionType === 'kidney_disease') stats.kidney++;
+                if (r.RiskLevel === 'High Risk') stats.high++;
+                if (r.RiskLevel === 'Low Risk') stats.low++;
+                if (new Date(r.CreatedAt) >= sevenDaysAgo) stats.recent++;
+            });
+            
+            analyticsStats = stats;
+
+            document.getElementById('analyticsSummary').innerHTML = `
+                <div class="summary-card summary-total">
+                    <div class="summary-title">Total Reports</div>
+                    <div class="summary-value">${stats.total}</div>
+                </div>
+                <div class="summary-card summary-recent">
+                    <div class="summary-title">Recent (7 days)</div>
+                    <div class="summary-value">${stats.recent}</div>
+                </div>
+                <div class="summary-card summary-high">
+                    <div class="summary-title">High Risk</div>
+                    <div class="summary-value">${stats.high}</div>
+                </div>
+                <div class="summary-card summary-low">
+                    <div class="summary-title">Low Risk</div>
+                    <div class="summary-value">${stats.low}</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-title">❤️ Heart Disease</div>
+                    <div class="summary-value">${stats.heart}</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-title">🩺 Diabetes</div>
+                    <div class="summary-value">${stats.diabetes}</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-title">🫁 Lung Cancer</div>
+                    <div class="summary-value">${stats.lung}</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-title">🫘 Kidney Disease</div>
+                    <div class="summary-value">${stats.kidney}</div>
+                </div>
+            `;
+        }
+
+        // Display filtered reports as cards
+        function displayReports() {
+            const container = document.getElementById('reportsContainer');
+            const filteredReports = filterReports();
+            const startIndex = (currentPage - 1) * reportsPerPage;
+            const endIndex = startIndex + reportsPerPage;
+            const reportsToShow = filteredReports.slice(startIndex, endIndex);
+
+            if (reportsToShow.length === 0) {
+                container.innerHTML = `
+                    <div class="no-reports">
+                        <h3>📄 No Reports Found</h3>
+                        <p>No reports match your current filter criteria.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = reportsToShow.map(report => `
+                <div class="report-card">
+                    <div class="report-type">${formatPredictionType(report.PredictionType)} Analysis</div>
+                    <div class="report-date">📅 ${new Date(report.CreatedAt).toLocaleDateString()}</div>
+                    <span class="report-status status-${report.RiskLevel ? report.RiskLevel.toLowerCase().replace(' ', '-') : 'low-risk'}">
+                        ${report.RiskLevel || 'Low Risk'}
+                    </span>
+                    <div class="report-metrics">
+                        <div class="metric-item">
+                            <div class="metric-label">Health Score</div>
+                            <div class="metric-value">${report.HealthScore || 'N/A'}</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Confidence</div>
+                            <div class="metric-value">${report.Confidence ? Math.round(report.Confidence) + '%' : 'N/A'}</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Prediction ID</div>
+                            <div class="metric-value">#${report.PredictionID}</div>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <a href="#" class="view-details" onclick="viewDetails('${report.PredictionID}')">
+                            <i class="fas fa-eye"></i> View Complete Details
+                        </a>
+                        <button class="download-btn" onclick="downloadReport('${report.PredictionID}')">
+                            <i class="fas fa-download"></i> Download PDF
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Format prediction type
+        function formatPredictionType(type) {
+            const typeMap = {
+                'heart_disease': 'Heart Disease',
+                'diabetes': 'Diabetes',
+                'lung_cancer': 'Lung Cancer',
+                'kidney_disease': 'Kidney Disease'
+            };
+            return typeMap[type] || type.charAt(0).toUpperCase() + type.slice(1);
+        }
+
+        // Filtering functions
+        function filterReports() {
+            const typeFilter = document.getElementById('reportType').value;
+            const dateFilter = document.getElementById('dateRange').value;
+            const riskFilter = document.getElementById('riskLevel').value;
+
+            return allReports.filter(report => {
+                const matchesType = typeFilter === 'all' || formatPredictionType(report.PredictionType).toLowerCase().includes(typeFilter);
+                const matchesRisk = riskFilter === 'all' || (report.RiskLevel && report.RiskLevel.toLowerCase().includes(riskFilter));
+                const matchesDate = dateFilter === 'all' || isWithinDateRange(report.CreatedAt, dateFilter);
+                return matchesType && matchesRisk && matchesDate;
+            });
+        }
+
+        function isWithinDateRange(timestamp, range) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            switch(range) {
+                case 'week':
+                    return diff <= 7 * 24 * 60 * 60 * 1000;
+                case 'month':
+                    return diff <= 30 * 24 * 60 * 60 * 1000;
+                case 'year':
+                    return diff <= 365 * 24 * 60 * 60 * 1000;
+                default:
+                    return true;
+            }
+        }
+
+        function updatePagination() {
+            const filteredReports = filterReports();
+            const totalPages = Math.ceil(filteredReports.length / reportsPerPage);
+            const pagination = document.getElementById('pagination');
+            let paginationHTML = '';
+            
+            if (totalPages > 1) {
+                if (currentPage > 1) {
+                    paginationHTML += `<button class="page-btn" onclick="changePage(${currentPage - 1})">Previous</button>`;
+                }
+                for (let i = 1; i <= totalPages; i++) {
+                    paginationHTML += `
+                        <button class="page-btn ${i === currentPage ? 'active' : ''}" 
+                                onclick="changePage(${i})">${i}</button>
+                    `;
+                }
+                if (currentPage < totalPages) {
+                    paginationHTML += `<button class="page-btn" onclick="changePage(${currentPage + 1})">Next</button>`;
+                }
+            }
+            pagination.innerHTML = paginationHTML;
+        }
+
+        function setupEventListeners() {
+            document.getElementById('reportType').addEventListener('change', () => {
+                currentPage = 1;
+                displayReports();
+                updatePagination();
+            });
+            document.getElementById('dateRange').addEventListener('change', () => {
+                currentPage = 1;
+                displayReports();
+                updatePagination();
+            });
+            document.getElementById('riskLevel').addEventListener('change', () => {
+                currentPage = 1;
+                displayReports();
+                updatePagination();
+            });
+            document.getElementById('downloadAnalyticsBtn').addEventListener('click', showPdfAnalyticsModal);
+        }
+
+        window.changePage = (page) => {
+            currentPage = page;
+            displayReports();
+            updatePagination();
+        };
+
+        // Enhanced View Details function with complete information
+        window.viewDetails = async (predictionId) => {
+            const report = allReports.find(r => r.PredictionID == predictionId);
+            if (!report) return;
+
+            const modal = document.getElementById('pdfModal');
+            const modalTitle = document.getElementById('pdfModalTitle');
+            const modalContent = document.getElementById('pdfModalContent');
+
+            modalTitle.textContent = `📄 Complete ${formatPredictionType(report.PredictionType)} Report`;
+            
+            // Generate comprehensive report content
+            let html = `
+                <div class="pdf-analytics-header">Complete Medical Report - ${formatPredictionType(report.PredictionType)}</div>
+                
+                <div class="pdf-user-details">
+                    <h4><i class="fas fa-user"></i> Patient Information</h4>
+                    <p><strong>User Name:</strong> ${report.Username || currentUser}</p>
+                    <p><strong>Email:</strong> ${report.Email || currentUserEmail}</p>
+                </div>
+
+                <div class="health-score-section">
+                    <div class="health-score-title">🏥 Health Score Analysis</div>
+                    <div class="health-score-value">${report.HealthScore || 'N/A'}</div>
+                    <div class="health-score-description">
+                        Overall health assessment based on input parameters
+                    </div>
+                    <div class="health-score-bar">
+                        <div class="health-score-fill" style="width: ${report.HealthScore || 0}%"></div>
+                    </div>
+                </div>
+
+                <div class="pdf-analytics-section">
+                    <h4><i class="fas fa-chart-line"></i> Prediction Results</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                        <div class="metric-item">
+                            <div class="metric-label">Risk Level</div>
+                            <div class="metric-value" style="color: ${report.RiskLevel === 'High Risk' ? 'var(--danger-red)' : 'var(--success-green)'}">
+                                ${report.RiskLevel || 'Low Risk'}
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Confidence Score</div>
+                            <div class="metric-value">${report.Confidence ? Math.round(report.Confidence) + '%' : 'N/A'}</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Health Score</div>
+                            <div class="metric-value">${report.HealthScore || 'N/A'}</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Probability</div>
+                            <div class="metric-value">${report.Probability ? Math.round(report.Probability * 100) + '%' : 'N/A'}</div>
+                        </div>
+                    </div>
+                </div>
+
+                ${await generateInputDetailsForReport(report)}
+                ${generateAnalysisSection(report)}
+                ${generateRecommendationsSection(report)}
+            `;
+
+            modalContent.innerHTML = html;
+            modal.style.display = "flex";
+        };
+
+        // Generate input details for the report
+        async function generateInputDetailsForReport(report) {
+            try {
+                // Fetch detailed input data based on prediction type
+                const inputData = await fetchInputDataForReport(report);
+                
+                if (!inputData || Object.keys(inputData).length === 0) {
+                    return `
+                        <div class="input-details-section">
+                            <div class="input-details-title">
+                                <i class="fas fa-clipboard-list"></i>
+                                Input Parameters from Database
+                            </div>
+                            <div style="text-align: center; padding: 20px; color: var(--text-secondary);">
+                                <i class="fas fa-database" style="font-size: 1.5rem; margin-bottom: 10px; opacity: 0.5;"></i>
+                                <p><strong>Input Data Not Available</strong></p>
+                                <p>Detailed input parameters for Prediction ID ${report.PredictionID} were not saved to the database.</p>
+                                <small>This may be an older prediction before input storage was implemented.</small>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                let html = `
+                    <div class="input-details-section">
+                        <div class="input-details-title">
+                            <i class="fas fa-clipboard-list"></i>
+                            Real Input Parameters from Database
+                        </div>
+                        <div class="input-details-grid">
+                `;
+
+                // Get input fields based on prediction type - only show fields with actual data
+                const inputFields = getInputFieldsForType(report.PredictionType);
+                
+                inputFields.forEach(field => {
+                    const value = inputData[field.key];
+                    if (value !== undefined && value !== null) {
+                        html += `
+                            <div class="input-detail-item">
+                                <div class="input-detail-label">${field.label}</div>
+                                <div class="input-detail-value">
+                                    ${value}
+                                    ${field.unit ? `<span class="input-detail-unit">${field.unit}</span>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+
+                html += `
+                        </div>
+                        <div style="margin-top: 15px; padding: 10px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border-left: 4px solid #10b981;">
+                            <small style="color: #10b981; font-weight: 600;">
+                                <i class="fas fa-check-circle"></i> Real data retrieved from PostgreSQL database (Prediction ID: ${report.PredictionID})
+                            </small>
+                        </div>
+                    </div>
+                `;
+
+                return html;
+            } catch (error) {
+                console.error('Error generating input details:', error);
+                return `
+                    <div class="input-details-section">
+                        <div class="input-details-title">
+                            <i class="fas fa-clipboard-list"></i>
+                            Input Parameters
+                        </div>
+                        <div style="text-align: center; padding: 20px; color: var(--danger-red);">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 1.5rem; margin-bottom: 10px;"></i>
+                            <p><strong>Error Loading Input Data</strong></p>
+                            <p>Unable to retrieve input parameters: ${error.message}</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Fetch input data for a specific report
+        async function fetchInputDataForReport(report) {
+            try {
+                // Use backend API to fetch real input data for this prediction
+                const response = await fetch(`${API_BASE_URL}/api/predictions/input-data`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        predictionId: report.PredictionID,
+                        diseaseType: report.PredictionType
+                    })
+                });
+                if (!response.ok) {
+                    // If not found, fallback to empty object
+                    return {};
+                }
+                const data = await response.json();
+                if (data && data.success && data.inputData) {
+                    return data.inputData;
+                }
+                return {};
+            } catch (error) {
+                console.error('Error fetching input data:', error);
+                return {};
+            }
+        }
+
+        // Get input fields for each prediction type
+        function getInputFieldsForType(predictionType) {
+            const fieldMaps = {
+                heart_disease: [
+                    { key: 'age', label: 'Age', unit: 'years' },
+                    { key: 'sex', label: 'Sex', unit: '' },
+                    { key: 'ejection_fraction', label: 'Ejection Fraction', unit: '%' },
+                    { key: 'serum_creatinine', label: 'Serum Creatinine', unit: 'mg/dL' },
+                    { key: 'high_blood_pressure', label: 'High Blood Pressure', unit: '' },
+                    { key: 'diabetes', label: 'Diabetes', unit: '' },
+                    { key: 'smoking', label: 'Smoking', unit: '' },
+                    { key: 'anaemia', label: 'Anaemia', unit: '' }
+                ],
+                diabetes: [
+                    { key: 'glucose', label: 'Glucose Level', unit: 'mg/dL' },
+                    { key: 'blood_pressure', label: 'Blood Pressure', unit: 'mm Hg' },
+                    { key: 'skin_thickness', label: 'Skin Thickness', unit: 'mm' },
+                    { key: 'insulin', label: 'Insulin', unit: 'mu U/ml' },
+                    { key: 'bmi', label: 'BMI', unit: 'kg/m²' },
+                    { key: 'diabetes_pedigree', label: 'Diabetes Pedigree Function', unit: '' },
+                    { key: 'age', label: 'Age', unit: 'years' },
+                    { key: 'pregnancies', label: 'Pregnancies', unit: '' }
+                ],
+                lung_cancer: [
+                    { key: 'age', label: 'Age', unit: 'years' },
+                    { key: 'sex', label: 'Sex', unit: '' },
+                    { key: 'smoking', label: 'Smoking', unit: '' },
+                    { key: 'yellow_fingers', label: 'Yellow Fingers', unit: '' },
+                    { key: 'anxiety', label: 'Anxiety', unit: '' },
+                    { key: 'peer_pressure', label: 'Peer Pressure', unit: '' },
+                    { key: 'chronic_disease', label: 'Chronic Disease', unit: '' },
+                    { key: 'fatigue', label: 'Fatigue', unit: '' }
+                ],
+                                kidney_disease: [
+                    { key: 'age', label: 'Age', unit: 'years' },
+                    { key: 'blood_pressure', label: 'Blood Pressure', unit: 'mm Hg' },
+                    { key: 'blood_glucose', label: 'Blood Glucose', unit: 'mg/dL' },
+                    { key: 'blood_urea', label: 'Blood Urea', unit: 'mg/dL' },
+                    { key: 'serum_sodium', label: 'Serum Sodium', unit: 'mEq/L' },
+                    { key: 'potassium', label: 'Potassium', unit: 'mEq/L' },
+                    { key: 'white_blood_cells', label: 'White Blood Cells', unit: 'cells/cumm' },
+                    { key: 'hypertension', label: 'Hypertension', unit: '' }
+                ]
+            };
+
+            return fieldMaps[predictionType] || [];
+        }
+
+        // Generate analysis section for the report
+        function generateAnalysisSection(report) {
+            const analysisData = generateDetailedAnalysis(report);
+            
+            return `
+                <div class="analysis-section">
+                    <div class="analysis-title">
+                        <i class="fas fa-microscope"></i>
+                        Detailed Medical Analysis
+                    </div>
+                    ${analysisData.map(item => `
+                        <div class="analysis-item">
+                            <h5>${item.title}</h5>
+                            <p>${item.description}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Generate detailed analysis based on prediction results
+        function generateDetailedAnalysis(report) {
+            const analysisItems = [];
+            const predictionType = formatPredictionType(report.PredictionType);
+            const riskLevel = report.RiskLevel || 'Low Risk';
+            const healthScore = report.HealthScore || 0;
+            const confidence = report.Confidence || 0;
+
+            // Risk Assessment Analysis
+            analysisItems.push({
+                title: '🎯 Risk Assessment Analysis',
+                description: `Based on the comprehensive analysis of input parameters, the model predicts a ${riskLevel.toLowerCase()} for ${predictionType.toLowerCase()}. This assessment is based on multiple health indicators and risk factors specific to ${predictionType.toLowerCase()} prediction.`
+            });
+
+            // Health Score Interpretation
+            if (healthScore >= 80) {
+                analysisItems.push({
+                    title: '💪 Health Score Interpretation',
+                    description: `Your health score of ${healthScore} indicates excellent overall health status. This score reflects optimal values in most health parameters and suggests effective management of risk factors associated with ${predictionType.toLowerCase()}.`
+                });
+            } else if (healthScore >= 60) {
+                analysisItems.push({
+                    title: '📊 Health Score Interpretation',
+                    description: `Your health score of ${healthScore} indicates good health with some areas for improvement. While most parameters are within acceptable ranges, there are opportunities to optimize certain health indicators related to ${predictionType.toLowerCase()} risk.`
+                });
+            } else {
+                analysisItems.push({
+                    title: '⚠️ Health Score Interpretation',
+                    description: `Your health score of ${healthScore} indicates significant areas for health improvement. Multiple risk factors may be contributing to increased ${predictionType.toLowerCase()} risk. Immediate attention to lifestyle modifications and medical consultation is recommended.`
+                });
+            }
+
+            // Confidence Level Analysis
+            if (confidence >= 90) {
+                analysisItems.push({
+                    title: '🎯 Prediction Confidence',
+                    description: `The model's confidence level of ${Math.round(confidence)}% indicates very high reliability in this prediction. The input parameters provide clear indicators for ${predictionType.toLowerCase()} risk assessment.`
+                });
+            } else if (confidence >= 70) {
+                analysisItems.push({
+                    title: '📈 Prediction Confidence',
+                    description: `The model's confidence level of ${Math.round(confidence)}% indicates good reliability in this prediction. Most input parameters support the ${predictionType.toLowerCase()} risk assessment with reasonable certainty.`
+                });
+            } else {
+                analysisItems.push({
+                    title: '📋 Prediction Confidence',
+                    description: `The model's confidence level of ${Math.round(confidence)}% suggests moderate certainty in this prediction. Additional clinical evaluation may be beneficial for a more comprehensive ${predictionType.toLowerCase()} risk assessment.`
+                });
+            }
+
+            // Disease-specific analysis
+            switch (report.PredictionType) {
+                case 'heart_disease':
+                    analysisItems.push({
+                        title: '❤️ Cardiovascular Risk Factors',
+                        description: 'The analysis considers key cardiovascular risk factors including ejection fraction, serum creatinine levels, blood pressure status, diabetes presence, smoking habits, and demographic factors. These parameters collectively influence heart disease risk prediction.'
+                    });
+                    break;
+                case 'diabetes':
+                    analysisItems.push({
+                        title: '🩺 Metabolic Health Assessment',
+                        description: 'The evaluation includes glucose levels, insulin sensitivity, BMI, family history (diabetes pedigree function), and other metabolic indicators. These factors are crucial for assessing diabetes development risk.'
+                    });
+                    break;
+                case 'lung_cancer':
+                    analysisItems.push({
+                        title: '🫁 Pulmonary Risk Assessment',
+                        description: 'The analysis incorporates smoking history, genetic markers, environmental factors, and clinical symptoms. These elements provide comprehensive lung cancer risk evaluation based on current medical understanding.'
+                    });
+                    break;
+                case 'kidney_disease':
+                    analysisItems.push({
+                        title: '🫘 Renal Function Analysis',
+                        description: 'The assessment includes kidney function markers such as blood urea, serum sodium, potassium levels, blood pressure, and related comorbidities. These parameters indicate overall renal health status.'
+                    });
+                    break;
+            }
+
+            return analysisItems;
+        }
+
+        // Generate recommendations section
+        function generateRecommendationsSection(report) {
+            const recommendations = generatePersonalizedRecommendations(report);
+            
+            return `
+                <div class="analysis-section" style="border-left-color: var(--success-green);">
+                    <div class="analysis-title">
+                        <i class="fas fa-lightbulb"></i>
+                        Personalized Health Recommendations
+                    </div>
+                    ${recommendations.map((rec, index) => `
+                        <div class="analysis-item">
+                            <h5>${index + 1}. ${rec.category}</h5>
+                            <p>${rec.recommendation}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Generate personalized recommendations based on prediction results
+        function generatePersonalizedRecommendations(report) {
+            const recommendations = [];
+            const riskLevel = report.RiskLevel || 'Low Risk';
+            const healthScore = report.HealthScore || 0;
+            const predictionType = formatPredictionType(report.PredictionType);
+
+            // General health recommendations based on risk level
+            if (riskLevel === 'High Risk') {
+                recommendations.push({
+                    category: '🏥 Immediate Medical Consultation',
+                    recommendation: `Given the high risk assessment for ${predictionType.toLowerCase()}, immediate consultation with a healthcare professional is strongly recommended. Discuss these results with your doctor to develop a comprehensive management plan.`
+                });
+            } else {
+                recommendations.push({
+                    category: '🏥 Regular Health Monitoring',
+                    recommendation: `Continue regular health check-ups and monitoring. While current risk is low, maintaining preventive care is essential for long-term health management and early detection of any changes.`
+                });
+            }
+
+            // Health score-based recommendations
+            if (healthScore < 60) {
+                recommendations.push({
+                    category: '🏃‍♂️ Lifestyle Modifications',
+                    recommendation: 'Focus on comprehensive lifestyle changes including regular physical activity, balanced nutrition, stress management, and adequate sleep. These modifications can significantly improve your health score and reduce disease risk.'
+                });
+            } else if (healthScore < 80) {
+                recommendations.push({
+                    category: '📈 Health Optimization',
+                    recommendation: 'Your health score shows good progress. Continue current healthy habits and consider fine-tuning areas that need improvement to achieve optimal health status.'
+                });
+            }
+
+            // Disease-specific recommendations
+            switch (report.PredictionType) {
+                case 'heart_disease':
+                    recommendations.push({
+                        category: '❤️ Cardiovascular Health',
+                        recommendation: 'Maintain heart-healthy lifestyle: regular cardio exercise, Mediterranean diet rich in omega-3 fatty acids, blood pressure monitoring, cholesterol management, and smoking cessation if applicable.'
+                    });
+                    recommendations.push({
+                        category: '💊 Medical Management',
+                        recommendation: 'Discuss with your cardiologist about appropriate medications for blood pressure, cholesterol management, and heart function optimization based on your specific risk profile.'
+                    });
+                    break;
+
+                case 'diabetes':
+                    recommendations.push({
+                        category: '🍎 Dietary Management',
+                        recommendation: 'Follow a balanced diet with controlled carbohydrate intake, regular meal timing, and portion control. Consider consultation with a registered dietitian for personalized meal planning.'
+                    });
+                    recommendations.push({
+                        category: '📊 Blood Sugar Monitoring',
+                        recommendation: 'Regular blood glucose monitoring, HbA1c testing every 3-6 months, and maintaining a glucose log to track patterns and identify triggers for blood sugar fluctuations.'
+                    });
+                    break;
+
+                case 'lung_cancer':
+                    recommendations.push({
+                        category: '🚭 Smoking Cessation',
+                        recommendation: 'If you smoke, immediate cessation is crucial. Utilize smoking cessation programs, nicotine replacement therapy, or medications as recommended by healthcare providers.'
+                    });
+                    recommendations.push({
+                        category: '🫁 Lung Health Monitoring',
+                        recommendation: 'Regular lung function tests, chest imaging as recommended by your physician, and immediate attention to respiratory symptoms such as persistent cough or shortness of breath.'
+                    });
+                    break;
+
+                case 'kidney_disease':
+                    recommendations.push({
+                        category: '💧 Kidney Health Management',
+                        recommendation: 'Maintain adequate hydration, limit sodium intake, monitor blood pressure closely, and avoid nephrotoxic substances. Regular kidney function testing is essential.'
+                    });
+                    recommendations.push({
+                        category: '💊 Medication Management',
+                        recommendation: 'Work with your nephrologist to optimize medications that support kidney function and manage related conditions like hypertension and diabetes that affect kidney health.'
+                    });
+                    break;
+            }
+
+            // General wellness recommendations
+            recommendations.push({
+                category: '🧘‍♀️ Stress Management',
+                recommendation: 'Incorporate stress-reduction techniques such as meditation, yoga, deep breathing exercises, or regular physical activity to support overall health and well-being.'
+            });
+
+            recommendations.push({
+                category: '📅 Follow-up Care',
+                recommendation: 'Schedule regular follow-up appointments to monitor progress, reassess risk factors, and adjust treatment plans as needed. Keep track of all health metrics and share updates with your healthcare team.'
+            });
+
+            return recommendations;
+        }
+
+        // Enhanced Download Report PDF function with complete information
+        window.downloadReport = async (predictionId) => {
+            const report = allReports.find(r => r.PredictionID == predictionId);
+            if (!report) return;
+
+            const doc = new window.jspdf.jsPDF();
+            let y = 30;
+
+            // Header
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(20);
+            doc.text("PRED.AI - Complete Medical Report", 20, y);
+            y += 15;
+
+            doc.setFontSize(16);
+            doc.text(`${formatPredictionType(report.PredictionType)} Analysis Report`, 20, y);
+            y += 20;
+
+            // Patient Information
+            doc.setFontSize(14);
+            doc.text("Patient Information:", 20, y);
+            y += 10;
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(12);
+            doc.text(`User Name: ${report.Username || currentUser}`, 25, y); y += 8;
+            doc.text(`Email: ${report.Email || currentUserEmail}`, 25, y); y += 15;
+
+            // Prediction Results
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(14);
+            doc.text("Prediction Results:", 20, y);
+            y += 10;
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(12);
+            doc.text(`Risk Level: ${report.RiskLevel || 'Low Risk'}`, 25, y); y += 8;
+            doc.text(`Health Score: ${report.HealthScore || 'N/A'}`, 25, y); y += 8;
+            doc.text(`Confidence: ${report.Confidence ? Math.round(report.Confidence) + '%' : 'N/A'}`, 25, y); y += 8;
+            doc.text(`Probability: ${report.Probability ? Math.round(report.Probability * 100) + '%' : 'N/A'}`, 25, y); y += 15;
+
+            // Input Parameters
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(14);
+            doc.text("Input Parameters:", 20, y);
+            y += 10;
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(12);
+            
+            // Add sample input parameters
+            const inputData = await fetchInputDataForReport(report);
+            const inputFields = getInputFieldsForType(report.PredictionType);
+            
+            inputFields.forEach(field => {
+                const value = inputData[field.key] || 'N/A';
+                const unit = field.unit ? ` ${field.unit}` : '';
+                doc.text(`${field.label}: ${value}${unit}`, 25, y);
+                y += 8;
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+            });
+
+            y += 10;
+
+            // Health Analysis
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(14);
+            doc.text("Health Analysis:", 20, y);
+            y += 10;
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(11);
+            const analysisItems = generateDetailedAnalysis(report);
+            
+            analysisItems.forEach(item => {
+                if (y > 250) {
+                    doc.addPage();
+                    y = 20;
+                }
+                
+                doc.setFont("helvetica", "bold");
+                doc.text(item.title, 25, y);
+                y += 8;
+                
+                doc.setFont("helvetica", "normal");
+                const splitText = doc.splitTextToSize(item.description, 160);
+                doc.text(splitText, 25, y);
+                y += splitText.length * 5 + 8;
+            });
+
+            // Recommendations
+            if (y > 200) {
+                doc.addPage();
+                y = 20;
+            }
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(14);
+            doc.text("Recommendations:", 20, y);
+            y += 10;
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(11);
+            const recommendations = generatePersonalizedRecommendations(report);
+            
+            recommendations.forEach((rec, index) => {
+                if (y > 250) {
+                    doc.addPage();
+                    y = 20;
+                }
+                
+                doc.setFont("helvetica", "bold");
+                doc.text(`${index + 1}. ${rec.category}`, 25, y);
+                y += 8;
+                
+                doc.setFont("helvetica", "normal");
+                const splitText = doc.splitTextToSize(rec.recommendation, 160);
+                doc.text(splitText, 25, y);
+                y += splitText.length * 5 + 8;
+            });
+
+            // Footer
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(10);
+                doc.text(`Generated by PRED.AI | Page ${i} of ${pageCount} | ${new Date().toLocaleDateString()}`, 20, 285);
+            }
+
+            doc.save(`complete-medical-report-${report.PredictionType}-${report.PredictionID}-${currentUser}.pdf`);
+        };
+
+        // Enhanced PDF Analytics Modal rendering with complete information
+        function showPdfAnalyticsModal(selectedPredictionId = null) {
+            const modal = document.getElementById('pdfModal');
+            const modalTitle = document.getElementById('pdfModalTitle');
+            const modalContent = document.getElementById('pdfModalContent');
+            
+            modalTitle.textContent = selectedPredictionId ? 
+                '📄 Complete Individual Report' : 
+                '📊 Complete Analytics Report';
+            
+            let html = `
+                <div class="pdf-analytics-header">
+                    ${selectedPredictionId ? 'Individual Medical Report' : 'Complete Medical Analytics Dashboard'}
+                </div>
+                
+                <div class="pdf-user-details">
+                    <h4><i class="fas fa-user"></i> User Information</h4>
+                    <p><strong>User Name:</strong> ${currentUser}</p>
+                    <p><strong>Email:</strong> ${currentUserEmail}</p>
+                </div>
+            `;
+
+            if (!selectedPredictionId) {
+                html += `
+                    <div class="pdf-analytics-section">
+                        <h4><i class="fas fa-chart-bar"></i> Analytics Summary</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                            <div class="metric-item">
+                                <div class="metric-label">Total Predictions</div>
+                                <div class="metric-value">${analyticsStats.total}</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-label">Recent (7 days)</div>
+                                <div class="metric-value">${analyticsStats.recent}</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-label">High Risk Cases</div>
+                                <div class="metric-value" style="color: var(--danger-red);">${analyticsStats.high}</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-label">Low Risk Cases</div>
+                                <div class="metric-value" style="color: var(--success-green);">${analyticsStats.low}</div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                            <div class="metric-item">
+                                <div class="metric-label">❤️ Heart Disease</div>
+                                <div class="metric-value">${analyticsStats.heart}</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-label">🩺 Diabetes</div>
+                                <div class="metric-value">${analyticsStats.diabetes}</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-label">🫁 Lung Cancer</div>
+                                <div class="metric-value">${analyticsStats.lung}</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-label">🫘 Kidney Disease</div>
+                                <div class="metric-value">${analyticsStats.kidney}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += `
+                <div class="pdf-analytics-section">
+                    <h4><i class="fas fa-table"></i> ${selectedPredictionId ? 'Individual Report Details' : 'All Prediction Reports'}</h4>
+                    <table class="pdf-analytics-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Date</th>
+                                <th>Risk Level</th>
+                                <th>Health Score</th>
+                                <th>Confidence</th>
+                                <th>User</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${
+                                (selectedPredictionId 
+                                    ? allReports.filter(r => r.PredictionID == selectedPredictionId)
+                                    : allReports
+                                ).map(r => `
+                                    <tr>
+                                        <td>#${r.PredictionID}</td>
+                                        <td>${formatPredictionType(r.PredictionType)}</td>
+                                        <td>${new Date(r.CreatedAt).toLocaleDateString()}</td>
+                                        <td style="color: ${r.RiskLevel === 'High Risk' ? 'var(--danger-red)' : 'var(--success-green)'}">
+                                            ${r.RiskLevel || 'Low Risk'}
+                                        </td>
+                                        <td>${r.HealthScore || 'N/A'}</td>
+                                        <td>${r.Confidence ? Math.round(r.Confidence) + '%' : 'N/A'}</td>
+                                        <td>${r.Username || currentUser}</td>
+                                    </tr>
+                                `).join('')
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            html += `
+                <div style="margin-top: 30px; padding: 20px; background: var(--gray-100); border-radius: 15px;">
+                    <h4 style="margin-bottom: 15px;"><i class="fas fa-info-circle"></i> Report Information</h4>
+                    <p style="margin-bottom: 8px;"><strong>Report Type:</strong> ${selectedPredictionId ? 'Individual Medical Report' : 'Complete Analytics Dashboard'}</p>
+                    <p style="margin-bottom: 8px;"><strong>User:</strong> ${currentUser} (${currentUserEmail})</p>
+                    <p style="margin-bottom: 8px;"><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
+                    <p style="margin-bottom: 8px;"><strong>Platform:</strong> PRED.AI Medical Prediction System</p>
+                    <p style="margin-bottom: 8px;"><strong>Data Integrity:</strong> All data sourced from secure PostgreSQL database</p>
+                </div>
+            `;
+
+            html += `
+                <div style="margin-top: 20px; text-align: center;">
+                    <button class="download-btn" onclick="downloadAnalyticsPdf(${selectedPredictionId || ''})">
+                        <i class="fas fa-download"></i>
+                        Download Complete PDF Report
+                    </button>
+                </div>
+            `;
+
+            modalContent.innerHTML = html;
+            modal.style.display = "flex";
+        }
+
+        window.closePdfModal = function() {
+            document.getElementById('pdfModal').style.display = "none";
+        }
+
+        // Enhanced Download Analytics PDF with complete information
+        window.downloadAnalyticsPdf = function(selectedPredictionId = null) {
+            const doc = new window.jspdf.jsPDF('p', 'pt', 'a4');
+            let y = 40;
+
+            // Header
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(24);
+            doc.text("PRED.AI - Complete Medical Analytics", 40, y); y += 30;
+            
+            doc.setFontSize(16);
+            doc.text(selectedPredictionId ? "Individual Medical Report" : "Complete Analytics Dashboard", 40, y); y += 25;
+
+            // User Information
+            doc.setFontSize(14);
+            doc.text("User Information:", 40, y); y += 18;
+            
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(12);
+            doc.text(`User Name: ${currentUser}`, 50, y); y += 16;
+            doc.text(`Email: ${currentUserEmail}`, 50, y); y += 25;
+
+            if (!selectedPredictionId) {
+                // Analytics Summary
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(14);
+                doc.text("Analytics Summary:", 40, y); y += 18;
+                
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(12);
+                doc.text(`Recent Predictions (7 days): ${analyticsStats.recent}`, 50, y); y += 16;
+                doc.text(`High Risk Cases: ${analyticsStats.high}`, 50, y); y += 16;
+                doc.text(`Low Risk Cases: ${analyticsStats.low}`, 50, y); y += 16;
+                doc.text(`Heart Disease: ${analyticsStats.heart}`, 50, y); y += 16;
+                doc.text(`Diabetes: ${analyticsStats.diabetes}`, 50, y); y += 16;
+                doc.text(`Lung Cancer: ${analyticsStats.lung}`, 50, y); y += 16;
+                doc.text(`Kidney Disease: ${analyticsStats.kidney}`, 50, y); y += 25;
+            }
+
+            // Reports Table
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(14);
+            doc.text("Prediction Reports:", 40, y); y += 18;
+            
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(10);
+
+            // Table headers
+            doc.text("ID", 50, y);
+            doc.text("Type", 100, y);
+            doc.text("Date", 200, y);
+            doc.text("Risk", 280, y);
+            doc.text("Score", 340, y);
+            doc.text("Confidence", 390, y);
+            doc.text("User", 460, y);
+            y += 12;
+            
+            doc.setLineWidth(0.5);
+            doc.line(40, y, 520, y);
+            y += 8;
+
+            // Reports data
+            const reports = selectedPredictionId ? 
+                allReports.filter(r => r.PredictionID == selectedPredictionId) : 
+                allReports;
+                
+            reports.forEach(r => {
+                doc.text(`#${r.PredictionID}`, 50, y);
+                doc.text(formatPredictionType(r.PredictionType), 100, y);
+                doc.text(new Date(r.CreatedAt).toLocaleDateString(), 200, y);
+                doc.text(r.RiskLevel || 'Low Risk', 280, y);
+                doc.text(String(r.HealthScore || 'N/A'), 340, y);
+                doc.text(r.Confidence ? Math.round(r.Confidence) + '%' : 'N/A', 390, y);
+                doc.text(r.Username || currentUser, 460, y);
+                y += 14;
+                
+                if (y > 750) {
+                    doc.addPage();
+                    y = 40;
+                }
+            });
+
+            // Footer
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(10);
+                doc.text(`PRED.AI Analytics Report | ${currentUser} | Page ${i} of ${pageCount} | ${new Date().toLocaleDateString()}`, 40, 780);
+            }
+
+            const filename = selectedPredictionId ? 
+                `individual-medical-report-${selectedPredictionId}-${currentUser}.pdf` : 
+                `complete-analytics-report-${currentUser}.pdf`;
+                
+            doc.save(filename);
+        }
+
+        // Load all reports on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Initializing Reports Dashboard with enhanced styling...');
+            initUserContext();
+            fetchAllReports();
+            setupEventListeners();
+            console.log('✅ Reports Dashboard fully loaded with complete information functionality');
+        });
+    </script>
+</body>
+</html>

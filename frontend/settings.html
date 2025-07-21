@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - PRED.AI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            --text-primary: #2c3e50;
+            --text-secondary: #64748b;
+            --white-transparent: rgba(255, 255, 255, 0.95);
+            --border-radius: 25px;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, 
+                #fef3c7 0%, #fed7aa 15%, #fbb6ce 30%,
+                #c7d2fe 45%, #a5f3fc 60%, #bbf7d0 75%,
+                #fde68a 90%, #fef3c7 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+            padding-top: 80px;
+        }
+
+        /* Enhanced Navigation Bar - EXACTLY matching analytics.html */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+            padding: 0 20px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            text-decoration: none;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary-gradient);
+            border-radius: 1px;
+        }
+
+        .nav-profile {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .back-btn {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Enhanced Page Header */
+        .settings-page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: var(--white-transparent);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+        }
+
+        .settings-page-header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        .settings-page-header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .settings-card {
+            background: var(--white-transparent);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .settings-header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .settings-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .settings-description {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .user-info {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(139, 92, 246, 0.1));
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .user-info h3 {
+            color: var(--text-primary);
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .user-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .settings-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            font-size: 1.3rem;
+        }
+
+        .settings-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .setting-item {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+
+        .setting-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .setting-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .setting-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        .setting-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 32px;
+        }
+
+        .toggle-input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-input:checked + .toggle-slider {
+            background: var(--primary-gradient);
+        }
+
+        .toggle-input:checked + .toggle-slider:before {
+            transform: translateX(28px);
+        }
+
+        .select-setting {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            font-size: 1rem;
+            color: var(--text-primary);
+            background: white;
+            transition: var(--transition);
+        }
+
+        .select-setting:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-setting {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            font-size: 1rem;
+            color: var(--text-primary);
+            background: white;
+            transition: var(--transition);
+        }
+
+        .input-setting:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .save-button {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .save-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .save-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .reset-button {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+            flex: 1;
+        }
+
+        .reset-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(100, 116, 139, 0.3);
+        }
+
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--white-transparent);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            display: none;
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            max-width: 400px;
+        }
+
+        .notification.success {
+            border-left: 4px solid #10b981;
+        }
+
+        .notification.error {
+            border-left: 4px solid #ef4444;
+        }
+
+        .notification.warning {
+            border-left: 4px solid #f59e0b;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--white-transparent);
+            backdrop-filter: blur(10px);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+
+        .status-indicator.connected {
+            background-color: #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.disconnected {
+            background-color: #ef4444;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .settings-card {
+                padding: 25px;
+            }
+
+            .settings-title {
+                font-size: 2rem;
+            }
+
+            .settings-description {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.3rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .back-button {
+                position: static;
+                margin-bottom: 20px;
+                width: fit-content;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced Navigation Bar - EXACTLY matching analytics.html -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="/dashboard" class="nav-brand">🔬 PRED.AI</a>
+            <div class="nav-links">
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="/analytics" class="nav-link">Analytics</a>
+                <a href="/report" class="nav-link">Reports</a>
+                <a href="/settings" class="nav-link active">Settings</a>
+            </div>
+        </div>
+        <div class="nav-profile">
+            <a href="/dashboard" class="back-btn">
+                ← Back to Dashboard
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Enhanced Page Header -->
+        <div class="settings-page-header">
+            <h1>⚙️ Settings</h1>
+            <p>Customize your PRED.AI experience and manage your preferences</p>
+        </div>
+
+        <div class="settings-card">
+            <div class="user-info" id="userInfo">
+                <h3>Loading user information...</h3>
+                <div class="status-indicator disconnected" id="connectionStatus"></div>
+            </div>
+
+            <div class="settings-section">
+                <h2 class="section-title">
+                    <span class="section-icon">🔔</span>
+                    Notifications
+                </h2>
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <div class="setting-header">
+                            <span class="setting-label">Email Notifications</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input" id="emailNotifications" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <p class="setting-description">Receive email updates about your predictions and account activity</p>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-header">
+                            <span class="setting-label">Health Alerts</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input" id="healthAlerts" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <p class="setting-description">Get notified when your health score changes significantly</p>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-header">
+                            <span class="setting-label">Prediction Reminders</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input" id="predictionReminders" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <p class="setting-description">Receive reminders to check and update your health predictions</p>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-header">
+                            <span class="setting-label">Notification Frequency</span>
+                        </div>
+                        <p class="setting-description">How often would you like to receive notifications?</p>
+                        <select class="select-setting" id="notificationFrequency">
+                            <option value="immediate">Immediate</option>
+                            <option value="daily">Daily Digest</option>
+                            <option value="weekly">Weekly Summary</option>
+                            <option value="never">Never</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h2 class="section-title">
+                    <span class="section-icon">🎨</span>
+                    Appearance
+                </h2>
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <div class="setting-header">
+                            <span class="setting-label">Theme</span>
+                        </div>
+                        <p class="setting-description">Choose your preferred theme</p>
+                        <select class="select-setting" id="themeSelect">
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="auto">System Default</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-header">
+                            <span class="setting-label">Animation Effects</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input" id="animations" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <p class="setting-description">Enable or disable animation effects throughout the app</p>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-header">
+                            <span class="setting-label">Language</span>
+                        </div>
+                        <p class="setting-description">Select your preferred language</p>
+                        <select class="select-setting" id="languageSelect">
+                            <option value="en">English</option>
+                            <option value="es">Español</option>
+                            <option value="fr">Français</option>
+                            <option value="de">Deutsch</option>
+                            <option value="hi">हिंदी</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h2 class="section-title">
+                    <span class="section-icon">🔒</span>
+                    Privacy & Security
+                </h2>
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <div class="setting-header">
+                            <span class="setting-label">Data Sharing</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input" id="dataSharing">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <p class="setting-description">Allow anonymous data sharing to improve prediction accuracy</p>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-header">
+                            <span class="setting-label">Activity History</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input" id="activityHistory" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <p class="setting-description">Keep a history of your predictions and activities</p>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-header">
+                            <span class="setting-label">Two-Factor Authentication</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input" id="twoFactorAuth">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <p class="setting-description">Enable two-factor authentication for enhanced security</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📊</span>
+                    Data & Analytics
+                </h2>
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <div class="setting-header">
+                            <span class="setting-label">Analytics Tracking</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input" id="analyticsTracking" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <p class="setting-description">Help us improve by allowing usage analytics</p>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-header">
+                            <span class="setting-label">Data Retention Period</span>
+                        </div>
+                        <p class="setting-description">How long should we keep your data?</p>
+                        <select class="select-setting" id="dataRetention">
+                            <option value="1year">1 Year</option>
+                            <option value="2years">2 Years</option>
+                            <option value="5years">5 Years</option>
+                            <option value="forever">Forever</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-header">
+                            <span class="setting-label">Auto-Backup</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input" id="autoBackup" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <p class="setting-description">Automatically backup your data to secure cloud storage</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="save-button" id="saveButton" onclick="saveSettings()">
+                    <span id="saveButtonText">💾 Save Changes</span>
+                    <div id="saveSpinner" class="loading-spinner" style="display: none;"></div>
+                </button>
+                <button class="reset-button" onclick="resetToDefaults()">
+                    🔄 Reset to Defaults
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, doc, getDoc, setDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2K6-ynId7_cKsMfLWUdT83WJDLQTdsSc",
+            authDomain: "precision-medicine-df7ed.firebaseapp.com",
+            projectId: "precision-medicine-df7ed",
+            storageBucket: "precision-medicine-df7ed.firebasestorage.app",
+            messagingSenderId: "147856529086",
+            appId: "1:147856529086:web:839879f4d26764d50630ef",
+            measurementId: "G-WWMV7MHKJ5"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let hasUnsavedChanges = false;
+
+        // Default settings
+        const defaultSettings = {
+            emailNotifications: true,
+            healthAlerts: true,
+            predictionReminders: true,
+            notificationFrequency: 'daily',
+            theme: 'light',
+            animations: true,
+            languageSelect: 'en',
+            dataSharing: false,
+            activityHistory: true,
+            twoFactorAuth: false,
+            analyticsTracking: true,
+            dataRetention: '2years',
+            autoBackup: true
+        };
+
+        // Check authentication state
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                updateUserInfo(user);
+                updateConnectionStatus(true);
+                loadUserSettings(user.uid);
+            } else {
+                showNotification('Please log in to access settings', 'error');
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 2000);
+            }
+        });
+
+        function updateUserInfo(user) {
+            const userInfo = document.getElementById('userInfo');
+            const userData = JSON.parse(localStorage.getItem('userAuth') || '{}');
+            
+            userInfo.innerHTML = `
+                <h3>👤 ${userData.username || userData.displayName || 'User'}</h3>
+                <p>📧 ${user.email} ${user.emailVerified ? '✅' : '❌'}</p>
+                <p>🆔 User ID: ${user.uid}</p>
+                <div class="status-indicator connected" id="connectionStatus"></div>
+            `;
+        }
+
+        function updateConnectionStatus(connected) {
+            const status = document.getElementById('connectionStatus');
+            if (status) {
+                status.className = `status-indicator ${connected ? 'connected' : 'disconnected'}`;
+            }
+        }
+
+        async function loadUserSettings(userId) {
+            try {
+                showNotification('Loading your settings...', 'info');
+                
+                const settingsDoc = await getDoc(doc(db, 'user_settings', userId));
+                let settings = defaultSettings;
+                
+                if (settingsDoc.exists()) {
+                    settings = { ...defaultSettings, ...settingsDoc.data() };
+                    console.log('Settings loaded from Firestore:', settings);
+                } else {
+                    console.log('No saved settings found, using defaults');
+                }
+                
+                // Apply settings to UI
+                applySettingsToUI(settings);
+                
+                // Setup change detection
+                setupChangeDetection();
+                
+                showNotification('Settings loaded successfully', 'success');
+                
+            } catch (error) {
+                console.error('Error loading settings:', error);
+                showNotification('Error loading settings. Using defaults.', 'error');
+                applySettingsToUI(defaultSettings);
+                setupChangeDetection();
+            }
+        }
+
+        function applySettingsToUI(settings) {
+            // Apply each setting to the corresponding UI element
+            Object.keys(settings).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    if (element.type === 'checkbox') {
+                        element.checked = settings[key];
+                    } else if (element.tagName === 'SELECT') {
+                        element.value = settings[key];
+                    } else if (element.type === 'text' || element.type === 'number') {
+                        element.value = settings[key];
+                    }
+                }
+            });
+        }
+
+        function setupChangeDetection() {
+            const settingElements = document.querySelectorAll('.toggle-input, .select-setting, .input-setting');
+            
+            settingElements.forEach(element => {
+                element.addEventListener('change', () => {
+                    hasUnsavedChanges = true;
+                    updateSaveButtonState();
+                });
+            });
+        }
+
+        function updateSaveButtonState() {
+            const saveButton = document.getElementById('saveButton');
+            const saveButtonText = document.getElementById('saveButtonText');
+            
+            if (hasUnsavedChanges) {
+                saveButtonText.textContent = '💾 Save Changes*';
+                saveButton.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+            } else {
+                saveButtonText.textContent = '💾 Save Changes';
+                saveButton.style.background = 'var(--primary-gradient)';
+            }
+        }
+
+        // Make functions available globally
+        window.saveSettings = async function() {
+            if (!currentUser) {
+                showNotification('Please log in to save settings', 'error');
+                return;
+            }
+
+            try {
+                const saveButton = document.getElementById('saveButton');
+                const saveButtonText = document.getElementById('saveButtonText');
+                const saveSpinner = document.getElementById('saveSpinner');
+                
+                // Show loading state
+                saveButton.disabled = true;
+                saveButtonText.style.display = 'none';
+                saveSpinner.style.display = 'block';
+                
+                // Collect all settings
+                const settings = {};
+                Object.keys(defaultSettings).forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        if (element.type === 'checkbox') {
+                            settings[key] = element.checked;
+                        } else if (element.tagName === 'SELECT') {
+                            settings[key] = element.value;
+                        } else if (element.type === 'text' || element.type === 'number') {
+                            settings[key] = element.value;
+                        }
+                    }
+                });
+
+                // Add metadata
+                settings.lastUpdated = new Date().toISOString();
+                settings.userId = currentUser.uid;
+                settings.version = '1.0';
+
+                // Save to Firestore
+                await setDoc(doc(db, 'user_settings', currentUser.uid), settings);
+                
+                console.log('Settings saved successfully:', settings);
+                showNotification('Settings saved successfully! 🎉', 'success');
+                
+                hasUnsavedChanges = false;
+                updateSaveButtonState();
+                
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                showNotification('Error saving settings. Please try again.', 'error');
+            } finally {
+                // Reset button state
+                const saveButton = document.getElementById('saveButton');
+                const saveButtonText = document.getElementById('saveButtonText');
+                const saveSpinner = document.getElementById('saveSpinner');
+                
+                saveButton.disabled = false;
+                saveButtonText.style.display = 'block';
+                saveSpinner.style.display = 'none';
+            }
+        };
+
+        window.resetToDefaults = function() {
+            if (confirm('Are you sure you want to reset all settings to default values? This action cannot be undone.')) {
+                applySettingsToUI(defaultSettings);
+                hasUnsavedChanges = true;
+                updateSaveButtonState();
+                showNotification('Settings reset to defaults. Click Save to apply changes.', 'warning');
+            }
+        };
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }

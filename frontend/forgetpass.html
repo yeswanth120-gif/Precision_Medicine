@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password - Precision Medicine Suite</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --secondary-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --white-transparent: rgba(255, 255, 255, 0.95);
+            --border-radius: 25px;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, 
+                #fef3c7 0%,     /* Light amber */
+                #fed7aa 15%,    /* Light orange */
+                #fbb6ce 30%,    /* Light pink */
+                #c7d2fe 45%,    /* Light indigo */
+                #a5f3fc 60%,    /* Light cyan */
+                #bbf7d0 75%,    /* Light emerald */
+                #fde68a 90%,    /* Light yellow */
+                #fef3c7 100%);  /* Back to light amber */
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 100% 25%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 75%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Add subtle floating particles */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.4) 1px, transparent 1px),
+                radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+                radial-gradient(circle at 60% 90%, rgba(255, 255, 255, 0.3) 1px, transparent 1px);
+            background-size: 100px 100px, 120px 120px, 80px 80px, 150px 150px;
+            animation: floatParticles 25s linear infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes floatParticles {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+        
+        .auth-container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 40px 60px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 520px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            border-radius: var(--border-radius);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .logo h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .logo p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            border-radius: 15px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            background: white;
+        }
+        
+        .auth-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .auth-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(99, 102, 241, 0.35);
+        }
+        
+        .auth-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .back-link a {
+            color: #6366f1;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        
+        .back-link a:hover {
+            text-decoration: underline;
+            transform: translateX(-3px);
+        }
+        
+        .instructions {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .instructions h3 {
+            color: var(--info-color);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .instructions p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+            display: none;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        .success-message h3 {
+            color: var(--success-color);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .success-message p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .auth-switch {
+            text-align: center;
+            color: var(--text-secondary);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .auth-switch a {
+            color: #6366f1;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Notification System */
+        .notification-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
+            max-width: 400px;
+            pointer-events: none;
+        }
+        
+        .notification {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(120%);
+            animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            pointer-events: all;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .notification:hover {
+            transform: translateX(0) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .notification.notification-success {
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .notification.notification-error {
+            border-left: 4px solid var(--error-color);
+        }
+        
+        .notification.notification-warning {
+            border-left: 4px solid var(--warning-color);
+        }
+        
+        .notification.notification-info {
+            border-left: 4px solid var(--info-color);
+        }
+        
+        .notification-icon {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        
+        .notification-content {
+            flex: 1;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .notification-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 2px;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+        
+        .notification-close:hover {
+            opacity: 1;
+        }
+        
+        .notification.slide-out {
+            animation: slideOut 0.3s ease forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .auth-container {
+                padding: 30px 40px;
+                margin: 0 15px;
+                max-width: 480px;
+            }
+            
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+            
+            .notification-container {
+                right: 15px;
+                bottom: 15px;
+                max-width: calc(100vw - 30px);
+            }
+        }
+        
+        /* Enhanced button glow effects */
+        .auth-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--primary-gradient);
+            border-radius: 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        
+        .auth-btn:hover::before {
+            opacity: 0.8;
+        }
+        
+        /* Enhanced focus states for accessibility */
+        .form-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .auth-btn:focus {
+            outline: 3px solid rgba(99, 102, 241, 0.3);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="logo">
+            <h1>🔐 Forgot Password</h1>
+            <p>Enter your email address and we'll send you a link to reset your password</p>
+        </div>
+        
+        <div class="back-link">
+            <a href="/login">← Back to Login</a>
+        </div>
+        
+        <div class="instructions">
+            <h3>📧 Password Reset Instructions</h3>
+            <p>Enter your email address below. If an account exists with that email, we'll send you a secure link to reset your password. The link will expire in 1 hour for security.</p>
+        </div>
+        
+        <div class="success-message" id="successMessage">
+            <h3>✅ Email Sent Successfully!</h3>
+            <p>We've sent a password reset link to your email address. Please check your inbox and follow the instructions to reset your password. Don't forget to check your spam folder!</p>
+        </div>
+        
+        <form id="forgotPasswordForm">
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" id="email" class="form-input" placeholder="Enter your email address" required>
+            </div>
+            
+            <button type="submit" class="auth-btn" id="resetBtn">
+                <span id="resetBtnText">Send Reset Link</span>
+                <div id="resetSpinner" class="loading-spinner" style="display: none;"></div>
+            </button>
+        </form>
+        
+        <div class="auth-switch">
+            Remember your password? <a href="/login">Sign in</a>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div class="notification-container" id="notificationContainer"></div>
+
+    <!-- Global utility functions -->
+    <script>
+        // Global notification system
+        function showNotification(message, type = 'info', duration = 4000) {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            
+            // Icon mapping
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️',
+                info: 'ℹ️'
+            };
+            
+            notification.innerHTML = `
+                <div class="notification-icon">${icons[type] || icons.info}</div>
+                <div class="notification-content">${message}</div>
+                <button class="notification-close" onclick="closeNotification(this)">×</button>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Auto-remove after duration
+            setTimeout(() => {
+                closeNotification(notification.querySelector('.notification-close'));
+            }, duration);
+            
+            // Click to close
+            notification.addEventListener('click', () => {
+                closeNotification(notification.querySelector('.notification-close'));
+            });
+        }
+        
+        function closeNotification(button) {
+            const notification = button.closest('.notification');
+            notification.classList.add('slide-out');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 300);
+        }
+        
+        function resetButtonState() {
+            const resetBtn = document.getElementById('resetBtn');
+            const resetBtnText = document.getElementById('resetBtnText');
+            const resetSpinner = document.getElementById('resetSpinner');
+            
+            if (resetBtn && resetBtnText && resetSpinner) {
+                resetBtn.disabled = false;
+                resetBtnText.style.display = 'block';
+                resetSpinner.style.display = 'none';
+            }
+        }
+
+        // Debug information
+        console.log('🔧 Debug info:');
+        console.log('- User Agent:', navigator.userAgent);
+        console.log('- Local Storage available:', typeof(Storage) !== "undefined");
+        console.log('- Console logging enabled');
+        console.log('- Global functions loaded');
+    </script>
+
+    <!-- Firebase Configuration -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        console.log('🔥 Firebase script loaded for forgot password');
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2K6-ynId7_cKsMfLWUdT83WJDLQTdsSc",
+            authDomain: "precision-medicine-df7ed.firebaseapp.com",
+            projectId: "precision-medicine-df7ed",
+            storageBucket: "precision-medicine-df7ed.firebasestorage.app",
+            messagingSenderId: "147856529086",
+            appId: "1:147856529086:web:839879f4d26764d50630ef",
+            measurementId: "G-WWMV7MHKJ5"
+        };
+
+        let auth;
+
+        try {
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            
+            console.log('✅ Firebase initialized successfully for forgot password');
+            
+            // Make auth available globally for testing
+            window.auth = auth;
+            
+        } catch (error) {
+            console.error('❌ Firebase initialization error:', error);
+            showNotification('Firebase initialization failed. Please refresh the page.', 'error');
+        }
+
+        // Forgot Password form submission
+        document.getElementById('forgotPasswordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            console.log('🚀 Forgot password form submitted');
+            
+            const email = document.getElementById('email').value;
+            const resetBtn = document.getElementById('resetBtn');
+            const resetBtnText = document.getElementById('resetBtnText');
+            const resetSpinner = document.getElementById('resetSpinner');
+            const successMessage = document.getElementById('successMessage');
+            const form = document.getElementById('forgotPasswordForm');
+            
+            // Show loading state
+            resetBtn.disabled = true;
+            resetBtnText.style.display = 'none';
+            resetSpinner.style.display = 'block';
+            
+            showNotification('Sending password reset email...', 'info');
+            
+            try {
+                await sendPasswordResetEmail(auth, email);
+                
+                console.log('✅ Password reset email sent successfully');
+                
+                // Show success message
+                successMessage.classList.add('show');
+                form.style.display = 'none';
+                
+                showNotification('Password reset email sent successfully!', 'success');
+                
+                // Auto-redirect to login after 10 seconds
+                setTimeout(() => {
+                    showNotification('Redirecting to login page...', 'info');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 1500);
+                }, 10000);
+                
+            } catch (error) {
+                console.error('❌ Password reset error:', error);
+                
+                let errorMessage = 'Failed to send password reset email.';
+                
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMessage = 'No account found with this email address.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'Please enter a valid email address.';
+                        break;
+                    case 'auth/too-many-requests':
+                        errorMessage = 'Too many requests. Please wait a moment and try again.';
+                        break;
+                    case 'auth/network-request-failed':
+                        errorMessage = 'Network error. Please check your connection and try again.';
+                        break;
+                    default:
+                        errorMessage = error.message || 'Failed to send password reset email.';
+                        break;
+                }
+                
+                showNotification(errorMessage, 'error');
+                
+            } finally {
+                // Reset button state
+                resetButtonState();
+            }
+        });
+
+        // Test Firebase connection on page load
+        window.addEventListener('load', () => {
+            console.log('📄 Forgot password page loaded, testing Firebase connection...');
+            
+            // Add a 3-second timeout to show connection status
+            setTimeout(() => {
+                if (typeof auth !== 'undefined' && auth) {
+                    console.log('✅ Firebase connection test passed');
+                    showNotification('Ready to send password reset emails', 'info', 2000);
+                } else {
+                    console.error('❌ Firebase connection test failed');
+                    showNotification('Connection issue detected. Please refresh the page.', 'warning');
+                }
+            }, 2000);
+        });
+
+        console.log('🔧 Firebase module script completed for forgot password');
+    </script>
+</body>
+</html>

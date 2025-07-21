@@ -1,0 +1,74 @@
+Q: What is lung cancer and how does it develop?
+A: Lung cancer occurs when cells in the lungs grow uncontrollably, forming tumors that can interfere with lung function and spread to other parts of the body. It develops when genetic mutations cause normal cells to become cancerous. Most lung cancers are caused by smoking, but can also result from exposure to radon, asbestos, air pollution, or genetic factors. The cancer typically starts in the cells lining the bronchi (air passages) or alveoli (air sacs) and can spread through the lymph system or bloodstream to other organs.
+
+Q: What are the main types of lung cancer?
+A: The two main types are: Non-Small Cell Lung Cancer (NSCLC) - accounts for about 85% of cases, includes adenocarcinoma, squamous cell carcinoma, and large cell carcinoma, generally grows and spreads more slowly; Small Cell Lung Cancer (SCLC) - accounts for about 15% of cases, grows and spreads more quickly, more aggressive and typically associated with smoking. Each type has different treatment approaches and prognoses. Accurate diagnosis of the specific type is crucial for determining the best treatment plan.
+
+Q: What are the symptoms of lung cancer?
+A: Common symptoms include: Persistent cough that doesn't go away or worsens, Coughing up blood or rust-colored sputum, Chest pain that worsens with breathing, laughing, or coughing, Shortness of breath, Hoarseness, Unexplained weight loss and loss of appetite, Fatigue, Recurring respiratory infections (pneumonia, bronchitis), New onset of wheezing, and Bone pain if cancer has spread. Early-stage lung cancer may have no symptoms, which is why screening is important for high-risk individuals.
+
+Q: What causes lung cancer and what are the risk factors?
+A: Primary causes and risk factors include: Smoking (responsible for 80-90% of lung cancers), Secondhand smoke exposure, Radon gas exposure, Asbestos exposure, Air pollution, Family history of lung cancer, Previous radiation therapy to the chest, Exposure to carcinogens (arsenic, diesel exhaust, chromium), and Personal history of lung disease. The risk increases with the number of cigarettes smoked and years of smoking. Even former smokers remain at elevated risk, though it decreases over time after quitting.
+
+Q: How is lung cancer diagnosed?
+A: Diagnosis involves several steps: Medical history and physical examination, Imaging tests (chest X-ray, CT scan, PET scan), Sputum cytology to check for cancer cells, Biopsy to confirm cancer and determine type, Molecular testing to identify specific genetic mutations, Blood tests for tumor markers, and Staging tests to determine cancer extent. Early detection through screening with low-dose CT scans is recommended for high-risk individuals (current or former heavy smokers aged 50-80).
+
+Q: What is lung cancer staging?
+A: Staging describes the size and extent of cancer spread. The TNM system is used: T (Tumor) - size and extent of the main tumor, N (Nodes) - whether cancer has spread to nearby lymph nodes, M (Metastasis) - whether cancer has spread to other organs. Stages range from I (early, localized) to IV (advanced, spread to distant organs). SCLC is often staged as limited (confined to one lung and nearby lymph nodes) or extensive (spread beyond one lung). Staging guides treatment decisions and prognosis.
+
+Q: What genetic mutations are important in lung cancer?
+A: Key genetic mutations include: EGFR - found in about 15% of NSCLC, especially in non-smokers and women, targetable with specific drugs; KRAS - most common mutation in NSCLC, more common in smokers; ALK - found in about 5% of NSCLC, typically in younger patients and non-smokers; ROS1 - rare but highly targetable mutation; TP53 - tumor suppressor gene mutations common in lung cancer; BRAF - targetable mutation in some patients; and MET - involved in cancer growth and spread. Genetic testing helps determine the best targeted therapy options.
+
+Q: How is lung cancer treated?
+A: Treatment depends on cancer type, stage, and overall health: Surgery - removing part or all of the lung for early-stage cancers, Chemotherapy - using drugs to kill cancer cells throughout the body, Radiation therapy - high-energy beams to destroy cancer cells, Targeted therapy - drugs that target specific genetic mutations, Immunotherapy - drugs that help the immune system fight cancer, and Palliative care - focusing on symptom relief and quality of life. Treatment often involves a combination of these approaches.
+
+Q: What is targeted therapy for lung cancer?
+A: Targeted therapy uses drugs that specifically attack cancer cells with certain genetic mutations while sparing normal cells. Examples include: EGFR inhibitors (erlotinib, gefitinib, osimertinib) for EGFR mutations, ALK inhibitors (crizotinib, alectinib) for ALK rearrangements, ROS1 inhibitors for ROS1 mutations, and BRAF inhibitors for BRAF mutations. These treatments often have fewer side effects than traditional chemotherapy and can be very effective for cancers with specific mutations.
+
+Q: What is immunotherapy for lung cancer?
+A: Immunotherapy helps the immune system recognize and attack cancer cells. Types include: Checkpoint inhibitors (pembrolizumab, nivolumab, atezolizumab) that block proteins preventing immune response, and Combination immunotherapy approaches. These treatments work best in cancers with high PD-L1 expression or high tumor mutation burden. Immunotherapy can provide durable responses and is now standard treatment for many advanced lung cancers, sometimes combined with chemotherapy.
+
+Q: What are the side effects of lung cancer treatment?
+A: Side effects vary by treatment type: Surgery - pain, breathing difficulties, infection, blood clots; Chemotherapy - nausea, fatigue, hair loss, increased infection risk, neuropathy; Radiation - fatigue, skin irritation, esophagitis, pneumonitis; Targeted therapy - skin rash, diarrhea, liver problems; Immunotherapy - fatigue, skin reactions, autoimmune complications. Most side effects are manageable with proper medical care and supportive treatments.
+
+Q: What is the prognosis for lung cancer?
+A: Prognosis depends on several factors: Cancer type and stage at diagnosis, Overall health and age, Response to treatment, and Presence of specific genetic mutations. Overall 5-year survival rate is about 23%, but varies significantly by stage: Stage I - 60-80%, Stage II - 40-50%, Stage III - 15-30%, Stage IV - less than 10%. Early detection and targeted therapies for specific mutations have improved outcomes significantly in recent years.
+
+Q: How can lung cancer be prevented?
+A: Primary prevention strategies include: Never smoking or quitting if you smoke, Avoiding secondhand smoke, Testing home for radon and reducing levels if high, Avoiding exposure to asbestos and other carcinogens, Eating a healthy diet rich in fruits and vegetables, Maintaining a healthy weight, Exercising regularly, and Limiting alcohol consumption. Smoking cessation is the most important preventive measure - benefits begin within hours of quitting and continue to increase over time.
+
+Q: Who should be screened for lung cancer?
+A: Screening is recommended for individuals who: Are age 50-80 years old, Have a 20 pack-year smoking history (packs per day × years smoked), Currently smoke or quit within the past 15 years, Are in good health and able to undergo treatment if cancer is found, and Receive annual low-dose CT screening. Screening has been shown to reduce lung cancer deaths by 20% in high-risk individuals. Discuss screening eligibility with your healthcare provider.
+
+Q: What lifestyle changes help during lung cancer treatment?
+A: Beneficial lifestyle changes include: Quitting smoking immediately (improves treatment effectiveness and reduces complications), Eating a nutritious diet to maintain strength, Staying as active as possible within physical limitations, Getting adequate rest and sleep, Managing stress through relaxation techniques, Staying hydrated, Avoiding infections through good hygiene, Taking prescribed medications as directed, and Maintaining strong social support networks. These changes can improve treatment outcomes and quality of life.
+
+Q: How does smoking cessation help after lung cancer diagnosis?
+A: Quitting smoking after cancer diagnosis provides significant benefits: Improves treatment effectiveness, Reduces treatment complications, Decreases risk of second primary cancers, Improves immune function, Reduces risk of heart disease and stroke, Improves breathing and energy levels, and Enhances overall quality of life. It's never too late to quit - benefits begin immediately and continue throughout treatment and beyond. Smoking cessation programs and medications can help.
+
+Q: What is palliative care for lung cancer?
+A: Palliative care focuses on improving quality of life for patients and families facing serious illness. It includes: Symptom management (pain, shortness of breath, fatigue), Emotional and spiritual support, Communication assistance with medical team, Coordination of care, and Support for family members. Palliative care can be provided alongside curative treatment and is not limited to end-of-life care. It helps patients live as fully and comfortably as possible.
+
+Q: How can I manage shortness of breath from lung cancer?
+A: Strategies for managing dyspnea include: Positioning techniques (sitting upright, leaning forward), Breathing exercises and relaxation techniques, Oxygen therapy when prescribed, Medications to reduce inflammation or anxiety, Energy conservation techniques, Pulmonary rehabilitation programs, and Keeping airways clear through proper coughing techniques. Work with your healthcare team to develop a personalized plan for managing breathing difficulties.
+
+Q: What role does nutrition play in lung cancer care?
+A: Good nutrition is crucial for: Maintaining strength and energy during treatment, Supporting immune function, Helping the body recover from treatment, Managing treatment side effects, and Maintaining quality of life. Focus on: Adequate protein for healing, Fruits and vegetables for antioxidants, Whole grains for energy, Healthy fats for inflammation control, and Adequate hydration. A registered dietitian can help create a personalized nutrition plan.
+
+Q: How do I cope with the emotional impact of lung cancer?
+A: Coping strategies include: Seeking support from family, friends, and support groups, Working with mental health professionals, Practicing stress-reduction techniques (meditation, yoga), Maintaining meaningful activities and relationships, Staying informed about your condition and treatment, Expressing feelings through journaling or art, and Considering spiritual or religious support. It's normal to experience a range of emotions - anxiety, fear, anger, sadness. Professional counseling can be very helpful.
+
+Q: What questions should I ask my oncologist?
+A: Important questions include: What type and stage of lung cancer do I have? What are my treatment options and their benefits/risks? What side effects should I expect? How will treatment affect my daily activities? What is my prognosis? Should I get a second opinion? Are there clinical trials I should consider? What genetic testing should be done? How will we monitor treatment effectiveness? What support services are available? When should I call your office?
+
+Q: What are clinical trials and should I consider them?
+A: Clinical trials are research studies testing new treatments or treatment combinations. Benefits include: Access to cutting-edge treatments, Contribution to medical knowledge, Close monitoring by research teams, and Potential for better outcomes. Considerations include: Possible unknown side effects, Time commitment, and No guarantee of benefit. Discuss with your oncologist whether any trials might be appropriate for your specific situation.
+
+Q: How can family members and caregivers help?
+A: Caregivers can provide valuable support by: Accompanying patient to medical appointments, Helping track medications and side effects, Providing emotional support and encouragement, Assisting with daily activities when needed, Helping maintain social connections, Advocating for patient needs, Taking care of their own health and well-being, and Joining caregiver support groups. Caregiving can be challenging - it's important for caregivers to seek support too.
+
+Q: What resources are available for lung cancer patients?
+A: Available resources include: Lung cancer organizations (Lung Cancer Alliance, American Lung Association), Support groups (in-person and online), Financial assistance programs for treatment costs, Transportation assistance for medical appointments, Nutrition counseling services, Social work services, Chaplain or spiritual care services, and Palliative care teams. Don't hesitate to ask your healthcare team about available resources and support services.
+
+Q: How has lung cancer treatment evolved in recent years?
+A: Recent advances include: Targeted therapies for specific genetic mutations, Immunotherapy treatments that harness the immune system, Improved surgical techniques and recovery, Precision medicine approaches based on tumor genetics, Better screening methods for early detection, Enhanced supportive care to manage side effects, and Combination treatment strategies. These advances have improved outcomes and quality of life for many patients, with ongoing research continuing to develop new treatments.

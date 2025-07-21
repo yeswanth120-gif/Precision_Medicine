@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Precision Medicine Suite</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --secondary-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --white-transparent: rgba(255, 255, 255, 0.95);
+            --border-radius: 25px;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, 
+                #fef3c7 0%,     /* Light amber */
+                #fed7aa 15%,    /* Light orange */
+                #fbb6ce 30%,    /* Light pink */
+                #c7d2fe 45%,    /* Light indigo */
+                #a5f3fc 60%,    /* Light cyan */
+                #bbf7d0 75%,    /* Light emerald */
+                #fde68a 90%,    /* Light yellow */
+                #fef3c7 100%);  /* Back to light amber */
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 100% 25%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 75%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Add subtle floating particles */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.4) 1px, transparent 1px),
+                radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+                radial-gradient(circle at 60% 90%, rgba(255, 255, 255, 0.3) 1px, transparent 1px);
+            background-size: 100px 100px, 120px 120px, 80px 80px, 150px 150px;
+            animation: floatParticles 25s linear infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes floatParticles {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+        
+        .auth-container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 40px 60px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 520px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            border-radius: var(--border-radius);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .logo h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .logo p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            border-radius: 15px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            background: white;
+        }
+        
+        .password-container {
+            position: relative;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+        }
+        
+        .auth-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .auth-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(99, 102, 241, 0.35);
+        }
+        
+        .auth-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(99, 102, 241, 0.2);
+        }
+        
+        .divider span {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .google-btn {
+            width: 100%;
+            padding: 15px;
+            background: white;
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .google-btn:hover {
+            border-color: #6366f1;
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.25);
+            transform: translateY(-2px);
+        }
+        
+        .forgot-password {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .forgot-password a {
+            color: #6366f1;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+        
+        .auth-switch {
+            text-align: center;
+            color: var(--text-secondary);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .auth-switch a {
+            color: #6366f1;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info-color);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .alert-content {
+            flex: 1;
+        }
+        
+        .alert-message {
+            margin-bottom: 8px;
+        }
+        
+        .alert-action {
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+        
+        .alert-action a {
+            color: inherit;
+            text-decoration: underline;
+            font-weight: 600;
+        }
+        
+        .alert-action a:hover {
+            opacity: 0.8;
+        }
+        
+        /* Notification System */
+        .notification-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
+            max-width: 400px;
+            pointer-events: none;
+        }
+        
+        .notification {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(120%);
+            animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            pointer-events: all;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .notification:hover {
+            transform: translateX(0) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .notification.notification-success {
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .notification.notification-error {
+            border-left: 4px solid var(--error-color);
+        }
+        
+        .notification.notification-warning {
+            border-left: 4px solid var(--warning-color);
+        }
+        
+        .notification.notification-info {
+            border-left: 4px solid var(--info-color);
+        }
+        
+        .notification-icon {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        
+        .notification-content {
+            flex: 1;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .notification-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 2px;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+        
+        .notification-close:hover {
+            opacity: 1;
+        }
+        
+        .notification.slide-out {
+            animation: slideOut 0.3s ease forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .auth-container {
+                padding: 30px 40px;
+                margin: 0 15px;
+                max-width: 480px;
+            }
+            
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+            
+            .notification-container {
+                right: 15px;
+                bottom: 15px;
+                max-width: calc(100vw - 30px);
+            }
+        }
+        
+        /* Enhanced button glow effects */
+        .auth-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--primary-gradient);
+            border-radius: 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        
+        .auth-btn:hover::before {
+            opacity: 0.8;
+        }
+        
+        /* Enhanced focus states for accessibility */
+        .form-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .auth-btn:focus {
+            outline: 3px solid rgba(99, 102, 241, 0.3);
+            outline-offset: 2px;
+        }
+        
+        .google-btn:focus {
+            outline: 3px solid rgba(99, 102, 241, 0.3);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="logo">
+            <h1>🔬 Welcome Back</h1>
+            <p>Sign in to access your medical predictions</p>
+        </div>
+        
+        <div id="alertContainer"></div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" id="email" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <div class="password-container">
+                    <input type="password" id="password" class="form-input" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword()">🔒</button>
+                </div>
+            </div>
+            
+            <div class="forgot-password">
+                <a href="/forgetpass">Forgot your password?</a>
+            </div>
+            
+            <button type="submit" class="auth-btn" id="loginBtn">
+                <span id="loginBtnText">Sign In</span>
+                <div id="loginSpinner" class="loading-spinner" style="display: none;"></div>
+            </button>
+        </form>
+        
+        <div class="divider">
+            <span>or continue with</span>
+        </div>
+        
+        <button class="google-btn" onclick="signInWithGoogle()">
+            <svg width="20" height="20" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            Sign in with Google
+        </button>
+        
+        <div class="auth-switch">
+            Don't have an account? <a href="/signup">Sign up</a>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div class="notification-container" id="notificationContainer"></div>
+
+    <!-- Global utility functions -->
+    <script>
+        // Global notification system
+        function showNotification(message, type = 'info', duration = 4000) {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            
+            // Icon mapping
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️',
+                info: 'ℹ️'
+            };
+            
+            notification.innerHTML = `
+                <div class="notification-icon">${icons[type] || icons.info}</div>
+                <div class="notification-content">${message}</div>
+                <button class="notification-close" onclick="closeNotification(this)">×</button>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Auto-remove after duration
+            setTimeout(() => {
+                closeNotification(notification.querySelector('.notification-close'));
+            }, duration);
+            
+            // Click to close
+            notification.addEventListener('click', () => {
+                closeNotification(notification.querySelector('.notification-close'));
+            });
+        }
+        
+        function closeNotification(button) {
+            const notification = button.closest('.notification');
+            notification.classList.add('slide-out');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 300);
+        }
+        
+        // Legacy alert function for compatibility
+        function showAlert(message, type) {
+            console.log(`🔔 Alert [${type}]:`, message);
+            showNotification(message, type);
+        }
+
+        function showAlertWithAction(message, type, icon, actionHtml) {
+            console.log(`🔔 Alert with Action [${type}]:`, message);
+            showNotification(message, type);
+        }
+
+        function resetButtonState() {
+            const loginBtn = document.getElementById('loginBtn');
+            const loginBtnText = document.getElementById('loginBtnText');
+            const loginSpinner = document.getElementById('loginSpinner');
+            
+            if (loginBtn && loginBtnText && loginSpinner) {
+                loginBtn.disabled = false;
+                loginBtnText.style.display = 'block';
+                loginSpinner.style.display = 'none';
+            }
+        }
+
+        // Password toggle function
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleBtn = passwordInput.nextElementSibling;
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.textContent = '🔓';
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.textContent = '🔒';
+            }
+        }
+
+        // Debug information
+        console.log('🔧 Debug info:');
+        console.log('- User Agent:', navigator.userAgent);
+        console.log('- Local Storage available:', typeof(Storage) !== "undefined");
+        console.log('- Console logging enabled');
+        console.log('- Global functions loaded');
+    </script>
+
+    <!-- Firebase Configuration -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        console.log('🔥 Firebase script loaded');
+
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2K6-ynId7_cKsMfLWUdT83WJDLQTdsSc",
+            authDomain: "precision-medicine-df7ed.firebaseapp.com",
+            projectId: "precision-medicine-df7ed",
+            storageBucket: "precision-medicine-df7ed.firebasestorage.app",
+            messagingSenderId: "147856529086",
+            appId: "1:147856529086:web:839879f4d26764d50630ef",
+            measurementId: "G-WWMV7MHKJ5"
+        };
+
+        let auth, googleProvider;
+
+        try {
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            const db = getFirestore(app);
+            googleProvider = new GoogleAuthProvider();
+            
+            console.log('✅ Firebase initialized successfully');
+            
+            // Make auth available globally for testing
+            window.auth = auth;
+            
+        } catch (error) {
+            console.error('❌ Firebase initialization error:', error);
+            showNotification('Firebase initialization failed. Please refresh the page.', 'error');
+        }
+
+        // Google Sign In
+        async function signInWithGoogle() {
+            console.log('🔄 Starting Google signin...');
+            showNotification('Signing in with Google...', 'info');
+            
+            try {
+                if (!auth || !googleProvider) {
+                    throw new Error('Firebase not properly initialized');
+                }
+                
+                const result = await signInWithPopup(auth, googleProvider);
+                const user = result.user;
+                
+                console.log('✅ Google signin successful:', user.uid);
+                showNotification('Google sign-in successful! Redirecting...', 'success');
+
+                // Check if user exists in Firestore and get username
+                try {
+                    const userDoc = await getDoc(doc(db, 'users', user.uid));
+                    let userData = {
+                        uid: user.uid,
+                        email: user.email,
+                        emailVerified: user.emailVerified
+                    };
+                    
+                    if (userDoc.exists()) {
+                        const firestoreData = userDoc.data();
+                        userData.username = firestoreData.username;
+                        userData.displayName = firestoreData.username;
+                        console.log('✅ Username fetched from Firestore:', firestoreData.username);
+                    } else {
+                        // If no Firestore record, use displayName or email fallback
+                        userData.username = user.displayName || user.email.split('@')[0];
+                        userData.displayName = user.displayName || user.email.split('@')[0];
+                    }
+                    
+                    // Store user info in localStorage
+                    localStorage.setItem('userAuth', JSON.stringify(userData));
+                    
+                } catch (error) {
+                    console.error('❌ Error fetching user data:', error);
+                    // Fallback storage
+                    localStorage.setItem('userAuth', JSON.stringify({
+                        uid: user.uid,
+                        email: user.email,
+                        emailVerified: user.emailVerified,
+                        username: user.displayName || user.email.split('@')[0],
+                        displayName: user.displayName || user.email.split('@')[0]
+                    }));
+                }
+
+                // Redirect to dashboard
+                setTimeout(() => {
+                    window.location.href = '/dashboard';
+                }, 1500);
+                
+            } catch (error) {
+                console.error('❌ Google sign-in error:', error);
+                
+                let errorMessage = 'Google sign-in failed. Please try again.';
+                
+                if (error.code === 'auth/popup-closed-by-user') {
+                    errorMessage = 'Sign-in was cancelled.';
+                } else if (error.code === 'auth/popup-blocked') {
+                    errorMessage = 'Popup was blocked. Please allow popups for this site.';
+                } else {
+                    errorMessage = error.message || 'Google sign-in failed. Please try again.';
+                }
+                
+                showNotification(errorMessage, 'error');
+            }
+        }
+
+        // Make functions available globally
+        window.signInWithGoogle = signInWithGoogle;
+
+        // Check for verification message from signup
+        document.addEventListener('DOMContentLoaded', function() {
+            checkForVerificationMessage();
+        });
+
+        function checkForVerificationMessage() {
+            const verificationMessage = localStorage.getItem('verificationMessage');
+            
+            if (verificationMessage) {
+                try {
+                    const messageData = JSON.parse(verificationMessage);
+                    
+                    // Check if message is recent (within 5 minutes)
+                    const messageAge = Date.now() - messageData.timestamp;
+                    const fiveMinutes = 5 * 60 * 1000;
+                    
+                    if (messageAge < fiveMinutes) {
+                        showNotification(messageData.message, messageData.type);
+                    }
+                    
+                    // Remove the message after displaying
+                    localStorage.removeItem('verificationMessage');
+                    
+                } catch (error) {
+                    console.error('Error parsing verification message:', error);
+                    localStorage.removeItem('verificationMessage');
+                }
+            }
+        }
+
+        // Login form submission
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            console.log('🚀 Login form submitted');
+            showNotification('Signing in...', 'info');
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const loginBtnText = document.getElementById('loginBtnText');
+            const loginSpinner = document.getElementById('loginSpinner');
+            
+            // Show loading state
+            loginBtn.disabled = true;
+            loginBtnText.style.display = 'none';
+            loginSpinner.style.display = 'block';
+            
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                
+                // Check if email is verified
+                if (!user.emailVerified) {
+                    showNotification('Email not verified. Please check your inbox and verify your email address.', 'warning');
+                    resetButtonState();
+                    return;
+                }
+                
+                console.log('✅ Login successful:', user.uid);
+                showNotification('Login successful! Redirecting to dashboard...', 'success');
+                
+                // Fetch user data from Firestore to get username
+                try {
+                    const userDoc = await getDoc(doc(db, 'users', user.uid));
+                    let userData = {
+                        uid: user.uid,
+                        email: user.email,
+                        emailVerified: user.emailVerified
+                    };
+                    
+                    if (userDoc.exists()) {
+                        const firestoreData = userDoc.data();
+                        userData.username = firestoreData.username;
+                        userData.displayName = firestoreData.username;
+                        console.log('✅ Username fetched from Firestore:', firestoreData.username);
+                    } else {
+                        console.log('⚠️ No user document found in Firestore');
+                    }
+                    
+                    // Store user info in localStorage with username
+                    localStorage.setItem('userAuth', JSON.stringify(userData));
+                    
+                } catch (error) {
+                    console.error('❌ Error fetching user data:', error);
+                    // Store basic user info without username as fallback
+                    localStorage.setItem('userAuth', JSON.stringify({
+                        uid: user.uid,
+                        email: user.email,
+                        emailVerified: user.emailVerified
+                    }));
+                }
+                
+                // Redirect to dashboard
+                setTimeout(() => {
+                    window.location.href = '/dashboard';
+                }, 1500);
+                
+            } catch (error) {
+                console.error('❌ Login error:', error);
+                let errorMessage = 'Login failed. Please try again.';
+                
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMessage = 'No account found with this email address.';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMessage = 'Incorrect password. Please try again.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'Please enter a valid email address.';
+                        break;
+                    case 'auth/too-many-requests':
+                        errorMessage = 'Too many failed attempts. Please try again later.';
+                        break;
+                    case 'auth/user-disabled':
+                        errorMessage = 'This account has been disabled.';
+                        break;
+                    case 'auth/invalid-credential':
+                        errorMessage = 'Invalid email or password. Please check your credentials.';
+                        break;
+                    default:
+                        errorMessage = error.message || 'Login failed. Please try again.';
+                        break;
+                }
+                
+                showNotification(errorMessage, 'error');
+                
+            } finally {
+                // Reset button state
+                resetButtonState();
+            }
+        });
+
+        // Test Firebase connection on page load
+        window.addEventListener('load', () => {
+            console.log('📄 Page loaded, testing Firebase connection...');
+            
+            // Add a 3-second timeout to show connection status
+            setTimeout(() => {
+                if (typeof auth !== 'undefined' && auth) {
+                    console.log('✅ Firebase connection test passed');
+                } else {
+                    console.error('❌ Firebase connection test failed');
+                    showNotification('Connection issue detected. Please refresh the page.', 'warning');
+                }
+            }, 3000);
+        });
+
+        console.log('🔧 Firebase module script completed');
+    </script>
+</body>
+</html>
